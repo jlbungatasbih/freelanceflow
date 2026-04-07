@@ -517,16 +517,22 @@ async function saveToDrive(d){
 }
 function startDriveSync(){
   if(!GAS_URL)return;
+  // Laad eerst van Drive (stil bij fout — geen melding)
   loadFromDrive().then(remote=>{
     if(remote){
       S.data=remote;
       S.data.tasks=S.data.tasks.map(migrateTask);
       ensureInternProject();
+      // Tijdelijk sync uitschakelen tijdens initieel render zodat we geen fout tonen
+      const wasAuth=localStorage.getItem('ff_auth');
+      localStorage.removeItem('ff_auth');
       render();
+      if(wasAuth)localStorage.setItem('ff_auth',wasAuth);
       showSyncBar('ok');
     }
-  });
+  }).catch(()=>{/* stil falen bij laden */});
   if(driveInterval)clearInterval(driveInterval);
+  // Periodieke save elke 30s
   driveInterval=setInterval(()=>{if(localStorage.getItem('ff_auth')==='1')saveToDrive(S.data)},SYNC_INTERVAL_MS);
 }
 
@@ -559,10 +565,15 @@ function navWeek(w,y,dir){const m=weekDates(w,y)[0];m.setDate(m.getDate()+dir*7)
 let fileHandle=null;
 
 function loadData(){try{const s=localStorage.getItem(KEY);return s?JSON.parse(s):null}catch{return null}}
+let _pendingDriveSave=null;
 function saveData(d){
   try{localStorage.setItem(KEY,JSON.stringify(d))}catch{}
   if(fileHandle){writeToFile(d).catch(()=>{})}
-  if(GAS_URL&&localStorage.getItem('ff_auth')==='1')saveToDrive(d);
+  // Debounced Drive save: wacht 2s na laatste wijziging, dan pas sync
+  if(GAS_URL&&localStorage.getItem('ff_auth')==='1'){
+    if(_pendingDriveSave)clearTimeout(_pendingDriveSave);
+    _pendingDriveSave=setTimeout(()=>{saveToDrive(d);_pendingDriveSave=null},2000);
+  }
 }
 async function writeToFile(d){
   try{
@@ -1026,7 +1037,8 @@ function renderWeek(){
 
   // Tabs
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===S.activeTab));
-  const overCount=data.projects.filter(p=>!p.isInternal&&overInfo(p,data.tasks).isOver).length;
+  const _now=new Date();
+  const overCount=data.projects.filter(p=>!p.isInternal&&overInfo(p,data.tasks,_now.getMonth(),_now.getFullYear()).isOver).length;
   const tabOB=document.getElementById('tab-over-btn');
   tabOB.querySelector('.tab-badge')?.remove();
   if(overCount>0){const sp=document.createElement('span');sp.className='tab-badge';sp.textContent=overCount;tabOB.appendChild(sp)}
