@@ -1483,7 +1483,7 @@ function renderAnalyse(){
     </div>`;
 
     // Capaciteitsadvies (gebaseerd op maandgemiddelde, max 40u/week)
-    const CAP_WEEK=40;
+    const CAP_WEEK=32; // 40u/week min 8u overhead (acquisitie, boekhouding, belasting)
     const weeksInMonth=4;
     const avgWeekH=totalCliH/weeksInMonth;
     const freeWeekH=Math.round(CAP_WEEK-avgWeekH);
