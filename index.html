@@ -1444,13 +1444,83 @@ function renderAnalyse(){
   if(!projStats.length){
     h+=`<div class="an-empty"><div style="font-size:36px;margin-bottom:8px">📭</div><p style="font-size:14px;font-weight:600;color:#64748b">Geen taken in ${MONTH_NL[analyseMonth]} ${analyseYear}</p><p style="font-size:12px;margin-top:4px">Plan taken in de weekweergave om analyse te zien.</p></div>`;
   }else{
-    // Bar chart: hours per project this month
-    const maxBarH=Math.max(...projStats.map(x=>x.monthH),1);
-    h+=`<p class="an-sec" style="margin-top:4px">Uren per project — ${MONTH_NL[analyseMonth]}</p><div class="chart-wrap">`;
-    [...projStats].sort((a,b)=>b.monthH-a.monthH).forEach(({proj,monthH})=>{
-      h+=`<div class="chart-row"><div class="chart-lbl">${proj.name}</div><div class="chart-track"><div class="chart-fill" style="width:${(monthH/maxBarH)*100}%;background:${proj.color}"></div></div><div class="chart-val">${monthH}u</div></div>`;
+    // Donut chart: hours per CLIENT this month
+    const byCli2={};
+    projStats.forEach(({proj,cli,monthH})=>{
+      if(!cli)return;
+      if(!byCli2[cli.id])byCli2[cli.id]={cli,hours:0,color:proj.color};
+      byCli2[cli.id].hours+=monthH;
     });
-    h+=`</div>`;
+    const cliSlices=Object.values(byCli2).sort((a,b)=>b.hours-a.hours);
+    const totalCliH=cliSlices.reduce((s,c)=>s+c.hours,0)||1;
+    // Build SVG donut paths
+    const cx=100,cy=100,ro=78,ri=48;
+    let ang=-Math.PI/2;
+    const svgPaths=cliSlices.map(c=>{
+      const slice=(c.hours/totalCliH)*2*Math.PI;
+      const end=ang+slice;
+      const x1=cx+ro*Math.cos(ang),y1=cy+ro*Math.sin(ang);
+      const x2=cx+ro*Math.cos(end),y2=cy+ro*Math.sin(end);
+      const ix1=cx+ri*Math.cos(ang),iy1=cy+ri*Math.sin(ang);
+      const ix2=cx+ri*Math.cos(end),iy2=cy+ri*Math.sin(end);
+      const big=slice>Math.PI?1:0;
+      // Handle full-circle edge case
+      const d=cliSlices.length===1
+        ?`M ${cx} ${cy-ro} A ${ro} ${ro} 0 1 1 ${cx-0.001} ${cy-ro} Z M ${cx} ${cy-ri} A ${ri} ${ri} 0 1 0 ${cx-0.001} ${cy-ri} Z`
+        :`M ${x1} ${y1} A ${ro} ${ro} 0 ${big} 1 ${x2} ${y2} L ${ix2} ${iy2} A ${ri} ${ri} 0 ${big} 0 ${ix1} ${iy1} Z`;
+      ang=end;
+      return `<path d="${d}" fill="${c.color}" stroke="white" stroke-width="2.5"/>`;
+    }).join('');
+    const svgLegend=cliSlices.map(c=>`<div style="display:flex;align-items:center;gap:7px;margin-bottom:5px"><div style="width:10px;height:10px;border-radius:50%;background:${c.color};flex-shrink:0"></div><div style="font-size:11px;color:#374151;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.cli.name}</div><div style="font-size:11px;font-weight:700;color:#374151">${c.hours}u</div></div>`).join('');
+    h+=`<p class="an-sec" style="margin-top:4px">Uren per klant — ${MONTH_NL[analyseMonth]}</p>
+    <div class="chart-wrap" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:16px">
+      <svg width="150" height="150" viewBox="0 0 200 200" style="flex-shrink:0">
+        ${svgPaths}
+        <text x="100" y="95" text-anchor="middle" style="font-size:22px;font-weight:800;fill:#374151">${totalCliH}u</text>
+        <text x="100" y="112" text-anchor="middle" style="font-size:9px;fill:#94a3b8">deze maand</text>
+      </svg>
+      <div style="flex:1;min-width:110px">${svgLegend}</div>
+    </div>`;
+
+    // Capaciteitsadvies (gebaseerd op maandgemiddelde, max 40u/week)
+    const CAP_WEEK=40;
+    const weeksInMonth=4;
+    const avgWeekH=totalCliH/weeksInMonth;
+    const freeWeekH=Math.round(CAP_WEEK-avgWeekH);
+    const pctBusy=Math.min(Math.round((avgWeekH/CAP_WEEK)*100),100);
+    let advIcon,advBg,advClr,advTitle,advMsg;
+    if(freeWeekH<0){
+      advIcon='🔴';advBg='#fee2e2';advClr='#991b1b';
+      advTitle=`Je werkt ${Math.abs(freeWeekH)}u/week boven capaciteit`;
+      advMsg='Neem voorlopig geen nieuwe klanten aan. Kijk of je bestaande projecten kunt afschalen of taken kunt delegeren.';
+    }else if(freeWeekH<4){
+      advIcon='🟠';advBg='#fff7ed';advClr='#9a3412';
+      advTitle=`Je zit bijna vol — nog ~${freeWeekH}u/week vrij`;
+      advMsg='Neem geen nieuwe klanten aan. Bewaar deze buffer voor onverwachte taken.';
+    }else if(freeWeekH<8){
+      advIcon='🟡';advBg='#fffbeb';advClr='#92400e';
+      advTitle=`Kleine buffer — ~${freeWeekH}u/week vrij`;
+      advMsg='Ruimte voor een heel klein nevenproject (max ~4u/week), maar wees selectief. Geen grote nieuwe klanten.';
+    }else if(freeWeekH<16){
+      advIcon='🟢';advBg='#f0fdf4';advClr='#166534';
+      advTitle=`Ruimte voor 1 nieuw project — ~${freeWeekH}u/week vrij`;
+      advMsg='Je kunt 1 nieuwe klant aannemen van gemiddeld 1–2 dagen per week. Houd rekening met opstartwerk.';
+    }else{
+      advIcon='🟢';advBg='#f0fdf4';advClr='#166534';
+      advTitle=`Veel ruimte — ~${freeWeekH}u/week vrij`;
+      advMsg='Je kunt meerdere nieuwe klanten aannemen of een groot project oppakken. Goed moment om te groeien.';
+    }
+    h+=`<div style="background:${advBg};border:1px solid ${advClr}22;border-radius:12px;padding:13px 15px;margin-bottom:18px">
+      <div style="font-size:10px;font-weight:700;color:${advClr};text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px">${advIcon} Capaciteitsadvies — ${MONTH_NL[analyseMonth]}</div>
+      <div style="font-size:13px;font-weight:800;color:${advClr};margin-bottom:4px">${advTitle}</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+        <div style="flex:1;height:7px;background:#e2e8f0;border-radius:5px;overflow:hidden">
+          <div style="width:${pctBusy}%;height:100%;background:${advClr};border-radius:5px;transition:.4s"></div>
+        </div>
+        <span style="font-size:10px;color:${advClr};font-weight:600;white-space:nowrap">${pctBusy}% bezet</span>
+      </div>
+      <div style="font-size:11px;color:${advClr};opacity:.85;line-height:1.5">${advMsg}</div>
+    </div>`;
 
     // Per project detail cards
     h+=`<p class="an-sec">Per project</p>`;
