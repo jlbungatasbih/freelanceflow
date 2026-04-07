@@ -370,6 +370,7 @@ input,select,textarea{font-family:inherit}
         </div>
         <button class="cur-week-btn btn" id="btn-cur">Huidige week</button>
         <div style="flex:1"></div>
+        <button id="btn-lock-week" class="week-nav-btn" style="width:auto;padding:0 10px;gap:5px;font-size:11px;font-weight:700;color:#64748b" title="Week vergrendelen">🔓 Lock</button>
         <div id="gauge-wrap"></div>
       </div>
       <div class="week-body">
@@ -637,7 +638,7 @@ function makeDemo(week,year){
       {id:'t6',projectId:'p4',name:'Button componenten',hours:4,status:'in-progress',allocatedWeek:week,allocatedYear:year,allocatedDay:0,startTime:840,timerSeconds:0},
       {id:'t7',projectId:'p4',name:'Form componenten',hours:4,status:'open',allocatedWeek:week,allocatedYear:year,allocatedDay:1,startTime:780,timerSeconds:0},
     ],
-    vacations:[],
+    vacations:[],lockedWeeks:[],
     settings:{hoursPerWeek:40,calStart:6,calEnd:23},
   };
 }
@@ -810,6 +811,7 @@ function gaugeHtml(h,max){
 // ═══════════════════════════════════════════════
 function renderCalendar(){
   const{viewW,viewY,data}=S;
+  const isLocked=(data.lockedWeeks||[]).some(l=>l.week===viewW&&l.year===viewY);
   const calStart=data.settings.calStart??6;
   const calEnd=data.settings.calEnd??23;
   const dates=weekDates(viewW,viewY);
@@ -884,10 +886,11 @@ function renderCalendar(){
     }
 
     // Drag-over events
-    col.addEventListener('dragover',e=>{e.preventDefault();col.classList.add('drag-over')});
+    col.addEventListener('dragover',e=>{if(isLocked){e.dataTransfer.dropEffect='none';return;}e.preventDefault();col.classList.add('drag-over')});
     col.addEventListener('dragleave',()=>col.classList.remove('drag-over'));
     col.addEventListener('drop',e=>{
       e.preventDefault();col.classList.remove('drag-over');
+      if(isLocked)return; // week vergrendeld
       const tid=e.dataTransfer.getData('taskId');
       const pd=e.dataTransfer.getData('projectDrop');
       const rect=col.getBoundingClientRect();
@@ -914,6 +917,7 @@ function renderCalendar(){
 
     // Click on empty area to add task
     col.addEventListener('click',e=>{
+      if(isLocked)return; // week vergrendeld
       if(e.target!==col&&!e.target.classList.contains('hour-line')&&!e.target.classList.contains('half-line'))return;
       const rect=col.getBoundingClientRect();
       const relY=e.clientY-rect.top+col.parentElement.parentElement.scrollTop;
@@ -926,6 +930,7 @@ function renderCalendar(){
     const dayTasks=weekTasks.filter(t=>t.allocatedDay===di);
     dayTasks.forEach(task=>{
       const block=createCalTaskBlock(task,calStart,col);
+      if(isLocked){block.draggable=false;block.style.cursor='default';block.style.opacity='.85';}
       col.appendChild(block);
     });
 
@@ -1053,8 +1058,18 @@ function renderWeek(){
   const availH=Math.max(0,maxH-weekVacs.length*hoursPerDay);
   const vacLabel=weekVacs.length>0?` <span style="font-size:10px;color:#c2410c">(${weekVacs.length}d vakantie)</span>`:'';
 
+  // Lock state (also computed in renderCalendar for scope reasons)
+  const isLocked=(data.lockedWeeks||[]).some(l=>l.week===viewW&&l.year===viewY);
+  const lockBtn=document.getElementById('btn-lock-week');
+  if(lockBtn){
+    lockBtn.innerHTML=isLocked?'🔒 Locked':'🔓 Lock';
+    lockBtn.style.color=isLocked?'#c2410c':'#64748b';
+    lockBtn.style.background=isLocked?'#fff7ed':'';
+    lockBtn.style.borderColor=isLocked?'#fed7aa':'';
+    lockBtn.title=isLocked?'Week ontgrendelen':'Week vergrendelen';
+  }
   document.getElementById('week-label').textContent=`Week ${viewW} · ${fmtD(dates[0])} – ${fmtD(dates[6])} ${viewY}`;
-  document.getElementById('gauge-wrap').innerHTML=gaugeHtml(totalH,availH)+vacLabel;
+  document.getElementById('gauge-wrap').innerHTML=gaugeHtml(totalH,availH)+vacLabel+(isLocked?` <span style="font-size:10px;color:#c2410c;font-weight:700">🔒 vergrendeld</span>`:'');
   document.getElementById('btn-cur').style.display=isCur?'none':'';
 
   renderCalendar();
@@ -1396,6 +1411,8 @@ function renderAnalyse(){
   const monthTasks=getMonthTasks(analyseMonth,analyseYear);
   const projStats=calcMonthProjStats(monthTasks,data.tasks,data.projects,analyseMonth,analyseYear);
   const totalMonthH=monthTasks.reduce((s,t)=>s+(t.hours||0),0);
+  const internMonthH=monthTasks.filter(t=>t.projectId==='__intern__').reduce((s,t)=>s+(t.hours||0),0);
+  const billableMonthH=totalMonthH-internMonthH;
   const totalMonthRev=projStats.reduce((s,x)=>s+x.monthRev,0);
   const totalOverH=projStats.reduce((s,x)=>s+x.overH,0);
   const totalMissed=projStats.reduce((s,x)=>s+x.missedRev,0);
@@ -1404,8 +1421,9 @@ function renderAnalyse(){
   const yearData=Array.from({length:12},(_,mi)=>{
     const mT=getMonthTasks(mi,analyseYear);
     const mH=mT.reduce((s,t)=>s+(t.hours||0),0);
+    const internH=mT.filter(t=>t.projectId==='__intern__').reduce((s,t)=>s+(t.hours||0),0);
     const ps=calcMonthProjStats(mT,data.tasks,data.projects,mi,analyseYear);
-    return{mi,hours:mH,rev:ps.reduce((s,x)=>s+x.monthRev,0),over:ps.reduce((s,x)=>s+x.overH,0),missed:ps.reduce((s,x)=>s+x.missedRev,0)};
+    return{mi,hours:mH,internH,billableH:mH-internH,rev:ps.reduce((s,x)=>s+x.monthRev,0),over:ps.reduce((s,x)=>s+x.overH,0),missed:ps.reduce((s,x)=>s+x.missedRev,0)};
   });
 
   const curYear=new Date().getFullYear();
@@ -1420,9 +1438,9 @@ function renderAnalyse(){
     </div>
     <div class="an-stats-grid">
       <div class="an-card" style="border-color:#a5f3fc;background:linear-gradient(135deg,#ecfeff,#e0f2fe)">
-        <div class="an-card-v" style="color:#0891b2">${totalMonthH}<span style="font-size:11px;font-weight:400">u</span></div>
-        <div class="an-card-l">Gewerkte uren</div>
-        <div class="an-card-sub">${MONTH_NL[analyseMonth]} ${analyseYear}</div>
+        <div class="an-card-v" style="color:#0891b2">${billableMonthH}<span style="font-size:11px;font-weight:400">u</span></div>
+        <div class="an-card-l">Billable uren</div>
+        <div class="an-card-sub">${internMonthH>0?`+ ${internMonthH}u intern 🏠`:`${MONTH_NL[analyseMonth]} ${analyseYear}`}</div>
       </div>
       <div class="an-card" style="border-color:#bbf7d0;background:linear-gradient(135deg,#f0fdf4,#dcfce7)">
         <div class="an-card-v" style="color:#16a34a;font-size:16px">${eur(totalMonthRev)}</div>
@@ -1573,20 +1591,22 @@ function renderAnalyse(){
   }
 
   // Year overview table
-  const totH=yearData.reduce((s,m)=>s+m.hours,0);
+  const totBillH=yearData.reduce((s,m)=>s+m.billableH,0);
+  const totInternH=yearData.reduce((s,m)=>s+m.internH,0);
   const totR=yearData.reduce((s,m)=>s+m.rev,0);
   const totO=yearData.reduce((s,m)=>s+m.over,0);
   const totM=yearData.reduce((s,m)=>s+m.missed,0);
   h+=`<p class="an-sec">Jaaroverzicht ${analyseYear}</p>
   <div style="background:#fff;border:1px solid #e2e8f0;border-radius:13px;overflow:hidden;margin-bottom:24px">
     <table class="year-table">
-      <thead><tr><th>Maand</th><th>Uren</th><th>Omzet</th><th>Overuren</th><th>Misgelopen</th></tr></thead>
+      <thead><tr><th>Maand</th><th>Billable</th><th style="color:#64748b">Intern 🏠</th><th>Omzet</th><th>Overuren</th><th>Misgelopen</th></tr></thead>
       <tbody>`;
-  yearData.forEach(({mi,hours,rev,over,missed})=>{
+  yearData.forEach(({mi,billableH,internH,rev,over,missed})=>{
     const isCur=mi===analyseMonth;
     h+=`<tr${isCur?' class="cur-m"':''}>
       <td>${MONTH_S[mi]}${isCur?' <span style="color:#0891b2">●</span>':''}</td>
-      <td>${hours>0?hours+'u':'—'}</td>
+      <td>${billableH>0?billableH+'u':'—'}</td>
+      <td style="color:#94a3b8">${internH>0?internH+'u':'—'}</td>
       <td style="color:${rev>0?'#16a34a':'#94a3b8'}">${rev>0?eur(Math.round(rev)):'—'}</td>
       <td style="color:${over>0?'#ef4444':'#94a3b8'}">${over>0?'+'+Math.round(over*10)/10+'u':'—'}</td>
       <td style="color:${missed>0?'#ef4444':'#94a3b8'}">${missed>0?eur(Math.round(missed)):'—'}</td>
@@ -1594,7 +1614,8 @@ function renderAnalyse(){
   });
   h+=`<tr class="total-row">
     <td>Totaal ${analyseYear}</td>
-    <td>${totH>0?totH+'u':'—'}</td>
+    <td>${totBillH>0?totBillH+'u':'—'}</td>
+    <td style="color:#64748b">${totInternH>0?totInternH+'u':'—'}</td>
     <td style="color:#16a34a">${totR>0?eur(Math.round(totR)):'—'}</td>
     <td style="color:${totO>0?'#ef4444':'#94a3b8'}">${totO>0?'+'+Math.round(totO*10)/10+'u':'—'}</td>
     <td style="color:${totM>0?'#ef4444':'#94a3b8'}">${totM>0?eur(Math.round(totM)):'—'}</td>
@@ -1866,6 +1887,18 @@ document.getElementById('btn-save-hours').addEventListener('click',()=>{const h=
 document.getElementById('btn-open-file').addEventListener('click',openFileForSync);
 document.getElementById('btn-export').addEventListener('click',()=>{const b=new Blob([JSON.stringify(S.data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='freelanceflow-backup.json';a.click()});
 document.getElementById('btn-import').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(d.clients){S.data=d;S.data.tasks=S.data.tasks.map(migrateTask);ensureInternProject();render()}else alert('Ongeldig bestand')}catch{alert('Fout bij importeren')}};r.readAsText(f)});
+document.getElementById('btn-lock-week').addEventListener('click',()=>{
+  const{viewW,viewY}=S;
+  const locked=(S.data.lockedWeeks||[]);
+  const idx=locked.findIndex(l=>l.week===viewW&&l.year===viewY);
+  if(idx>=0){
+    // ontgrendelen
+    setData(d=>({...d,lockedWeeks:d.lockedWeeks.filter((_,i)=>i!==idx)}));
+  }else{
+    // vergrendelen
+    setData(d=>({...d,lockedWeeks:[...(d.lockedWeeks||[]),{week:viewW,year:viewY}]}));
+  }
+});
 document.getElementById('btn-demo').addEventListener('click',()=>{const n=weekNum(new Date());S.data=makeDemo(n.week,n.year);saveData(S.data);render()});
 document.getElementById('btn-clear').addEventListener('click',()=>{if(confirm('Alle data verwijderen?')){localStorage.removeItem(KEY);const n=weekNum(new Date());S.data=makeDemo(n.week,n.year);saveData(S.data);render()}});
 
