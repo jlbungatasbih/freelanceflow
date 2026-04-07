@@ -1092,6 +1092,9 @@ function renderInplan(){
   vacRow.addEventListener('dragstart',e=>{e.dataTransfer.setData('vacationDrop','1');e.dataTransfer.effectAllowed='copy'});
   inplanEl.appendChild(vacRow);
 
+  // For retainers: use the month of the viewed week; for fixed: all-time
+  const viewMonth=weekStart.getMonth(),viewYear=weekStart.getFullYear();
+
   // Filter op datum range: alleen projecten die actief zijn in de bekeken maand
   const _vcur=viewYear*12+viewMonth;
   const clientProjects=data.projects.filter(p=>{
@@ -1102,9 +1105,6 @@ function renderInplan(){
   });
   const internProj=data.projects.find(p=>p.isInternal);
   if(!clientProjects.length&&!internProj){inplanEl.innerHTML+='<p style="font-size:11px;color:#94a3b8;font-style:italic">Geen projecten</p>';return}
-
-  // For retainers: use the month of the viewed week; for fixed: all-time
-  const viewMonth=weekStart.getMonth(),viewYear=weekStart.getFullYear();
   clientProjects.forEach(proj=>{
     const cli=getCli(proj.clientId);
     const info=overInfo(proj,data.tasks,viewMonth,viewYear);
