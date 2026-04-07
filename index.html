@@ -691,7 +691,18 @@ function overInfo(proj,tasks,month,year){
   const over=Math.max(0,total-cap);
   return{total,over,loss:over*rate,pct:cap>0?Math.min(total/cap,2):0,rate,isOver:over>0,cap,isRetainer:false,hasOverride:false};
 }
-function cappedRev(proj,weekH,allTasks){if(!proj||!weekH||!proj.agreedHours)return 0;const tot=projTotalH(allTasks,proj.id);if(!tot)return 0;return(weekH/tot)*Math.min(tot,proj.agreedHours)*effRate(proj)}
+function cappedRev(proj,weekH,allTasks){
+  if(!proj||!weekH)return 0;
+  if(proj.isRetainer){
+    // Retainer: gewoon uren × uurtarief (elke maand reset de cap)
+    return weekH*effRate(proj);
+  }
+  // Vaste prijs: prorate over alle uren, gecapped op afgesproken budget
+  if(!proj.agreedHours)return 0;
+  const tot=projTotalH(allTasks,proj.id);
+  if(!tot)return 0;
+  return(weekH/tot)*Math.min(tot,proj.agreedHours)*effRate(proj);
+}
 const getWeekTasks=()=>S.data.tasks.filter(t=>t.allocatedWeek===S.viewW&&t.allocatedYear===S.viewY);
 const getCli=id=>S.data.clients.find(c=>c.id===id);
 const getProj=id=>S.data.projects.find(p=>p.id===id);
