@@ -79,10 +79,37 @@ input,select,textarea{font-family:inherit}
 .task-cal:hover{box-shadow:0 3px 10px rgba(0,0,0,.15);z-index:15}
 .task-cal:active{cursor:grabbing}
 .task-cal.dragging{opacity:.5;z-index:50}
-.task-cal.locked{opacity:.6;filter:grayscale(30%)}
-.task-cal.locked .task-cal-inner::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(135deg,transparent,transparent 5px,rgba(0,0,0,.07) 5px,rgba(0,0,0,.07) 6px);border-radius:5px;pointer-events:none}
-.task-cal.locked .task-cal-name{text-decoration:line-through;text-decoration-color:rgba(0,0,0,.35)}
-.day-col-cal.day-locked{background:rgba(241,245,249,.6)}
+.task-cal.locked{opacity:.85}
+.task-cal.locked .task-cal-name{color:#0f172a}
+.day-col-cal.day-locked{background:rgba(220,252,231,.18)}
+
+/* DAY-DONE CHECKBOX (per-day dopamine boost) */
+.cal-day-hdr{position:relative}
+.day-done-toggle{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;border:1.5px solid #cbd5e1;background:#fff;cursor:pointer;font-size:11px;font-weight:800;color:transparent;transition:.2s;margin-left:5px;vertical-align:middle}
+.day-done-toggle:hover{border-color:#10b981;background:#f0fdf4;transform:scale(1.1)}
+.day-done-toggle.done{background:#10b981;border-color:#10b981;color:#fff;animation:pop .4s cubic-bezier(.34,1.56,.64,1)}
+.cal-day-hdr.day-done-hdr{background:linear-gradient(180deg,#f0fdf4,#fff)}
+.cal-day-hdr.day-done-hdr .cal-day-name{color:#10b981}
+@keyframes pop{0%{transform:scale(.6)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+@keyframes celebrate-flash{0%{box-shadow:0 0 0 0 rgba(16,185,129,.6)}100%{box-shadow:0 0 0 18px rgba(16,185,129,0)}}
+.celebrate{animation:celebrate-flash .8s ease-out}
+
+/* CONFETTI */
+.confetti-piece{position:fixed;width:8px;height:14px;pointer-events:none;z-index:9999;border-radius:1px;animation:confetti-fall 1.7s ease-out forwards}
+@keyframes confetti-fall{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(65vh) rotate(720deg);opacity:0}}
+
+/* HOLIDAY VACATION VARIANT (vrije dag vs zelfgekozen vakantie) */
+.vacation-block.holiday-block{background:rgba(14,165,233,.07);border-left-color:#0ea5e9}
+.vacation-block.holiday-block .vacation-hdr{background:rgba(14,165,233,.18);color:#0369a1}
+.vacation-block.holiday-block .vacation-del{color:#0369a1}
+.cal-day-hdr.has-holiday{background:linear-gradient(180deg,#f0f9ff,#fff)}
+.cal-day-hdr.has-holiday .cal-day-name::after{content:' 🎉';font-size:10px}
+
+/* QUICK TIMER BUTTON for internal work */
+.quick-timer-btn{display:flex;align-items:center;gap:5px;padding:6px 10px;background:linear-gradient(135deg,#06b6d4,#2563eb);color:#fff;border-radius:8px;font-size:11px;font-weight:700;width:100%;justify-content:center;margin-top:6px;transition:.15s;box-shadow:0 2px 4px rgba(6,182,212,.25)}
+.quick-timer-btn:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(6,182,212,.35)}
+.quick-timer-btn.running{background:linear-gradient(135deg,#ef4444,#dc2626)}
+.quick-timer-display{font-variant-numeric:tabular-nums;font-weight:800}
 .task-cal-inner{position:absolute;inset:0;border-radius:5px;overflow:hidden;padding:4px 6px}
 .task-cal-name{font-size:11px;font-weight:600;color:#1e293b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.3}
 .task-cal-sub{font-size:10px;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -574,6 +601,46 @@ const rgba=(h,a)=>{const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16)
 const fmtTime=m=>{const h=Math.floor(m/60),min=m%60;return`${String(h).padStart(2,'0')}:${String(min).padStart(2,'0')}`};
 const fmtSecs=s=>{const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;return h>0?`${h}:${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`:`${m}:${String(ss).padStart(2,'0')}`};
 
+// Compute Easter Sunday (Gregorian) for a given year — used for Goede Vrijdag/Paasmaandag/Hemelvaart/Pinksteren
+function easterSunday(year){
+  const a=year%19,b=Math.floor(year/100),c=year%100;
+  const d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25);
+  const g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30;
+  const i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7;
+  const m=Math.floor((a+11*h+22*l)/451);
+  const month=Math.floor((h+l-7*m+114)/31)-1;
+  const day=((h+l-7*m+114)%31)+1;
+  return new Date(year,month,day);
+}
+function addDays(date,n){const d=new Date(date);d.setDate(d.getDate()+n);return d}
+// Nederlandse vrije dagen voor een gegeven jaar
+function getDutchHolidays(year){
+  const easter=easterSunday(year);
+  const holidays=[
+    {date:new Date(year,0,1),name:'Nieuwjaarsdag'},
+    {date:addDays(easter,-2),name:'Goede Vrijdag'},
+    {date:addDays(easter,1),name:'Tweede Paasdag'},
+    {date:new Date(year,3,27),name:'Koningsdag'},
+    {date:addDays(easter,39),name:'Hemelvaartsdag'},
+    {date:addDays(easter,50),name:'Tweede Pinksterdag'},
+    {date:new Date(year,11,25),name:'Eerste Kerstdag'},
+    {date:new Date(year,11,26),name:'Tweede Kerstdag'},
+  ];
+  // Bevrijdingsdag (5 mei) is officieel vrij elk lustrumjaar (jaar deelbaar door 5)
+  if(year%5===0)holidays.push({date:new Date(year,4,5),name:'Bevrijdingsdag'});
+  // Verplaats Koningsdag naar zaterdag als die op zondag valt
+  const kIdx=holidays.findIndex(h=>h.name==='Koningsdag');
+  if(kIdx>=0&&holidays[kIdx].date.getDay()===0)holidays[kIdx].date=addDays(holidays[kIdx].date,-1);
+  return holidays.map(h=>{
+    const d=h.date;
+    const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const wn=weekNum(d);
+    // Day-of-week: 0=ma, 6=zo
+    const dow=d.getDay()===0?6:d.getDay()-1;
+    return{...h,key,week:wn.week,year:wn.year,day:dow};
+  }).filter(h=>h.day<5); // Alleen weekdagen (ma–vr); weekend hoeft geen blokkade
+}
+
 function weekNum(date){const d=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));const day=d.getUTCDay()||7;d.setUTCDate(d.getUTCDate()+4-day);const y0=new Date(Date.UTC(d.getUTCFullYear(),0,1));return{week:Math.ceil((((d-y0)/86400000)+1)/7),year:d.getUTCFullYear()}}
 function weekDates(week,year){const j4=new Date(year,0,4);const dow=j4.getDay()===0?7:j4.getDay();j4.setDate(j4.getDate()-dow+1+(week-1)*7);return Array.from({length:7},(_,i)=>{const d=new Date(j4);d.setDate(j4.getDate()+i);return d})}
 function navWeek(w,y,dir){const m=weekDates(w,y)[0];m.setDate(m.getDate()+dir*7);return weekNum(m)}
@@ -735,13 +802,99 @@ function ensureInternProject(){
     S.data.projects.push({id:'__intern__',name:'Intern',clientId:null,color:'#94a3b8',isInternal:true,agreedHours:0,agreedBudget:0,hourlyRate:0,tasks:[],isRetainer:false});
   }
   if(!S.data.vacations)S.data.vacations=[];
+  if(!S.data.removedHolidays)S.data.removedHolidays=[];
+  if(!S.data.daysDone)S.data.daysDone=[]; // [{week,year,day}]
   // Migrate old calendar defaults
   if(!S.data.settings)S.data.settings={hoursPerWeek:40,calStart:6,calEnd:23};
   if(S.data.settings.calStart===8||S.data.settings.calStart===undefined)S.data.settings.calStart=6;
   if(S.data.settings.calEnd===19||S.data.settings.calEnd===undefined)S.data.settings.calEnd=23;
+  ensureDutchHolidays();
   saveData(S.data);
 }
+// Voeg Nederlandse vrije dagen toe voor huidig jaar + 1 jaar vooruit + vorig jaar
+function ensureDutchHolidays(){
+  const now=new Date();
+  const years=[now.getFullYear()-1,now.getFullYear(),now.getFullYear()+1];
+  const existingKeys=new Set((S.data.vacations||[]).map(v=>v.holidayKey).filter(Boolean));
+  const removed=new Set(S.data.removedHolidays||[]);
+  years.forEach(y=>{
+    getDutchHolidays(y).forEach(h=>{
+      if(existingKeys.has(h.key)||removed.has(h.key))return;
+      S.data.vacations.push({
+        id:uid(),
+        allocatedWeek:h.week,
+        allocatedYear:h.year,
+        allocatedDay:h.day,
+        label:h.name,
+        isHoliday:true,
+        holidayKey:h.key,
+      });
+    });
+  });
+}
 ensureInternProject();
+
+// ═══════════════════════════════════════════════
+//  DOPAMINE: day-done, confetti, celebrate
+// ═══════════════════════════════════════════════
+function isDayDone(w,y,d){return(S.data.daysDone||[]).some(x=>x.week===w&&x.year===y&&x.day===d)}
+function toggleDayDone(w,y,d,btn){
+  const wasDone=isDayDone(w,y,d);
+  setData(data=>{
+    const arr=data.daysDone||[];
+    return{...data,daysDone:wasDone?arr.filter(x=>!(x.week===w&&x.year===y&&x.day===d)):[...arr,{week:w,year:y,day:d}]};
+  });
+  if(!wasDone){
+    // Dopamine boost!
+    triggerConfetti(btn);
+    playDoneSound();
+    // Check als hele week nu af is — extra grote celebratie!
+    const allDays=[0,1,2,3,4].every(i=>isDayDone(w,y,i));
+    if(allDays)setTimeout(()=>{triggerConfetti(null,80);showWeekCompleteToast()},400);
+  }
+}
+function triggerConfetti(anchorEl,count=24){
+  const colors=['#06b6d4','#10b981','#f59e0b','#ec4899','#8b5cf6','#22d3ee','#fbbf24'];
+  const rect=anchorEl?anchorEl.getBoundingClientRect():{left:window.innerWidth/2,top:window.innerHeight/3,width:0,height:0};
+  const cx=rect.left+rect.width/2,cy=rect.top+rect.height/2;
+  for(let i=0;i<count;i++){
+    const p=document.createElement('div');
+    p.className='confetti-piece';
+    p.style.background=colors[i%colors.length];
+    p.style.left=cx+(Math.random()-.5)*40+'px';
+    p.style.top=cy+'px';
+    p.style.transform=`rotate(${Math.random()*360}deg)`;
+    const dx=(Math.random()-.5)*420,dy=Math.random()*120-30;
+    p.animate(
+      [{transform:`translate(0,0) rotate(0deg)`,opacity:1},
+       {transform:`translate(${dx}px,${dy+window.innerHeight*0.55}px) rotate(${720+Math.random()*360}deg)`,opacity:0}],
+      {duration:1500+Math.random()*500,easing:'cubic-bezier(.2,.7,.3,1)'}
+    );
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),2000);
+  }
+  if(anchorEl)anchorEl.classList.add('celebrate'),setTimeout(()=>anchorEl.classList.remove('celebrate'),900);
+}
+function playDoneSound(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.connect(g);g.connect(ctx.destination);
+    o.type='sine';o.frequency.setValueAtTime(660,ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(990,ctx.currentTime+.12);
+    g.gain.setValueAtTime(.0001,ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.18,ctx.currentTime+.02);
+    g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+.25);
+    o.start();o.stop(ctx.currentTime+.27);
+  }catch{}
+}
+function showWeekCompleteToast(){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;top:30%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#10b981,#06b6d4);color:#fff;padding:20px 32px;border-radius:14px;font-size:16px;font-weight:800;z-index:9999;box-shadow:0 12px 36px rgba(16,185,129,.4);animation:scaleIn .35s cubic-bezier(.34,1.56,.64,1)';
+  t.innerHTML='🎉 Week compleet! Topweek!';
+  document.body.appendChild(t);
+  setTimeout(()=>{t.style.transition='opacity .4s';t.style.opacity='0';setTimeout(()=>t.remove(),400)},2000);
+}
 
 // ═══════════════════════════════════════════════
 //  TIMER
@@ -750,28 +903,43 @@ function timerElapsed(){
   if(!S.timerTaskId)return 0;
   return S.timerBase+Math.floor((Date.now()-S.timerStart)/1000);
 }
+// Periodiek opslaan (elke 10s) zodat refresh / sluiten geen tijd verliest
+let _timerSaveInterval=null;
+function persistTimerState(){
+  if(!S.timerTaskId)return;
+  const tid=S.timerTaskId,elapsed=timerElapsed();
+  // direct in localStorage zonder een volle render
+  try{
+    S.data.tasks=S.data.tasks.map(t=>t.id===tid?{...t,timerSeconds:elapsed,timerRunning:true,timerRunningSince:S.timerStart}:t);
+    localStorage.setItem(KEY,JSON.stringify(S.data));
+  }catch{}
+}
 function startTimer(taskId){
   const task=S.data.tasks.find(t=>t.id===taskId);
   if(!task)return;
   if(S.timerTaskId===taskId){
     // pause/stop
     clearInterval(S.timerInterval);
+    clearInterval(_timerSaveInterval);_timerSaveInterval=null;
     const elapsed=timerElapsed();
     S.timerTaskId=null;S.timerStart=null;S.timerBase=0;S.timerInterval=null;
-    setData(d=>({...d,tasks:d.tasks.map(t=>t.id===taskId?{...t,timerSeconds:elapsed}:t)}));
+    setData(d=>({...d,tasks:d.tasks.map(t=>t.id===taskId?{...t,timerSeconds:elapsed,timerRunning:false,timerRunningSince:null}:t)}));
   }else{
     // stop previous
     if(S.timerTaskId){
       const prev=timerElapsed();
       const prevId=S.timerTaskId;
       clearInterval(S.timerInterval);
-      S.data.tasks=S.data.tasks.map(t=>t.id===prevId?{...t,timerSeconds:prev}:t);
+      clearInterval(_timerSaveInterval);_timerSaveInterval=null;
+      S.data.tasks=S.data.tasks.map(t=>t.id===prevId?{...t,timerSeconds:prev,timerRunning:false,timerRunningSince:null}:t);
     }
     S.timerTaskId=taskId;
     S.timerStart=Date.now();
     S.timerBase=task.timerSeconds||0;
     S.timerInterval=setInterval(()=>updateTimerDisplay(),1000);
-    render();
+    // Mark running in data + persist every 10s
+    setData(d=>({...d,tasks:d.tasks.map(t=>t.id===taskId?{...t,timerRunning:true,timerRunningSince:S.timerStart}:t)}));
+    _timerSaveInterval=setInterval(persistTimerState,10000);
   }
 }
 function updateTimerDisplay(){
@@ -780,6 +948,27 @@ function updateTimerDisplay(){
   // update sidebar badge
   const sb=document.getElementById('timer-sidebar-badge');
   if(sb)sb.textContent=fmtSecs(timerElapsed());
+  // update quick-timer display
+  const qb=document.getElementById('quick-timer-display');
+  if(qb)qb.textContent=fmtSecs(timerElapsed());
+}
+// Herstel een lopende timer na reload
+function resumeRunningTimer(){
+  const running=S.data.tasks.find(t=>t.timerRunning&&t.timerRunningSince);
+  if(!running)return;
+  const elapsedSinceStart=Math.floor((Date.now()-running.timerRunningSince)/1000);
+  S.timerTaskId=running.id;
+  S.timerBase=(running.timerSeconds||0); // timerSeconds was bij start opgeslagen
+  S.timerStart=running.timerRunningSince;
+  // base + extra time elapsed sinds laatste save
+  // Maar timerSeconds was inclusief tijd tot save — om dubbeltelling te voorkomen, gebruik timerRunningSince + base
+  // Actually persistTimerState slaat elapsed op, dus timerSeconds = totale tijd tot laatste save
+  // We willen voortzetten alsof timer onafgebroken liep — herbereken vanaf timerRunningSince
+  S.timerBase=running.timerSeconds||0;
+  // Zorg dat timerStart = nu, en base bevat eerder gepersisteerde tijd + tijd sinds laatste save
+  S.timerStart=Date.now();
+  S.timerInterval=setInterval(()=>updateTimerDisplay(),1000);
+  _timerSaveInterval=setInterval(persistTimerState,10000);
 }
 
 // ═══════════════════════════════════════════════
@@ -824,14 +1013,23 @@ function renderCalendar(){
   const today=new Date();
   const weekTasks=getWeekTasks();
 
-  // Day headers
+  // Day headers (with day-done checkbox for dopamine)
   const hdrs=document.getElementById('cal-day-headers');
   hdrs.innerHTML=dates.map((d,i)=>{
     const todayDow=today.getDay()===0?6:today.getDay()-1;
     const isT=isCur&&i===todayDow;
-    const hasVac=(data.vacations||[]).some(v=>v.allocatedWeek===viewW&&v.allocatedYear===viewY&&v.allocatedDay===i);
-    return`<div class="cal-day-hdr${isT?' today':''}${hasVac?' has-vacation':''}" style="flex:1;min-width:90px"><div class="cal-day-name">${DAYS[i]}</div><div class="cal-day-date">${fmtD(d)}</div></div>`;
+    const dayVacs=(data.vacations||[]).filter(v=>v.allocatedWeek===viewW&&v.allocatedYear===viewY&&v.allocatedDay===i);
+    const hasVac=dayVacs.length>0;
+    const hasHoliday=dayVacs.some(v=>v.isHoliday);
+    const isDayDone=(data.daysDone||[]).some(x=>x.week===viewW&&x.year===viewY&&x.day===i);
+    const showCheckbox=isLocked||isDayDone||true; // altijd zichtbaar
+    return`<div class="cal-day-hdr${isT?' today':''}${hasVac&&!hasHoliday?' has-vacation':''}${hasHoliday?' has-holiday':''}${isDayDone?' day-done-hdr':''}" style="flex:1;min-width:90px" data-dayhdr="${i}"><div class="cal-day-name">${DAYS[i]}</div><div class="cal-day-date">${fmtD(d)} <button class="day-done-toggle${isDayDone?' done':''}" data-daydone="${i}" title="Markeer dag als afgerond">✓</button></div></div>`;
   }).join('');
+  hdrs.querySelectorAll('[data-daydone]').forEach(b=>b.addEventListener('click',e=>{
+    e.stopPropagation();
+    const i=parseInt(b.dataset.daydone);
+    toggleDayDone(viewW,viewY,i,b);
+  }));
 
   // Build grid
   const gridEl=document.getElementById('cal-grid');
@@ -930,21 +1128,32 @@ function renderCalendar(){
       openTaskModal(null,di,null,2,mins,clickDate.getMonth(),clickDate.getFullYear());
     });
 
-    // Render task blocks
+    // Render task blocks — toon checks bij locked OF day-done
+    const dayDone=(data.daysDone||[]).some(x=>x.week===viewW&&x.year===viewY&&x.day===di);
     const dayTasks=weekTasks.filter(t=>t.allocatedDay===di);
     dayTasks.forEach(task=>{
       const block=createCalTaskBlock(task,calStart,col);
-      if(isLocked){block.draggable=false;block.style.cursor='default';block.classList.add('locked');}
+      if(isLocked||dayDone){block.classList.add('locked');}
+      if(isLocked){block.draggable=false;block.style.cursor='default';}
       col.appendChild(block);
     });
 
-    // Render vacation block (full-day overlay)
+    // Render vacation block (full-day overlay) — onderscheid tussen vakantie en vrije dag (feestdag)
     const dayVac=(data.vacations||[]).find(v=>v.allocatedWeek===viewW&&v.allocatedYear===viewY&&v.allocatedDay===di);
     if(dayVac){
+      const isHol=!!dayVac.isHoliday;
       const vb=document.createElement('div');
-      vb.className='vacation-block';
-      vb.innerHTML=`<div class="vacation-hdr">🏖 ${dayVac.label||'Vakantie'}<button class="vacation-del" title="Verwijder vakantie">×</button></div>`;
-      vb.querySelector('.vacation-del').addEventListener('click',e=>{e.stopPropagation();setData(d=>({...d,vacations:(d.vacations||[]).filter(v=>v.id!==dayVac.id)}))});
+      vb.className='vacation-block'+(isHol?' holiday-block':'');
+      vb.innerHTML=`<div class="vacation-hdr">${isHol?'🎉':'🏖'} ${dayVac.label||'Vakantie'}<button class="vacation-del" title="Verwijder">×</button></div>`;
+      vb.querySelector('.vacation-del').addEventListener('click',e=>{
+        e.stopPropagation();
+        setData(d=>({
+          ...d,
+          vacations:(d.vacations||[]).filter(v=>v.id!==dayVac.id),
+          // Onthoud verwijderde feestdagen zodat ze niet automatisch terugkomen
+          removedHolidays:isHol&&dayVac.holidayKey?[...(d.removedHolidays||[]),dayVac.holidayKey]:(d.removedHolidays||[]),
+        }));
+      });
       col.appendChild(vb);
     }
 
@@ -1150,17 +1359,59 @@ function renderInplan(){
     inplanEl.appendChild(row);
   });
 
-  // Intern project row
+  // Intern project row + Quick Timer (timer starten vóór je sleept)
   if(internProj){
     const internH=data.tasks.filter(t=>t.projectId==='__intern__'&&t.allocatedWeek===S.viewW&&t.allocatedYear===S.viewY).reduce((s,t)=>s+(t.hours||0),0);
     const iRow=document.createElement('div');
     iRow.className='inplan-row';
     iRow.draggable=true;
-    iRow.style.cssText='border-color:#e2e8f0;background:#f8fafc;border-style:dashed';
-    iRow.innerHTML=`<span style="color:#cbd5e1;font-size:10px">⠿</span><div class="proj-dot" style="background:#94a3b8"></div><div style="flex:1;min-width:0"><div class="inplan-name">Intern <span class="intern-badge">🏠 intern</span></div><div class="inplan-sub">Belasting, admin, overig</div></div><div class="inplan-right"><div class="inplan-free">${internH}u deze week</div></div>`;
-    iRow.addEventListener('dragstart',e=>{e.dataTransfer.setData('projectDrop',JSON.stringify({projectId:'__intern__',defaultHours:1,billingMonth:viewMonth,billingYear:viewYear}));e.dataTransfer.effectAllowed='copy'});
+    iRow.style.cssText='border-color:#e2e8f0;background:#f8fafc;border-style:dashed;flex-wrap:wrap';
+    const isRunningIntern=S.timerTaskId&&S.data.tasks.find(t=>t.id===S.timerTaskId&&t.projectId==='__intern__');
+    iRow.innerHTML=`<span style="color:#cbd5e1;font-size:10px">⠿</span><div class="proj-dot" style="background:#94a3b8"></div><div style="flex:1;min-width:0"><div class="inplan-name">Intern <span class="intern-badge">🏠 intern</span></div><div class="inplan-sub">Belasting, admin, overig</div></div><div class="inplan-right"><div class="inplan-free">${internH}u deze week</div></div>
+    <button class="quick-timer-btn${isRunningIntern?' running':''}" id="quick-timer-btn">${isRunningIntern?`⏸ Stop <span class="quick-timer-display" id="quick-timer-display">${fmtSecs(timerElapsed())}</span>`:'⏱ Quick start (intern)'}</button>`;
+    iRow.addEventListener('dragstart',e=>{
+      // Voorkom drag wanneer op de quick-timer button gestart wordt
+      if(e.target.closest('.quick-timer-btn')){e.preventDefault();return}
+      e.dataTransfer.setData('projectDrop',JSON.stringify({projectId:'__intern__',defaultHours:1,billingMonth:viewMonth,billingYear:viewYear}));
+      e.dataTransfer.effectAllowed='copy';
+    });
+    iRow.querySelector('#quick-timer-btn').addEventListener('click',e=>{
+      e.stopPropagation();
+      quickStartInternTimer();
+    });
     inplanEl.appendChild(iRow);
   }
+}
+
+// Quick start: maak direct een interne taak op vandaag en start de timer
+function quickStartInternTimer(){
+  // Als er al een intern-timer loopt: stop hem
+  if(S.timerTaskId){
+    const cur=S.data.tasks.find(t=>t.id===S.timerTaskId);
+    if(cur&&cur.projectId==='__intern__'){startTimer(S.timerTaskId);return}
+  }
+  // Vraag om een naam
+  const name=prompt('Waar werk je aan? (interne taak)','Admin');
+  if(!name||!name.trim())return;
+  // Bepaal dag binnen huidige week (vandaag als die in viewweek valt, anders maandag)
+  const today=new Date();
+  const todayWN=weekNum(today);
+  let day=0;
+  if(todayWN.week===S.viewW&&todayWN.year===S.viewY){
+    day=today.getDay()===0?6:today.getDay()-1;
+  }
+  const startTime=today.getHours()*60+today.getMinutes();
+  const id=uid();
+  const newTask={
+    id,projectId:'__intern__',name:name.trim(),hours:0.5,
+    allocatedWeek:S.viewW,allocatedYear:S.viewY,allocatedDay:day,
+    startTime,timerSeconds:0,
+    billingMonth:weekDates(S.viewW,S.viewY)[day].getMonth(),
+    billingYear:weekDates(S.viewW,S.viewY)[day].getFullYear(),
+  };
+  setData(d=>({...d,tasks:[...d.tasks,newTask],projects:d.projects.map(p=>p.id==='__intern__'?{...p,tasks:[...(p.tasks||[]),id]}:p)}));
+  // Start timer voor deze nieuwe taak
+  startTimer(id);
 }
 
 function renderTabOmzet(weekTasks){
@@ -1384,12 +1635,15 @@ function calcMonthProjStats(monthTasks,allTasks,projects,month,year){
     const monthH=mTasks.reduce((s,t)=>s+(t.hours||0),0);
     if(!monthH)return;
     // For retainers: use monthly cap with override support
-    let agreedH,rate,monthRev;
+    let agreedH,rate,monthRev,billedFullRetainer=false;
     if(proj.isRetainer&&month!==undefined&&year!==undefined){
       const capObj=getRetainerCap(proj,month,year);
       agreedH=capObj.hours;
       rate=agreedH>0&&capObj.budget>0?capObj.budget/agreedH:projHourlyRate(proj);
-      monthRev=Math.min(monthH,agreedH)*rate;
+      // BELANGRIJK: retainers worden ALTIJD volledig gefactureerd (verkochte uren = afgesproken uren)
+      // Ook als monthH < agreedH → effectief uurtarief gaat OMHOOG omdat budget hetzelfde blijft.
+      monthRev=capObj.budget||(agreedH*rate);
+      billedFullRetainer=true;
     }else{
       agreedH=proj.agreedHours||0;
       rate=projHourlyRate(proj);
@@ -1397,11 +1651,19 @@ function calcMonthProjStats(monthTasks,allTasks,projects,month,year){
       monthRev=scopeH>0?(monthH/scopeH)*Math.min(scopeH,agreedH)*rate:0;
     }
     const scopeH=proj.isRetainer?monthH:projTotalH(allTasks,proj.id);
+    // Effectief tarief: budget / daadwerkelijk gewerkte uren
     const effRateMonth=monthH>0?monthRev/monthH:0;
     const overH=Math.max(0,(proj.isRetainer?monthH:scopeH)-agreedH);
+    // Voor retainers: als monthH < agreedH = "underrun" → bonus (effectief tarief omhoog)
+    const underH=proj.isRetainer?Math.max(0,agreedH-monthH):0;
     const rateDrop=Math.max(0,rate-effRateMonth);
+    const rateGain=Math.max(0,effRateMonth-rate); // tarief gaat omhoog bij onderbenutting
     const missedRev=overH>0?rateDrop*monthH:0;
-    stats.push({proj,cli:getCli(proj.clientId),monthH,totalH:proj.isRetainer?monthH:scopeH,agreedH,rate,monthRev,effRateMonth,rateDrop,missedRev,overH,mTasks});
+    // Bonus omzet: extra verdiend doordat je verkocht maar niet gewerkt hebt (voor retainers)
+    const bonusRev=billedFullRetainer&&underH>0?underH*rate:0;
+    // Dagen gewerkt: uren ÷ 8u per dag (afgerond op 0.1)
+    const daysWorked=Math.round((monthH/8)*10)/10;
+    stats.push({proj,cli:getCli(proj.clientId),monthH,daysWorked,totalH:proj.isRetainer?monthH:scopeH,agreedH,rate,monthRev,effRateMonth,rateDrop,rateGain,missedRev,bonusRev,overH,underH,billedFullRetainer,mTasks});
   });
   return stats;
 }
@@ -1420,6 +1682,18 @@ function renderAnalyse(){
   const totalMonthRev=projStats.reduce((s,x)=>s+x.monthRev,0);
   const totalOverH=projStats.reduce((s,x)=>s+x.overH,0);
   const totalMissed=projStats.reduce((s,x)=>s+x.missedRev,0);
+  const totalBonus=projStats.reduce((s,x)=>s+(x.bonusRev||0),0);
+
+  // Vakantie- en vrije dagen in deze maand tellen
+  const vacsThisMonth=(data.vacations||[]).filter(v=>{
+    const d=weekDates(v.allocatedWeek,v.allocatedYear)[v.allocatedDay||0];
+    return d&&d.getMonth()===analyseMonth&&d.getFullYear()===analyseYear;
+  });
+  const holidayDays=vacsThisMonth.filter(v=>v.isHoliday).length;
+  const vacationDays=vacsThisMonth.filter(v=>!v.isHoliday).length;
+  const totalOffDays=holidayDays+vacationDays;
+  // Totaal dagen gewerkt deze maand
+  const totalDaysWorked=Math.round((billableMonthH/8)*10)/10;
 
   // Year overview (all 12 months)
   const yearData=Array.from({length:12},(_,mi)=>{
@@ -1444,22 +1718,27 @@ function renderAnalyse(){
       <div class="an-card" style="border-color:#a5f3fc;background:linear-gradient(135deg,#ecfeff,#e0f2fe)">
         <div class="an-card-v" style="color:#0891b2">${billableMonthH}<span style="font-size:11px;font-weight:400">u</span></div>
         <div class="an-card-l">Billable uren</div>
-        <div class="an-card-sub">${internMonthH>0?`+ ${internMonthH}u intern 🏠`:`${MONTH_NL[analyseMonth]} ${analyseYear}`}</div>
+        <div class="an-card-sub">${totalDaysWorked} dagen${internMonthH>0?` · +${internMonthH}u intern 🏠`:''}</div>
       </div>
       <div class="an-card" style="border-color:#bbf7d0;background:linear-gradient(135deg,#f0fdf4,#dcfce7)">
         <div class="an-card-v" style="color:#16a34a;font-size:16px">${eur(totalMonthRev)}</div>
-        <div class="an-card-l">Omzet (gecapped)</div>
-        <div class="an-card-sub">${totalMonthH>0?eur(Math.round(totalMonthRev/totalMonthH))+'/u gem.':'—'}</div>
+        <div class="an-card-l">Omzet (gefactureerd)</div>
+        <div class="an-card-sub">${billableMonthH>0?eur(Math.round(totalMonthRev/billableMonthH))+'/u effectief':'—'}</div>
       </div>
       <div class="an-card" style="border-color:${totalOverH>0?'#fecaca':'#bbf7d0'};background:${totalOverH>0?'linear-gradient(135deg,#fff5f5,#fee2e2)':'#fff'}">
         <div class="an-card-v" style="color:${totalOverH>0?'#ef4444':'#10b981'}">${Math.round(totalOverH*10)/10}<span style="font-size:11px;font-weight:400">u</span></div>
         <div class="an-card-l">Overuren (totaal)</div>
         <div class="an-card-sub">${totalOverH>0?'⚠️ boven budget':'✅ binnen budget'}</div>
       </div>
-      <div class="an-card" style="border-color:${totalMissed>0?'#fecaca':'#bbf7d0'};background:${totalMissed>0?'linear-gradient(135deg,#fff5f5,#fee2e2)':'#fff'}">
-        <div class="an-card-v" style="color:${totalMissed>0?'#ef4444':'#10b981'};font-size:16px">${eur(totalMissed)}</div>
-        <div class="an-card-l">Misgelopen omzet</div>
-        <div class="an-card-sub">${totalMissed>0?'door overuren':'geen verlies'}</div>
+      <div class="an-card" style="border-color:${totalBonus>0?'#bbf7d0':totalMissed>0?'#fecaca':'#e2e8f0'};background:${totalBonus>0?'linear-gradient(135deg,#f0fdf4,#dcfce7)':totalMissed>0?'linear-gradient(135deg,#fff5f5,#fee2e2)':'#fff'}">
+        <div class="an-card-v" style="color:${totalBonus>0?'#16a34a':totalMissed>0?'#ef4444':'#94a3b8'};font-size:16px">${totalBonus>0?'+'+eur(totalBonus):totalMissed>0?eur(totalMissed):'—'}</div>
+        <div class="an-card-l">${totalBonus>0?'Bonus omzet':totalMissed>0?'Misgelopen omzet':'Bonus/verlies'}</div>
+        <div class="an-card-sub">${totalBonus>0?'verkocht > gewerkt 🎉':totalMissed>0?'door overuren':'op schema'}</div>
+      </div>
+      <div class="an-card" style="border-color:${totalOffDays>0?'#fed7aa':'#e2e8f0'};background:${totalOffDays>0?'linear-gradient(135deg,#fff7ed,#ffedd5)':'#fff'}">
+        <div class="an-card-v" style="color:${totalOffDays>0?'#c2410c':'#94a3b8'}">${totalOffDays}<span style="font-size:11px;font-weight:400">d</span></div>
+        <div class="an-card-l">Vrije dagen</div>
+        <div class="an-card-sub">${holidayDays>0?holidayDays+'× vrij':''}${holidayDays>0&&vacationDays>0?' · ':''}${vacationDays>0?vacationDays+'× vakantie':''}${totalOffDays===0?'volle maand werken':''}</div>
       </div>
     </div>`;
 
@@ -1493,8 +1772,11 @@ function renderAnalyse(){
       ang=end;
       return `<path d="${d}" fill="${c.color}" stroke="white" stroke-width="2.5"/>`;
     }).join('');
-    const svgLegend=cliSlices.map(c=>`<div style="display:flex;align-items:center;gap:7px;margin-bottom:5px"><div style="width:10px;height:10px;border-radius:50%;background:${c.color};flex-shrink:0"></div><div style="font-size:11px;color:#374151;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.cli.name}</div><div style="font-size:11px;font-weight:700;color:#374151">${c.hours}u</div></div>`).join('');
-    h+=`<p class="an-sec" style="margin-top:4px">Uren per klant — ${MONTH_NL[analyseMonth]}</p>
+    const svgLegend=cliSlices.map(c=>{
+      const d=Math.round((c.hours/8)*10)/10;
+      return`<div style="display:flex;align-items:center;gap:7px;margin-bottom:5px"><div style="width:10px;height:10px;border-radius:50%;background:${c.color};flex-shrink:0"></div><div style="font-size:11px;color:#374151;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.cli.name}</div><div style="font-size:11px;font-weight:700;color:#374151;text-align:right"><div>${c.hours}u</div><div style="font-size:9.5px;font-weight:600;color:#94a3b8">${d}d</div></div></div>`;
+    }).join('');
+    h+=`<p class="an-sec" style="margin-top:4px">Uren & dagen per klant — ${MONTH_NL[analyseMonth]}</p>
     <div class="chart-wrap" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:16px">
       <svg width="150" height="150" viewBox="0 0 200 200" style="flex-shrink:0">
         ${svgPaths}
@@ -1504,32 +1786,42 @@ function renderAnalyse(){
       <div style="flex:1;min-width:110px">${svgLegend}</div>
     </div>`;
 
-    // Capaciteitsadvies (gebaseerd op maandgemiddelde, max 40u/week)
+    // Capaciteitsadvies — houd rekening met vrije dagen (geen werk op die dagen)
     const CAP_WEEK=32; // 40u/week min 8u overhead (acquisitie, boekhouding, belasting)
-    const weeksInMonth=4;
-    const avgWeekH=totalCliH/weeksInMonth;
-    const freeWeekH=Math.round(CAP_WEEK-avgWeekH);
-    const pctBusy=Math.min(Math.round((avgWeekH/CAP_WEEK)*100),100);
+    // Bereken effectieve werkdagen in deze maand
+    const workingDaysInMonth=(()=>{
+      let n=0;const dim=new Date(analyseYear,analyseMonth+1,0).getDate();
+      for(let d=1;d<=dim;d++){const dow=new Date(analyseYear,analyseMonth,d).getDay();if(dow!==0&&dow!==6)n++}
+      return n;
+    })();
+    const effectiveWorkDays=Math.max(1,workingDaysInMonth-totalOffDays);
+    // Beschikbare uren in deze maand (32u/week × 5 dagen = 6.4u per werkdag)
+    const dailyCap=CAP_WEEK/5; // 6.4u per dag bij 32u/week
+    const monthCapH=effectiveWorkDays*dailyCap;
+    const freeMonthH=Math.round(monthCapH-totalCliH);
+    const freeWeekH=Math.round(freeMonthH/(effectiveWorkDays/5||1));
+    const pctBusy=monthCapH>0?Math.min(Math.round((totalCliH/monthCapH)*100),100):0;
     let advIcon,advBg,advClr,advTitle,advMsg;
+    const offDaysNote=totalOffDays>0?` (na aftrek van ${totalOffDays} vrije ${totalOffDays===1?'dag':'dagen'})`:'';
     if(freeWeekH<0){
       advIcon='🔴';advBg='#fee2e2';advClr='#991b1b';
-      advTitle=`Je werkt ${Math.abs(freeWeekH)}u/week boven capaciteit`;
+      advTitle=`Je werkt ${Math.abs(freeWeekH)}u/week boven capaciteit${offDaysNote}`;
       advMsg='Neem voorlopig geen nieuwe klanten aan. Kijk of je bestaande projecten kunt afschalen of taken kunt delegeren.';
     }else if(freeWeekH<4){
       advIcon='🟠';advBg='#fff7ed';advClr='#9a3412';
-      advTitle=`Je zit bijna vol — nog ~${freeWeekH}u/week vrij`;
+      advTitle=`Je zit bijna vol — nog ~${freeWeekH}u/week vrij${offDaysNote}`;
       advMsg='Neem geen nieuwe klanten aan. Bewaar deze buffer voor onverwachte taken.';
     }else if(freeWeekH<8){
       advIcon='🟡';advBg='#fffbeb';advClr='#92400e';
-      advTitle=`Kleine buffer — ~${freeWeekH}u/week vrij`;
+      advTitle=`Kleine buffer — ~${freeWeekH}u/week vrij${offDaysNote}`;
       advMsg='Ruimte voor een heel klein nevenproject (max ~4u/week), maar wees selectief. Geen grote nieuwe klanten.';
     }else if(freeWeekH<16){
       advIcon='🟢';advBg='#f0fdf4';advClr='#166534';
-      advTitle=`Ruimte voor 1 nieuw project — ~${freeWeekH}u/week vrij`;
+      advTitle=`Ruimte voor 1 nieuw project — ~${freeWeekH}u/week vrij${offDaysNote}`;
       advMsg='Je kunt 1 nieuwe klant aannemen van gemiddeld 1–2 dagen per week. Houd rekening met opstartwerk.';
     }else{
       advIcon='🟢';advBg='#f0fdf4';advClr='#166534';
-      advTitle=`Veel ruimte — ~${freeWeekH}u/week vrij`;
+      advTitle=`Veel ruimte — ~${freeWeekH}u/week vrij${offDaysNote}`;
       advMsg='Je kunt meerdere nieuwe klanten aannemen of een groot project oppakken. Goed moment om te groeien.';
     }
     h+=`<div style="background:${advBg};border:1px solid ${advClr}22;border-radius:12px;padding:13px 15px;margin-bottom:18px">
@@ -1542,54 +1834,58 @@ function renderAnalyse(){
         <span style="font-size:10px;color:${advClr};font-weight:600;white-space:nowrap">${pctBusy}% bezet</span>
       </div>
       <div style="font-size:11px;color:${advClr};opacity:.85;line-height:1.5">${advMsg}</div>
+      <div style="font-size:10px;color:${advClr};opacity:.7;margin-top:4px">📅 ${effectiveWorkDays} effectieve werkdagen × ${dailyCap.toFixed(1)}u = ${Math.round(monthCapH)}u beschikbaar</div>
     </div>`;
 
     // Per project detail cards
     h+=`<p class="an-sec">Per project</p>`;
-    projStats.forEach(({proj,cli,monthH,totalH,agreedH,rate,monthRev,effRateMonth,rateDrop,missedRev,overH})=>{
+    projStats.forEach(({proj,cli,monthH,daysWorked,totalH,agreedH,rate,monthRev,effRateMonth,rateDrop,rateGain,missedRev,bonusRev,overH,underH,billedFullRetainer})=>{
       const isOver=overH>0;
+      const isUnder=underH>0;
       const rateDropPct=rate>0?Math.round((rateDrop/rate)*100):0;
-      h+=`<div class="proj-an-card${isOver?' over':''}">
+      const rateGainPct=rate>0?Math.round((rateGain/rate)*100):0;
+      h+=`<div class="proj-an-card${isOver?' over':''}${isUnder&&!isOver?' under':''}" style="${isUnder&&!isOver?'border-color:#bbf7d0;background:#fafff7':''}">
         <div class="proj-an-hdr">
           <div class="proj-dot-lg" style="background:${proj.color}"></div>
           <div style="flex:1;min-width:0">
-            <div class="proj-an-title">${proj.name}${isOver?' ⚠️':''}</div>
+            <div class="proj-an-title">${proj.name}${isOver?' ⚠️':isUnder?' ✨':''}</div>
             <div class="proj-an-cli">${cli?.name||'—'}${proj.isRetainer?' · <span style="color:#16a34a">retainer</span>':''}</div>
           </div>
           <div style="text-align:right;flex-shrink:0">
             <div style="font-size:13px;font-weight:800;color:#16a34a">${eur(monthRev)}</div>
-            <div style="font-size:10px;color:#94a3b8">${monthH}u deze maand</div>
+            <div style="font-size:10px;color:#94a3b8">${monthH}u · ${daysWorked}d deze maand</div>
           </div>
         </div>
         <div class="proj-an-grid">
           <div class="proj-an-cell">
             <div class="proj-an-cell-v" style="color:#0891b2">${agreedH}u</div>
-            <div class="proj-an-cell-l">afgesproken</div>
+            <div class="proj-an-cell-l">${proj.isRetainer?'verkocht/mnd':'afgesproken'}</div>
           </div>
           <div class="proj-an-cell">
-            <div class="proj-an-cell-v" style="color:#374151">${totalH}u</div>
-            <div class="proj-an-cell-l">totaal gewerkt</div>
+            <div class="proj-an-cell-v" style="color:#374151">${monthH}u</div>
+            <div class="proj-an-cell-l">gewerkt (${daysWorked}d)</div>
           </div>
-          <div class="proj-an-cell${isOver?' red':' green'}">
-            <div class="proj-an-cell-v" style="color:${isOver?'#ef4444':'#10b981'}">${isOver?'+'+overH+'u':'✓'}</div>
-            <div class="proj-an-cell-l">${isOver?'overuren':'op schema'}</div>
+          <div class="proj-an-cell${isOver?' red':isUnder?' green':' green'}">
+            <div class="proj-an-cell-v" style="color:${isOver?'#ef4444':'#10b981'}">${isOver?'+'+overH+'u':isUnder?'−'+underH+'u':'✓'}</div>
+            <div class="proj-an-cell-l">${isOver?'overuren':isUnder?'onder verkocht':'op schema'}</div>
           </div>
         </div>
         <div class="proj-an-grid">
-          <div class="proj-an-cell${rateDrop>0?' red':' green'}">
-            <div class="proj-an-cell-v" style="color:${rateDrop>0?'#ef4444':'#10b981'};font-size:12px">${eur(Math.round(effRateMonth))}/u</div>
+          <div class="proj-an-cell${rateDrop>0?' red':rateGain>0?' green':' green'}">
+            <div class="proj-an-cell-v" style="color:${rateDrop>0?'#ef4444':rateGain>0?'#16a34a':'#10b981'};font-size:12px">${eur(Math.round(effRateMonth))}/u${rateGain>0?' ↑':rateDrop>0?' ↓':''}</div>
             <div class="proj-an-cell-l">effectief tarief</div>
           </div>
           <div class="proj-an-cell">
             <div class="proj-an-cell-v" style="color:#64748b;font-size:12px">${rate>0?eur(rate)+'/u':'—'}</div>
             <div class="proj-an-cell-l">afgesproken tarief</div>
           </div>
-          <div class="proj-an-cell${missedRev>0?' red':' green'}">
-            <div class="proj-an-cell-v" style="color:${missedRev>0?'#ef4444':'#10b981'};font-size:12px">${eur(Math.round(missedRev))}</div>
-            <div class="proj-an-cell-l">misgelopen</div>
+          <div class="proj-an-cell${missedRev>0?' red':bonusRev>0?' green':' green'}">
+            <div class="proj-an-cell-v" style="color:${missedRev>0?'#ef4444':bonusRev>0?'#16a34a':'#10b981'};font-size:12px">${bonusRev>0?'+'+eur(Math.round(bonusRev)):missedRev>0?eur(Math.round(missedRev)):'—'}</div>
+            <div class="proj-an-cell-l">${bonusRev>0?'bonus':missedRev>0?'misgelopen':'verschil'}</div>
           </div>
         </div>
         ${isOver&&rateDrop>0?`<div class="rate-insight"><span>💡</span><span>Door ${overH} onbetaalde overuren daalde je tarief van <strong>${eur(rate)}/u</strong> naar <strong>${eur(Math.round(effRateMonth))}/u</strong> (−${rateDropPct}%). Je liep <strong>${eur(Math.round(missedRev))}</strong> mis.</span></div>`:''}
+        ${isUnder&&billedFullRetainer?`<div class="rate-insight" style="background:#f0fdf4;border-color:#bbf7d0;color:#166534"><span>✨</span><span>Je werkte ${underH}u minder dan verkocht maar factureert tóch het volledige retainer. Effectief tarief steeg van <strong>${eur(rate)}/u</strong> naar <strong>${eur(Math.round(effRateMonth))}/u</strong> (+${rateGainPct}%). Bonus: <strong>${eur(Math.round(bonusRev))}</strong>.</span></div>`:''}
       </div>`;
     });
   }
@@ -1896,11 +2192,22 @@ document.getElementById('btn-lock-week').addEventListener('click',()=>{
   const locked=(S.data.lockedWeeks||[]);
   const idx=locked.findIndex(l=>l.week===viewW&&l.year===viewY);
   if(idx>=0){
-    // ontgrendelen
+    // ontgrendelen — laat day-done states staan (gebruiker kan ze los uitzetten)
     setData(d=>({...d,lockedWeeks:d.lockedWeeks.filter((_,i)=>i!==idx)}));
   }else{
-    // vergrendelen
-    setData(d=>({...d,lockedWeeks:[...(d.lockedWeeks||[]),{week:viewW,year:viewY}]}));
+    // vergrendelen + mark alle 5 weekdagen als done (dopamine!)
+    setData(d=>{
+      const dd=d.daysDone||[];
+      const newDaysDone=[...dd];
+      [0,1,2,3,4].forEach(day=>{
+        if(!newDaysDone.some(x=>x.week===viewW&&x.year===viewY&&x.day===day)){
+          newDaysDone.push({week:viewW,year:viewY,day});
+        }
+      });
+      return{...d,lockedWeeks:[...(d.lockedWeeks||[]),{week:viewW,year:viewY}],daysDone:newDaysDone};
+    });
+    // Vier het!
+    setTimeout(()=>{triggerConfetti(document.getElementById('btn-lock-week'),60);playDoneSound();showWeekCompleteToast()},80);
   }
 });
 document.getElementById('btn-demo').addEventListener('click',()=>{const n=weekNum(new Date());S.data=makeDemo(n.week,n.year);saveData(S.data);render()});
@@ -1918,6 +2225,7 @@ document.getElementById('btn-logout').addEventListener('click',logout);
 if(localStorage.getItem('ff_auth')==='1'){
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='flex';
+  resumeRunningTimer(); // herstel lopende timer uit vorige sessie
   render();
   startDriveSync();
 }else{
@@ -1927,6 +2235,8 @@ if(localStorage.getItem('ff_auth')==='1'){
 
 // ── Zorg dat data altijd naar Drive gesaved wordt bij refresh/sluiten ──────
 window.addEventListener('beforeunload',()=>{
+  // Sla lopende timer-status op vóór sluiten
+  if(S.timerTaskId){persistTimerState()}
   if(GAS_URL&&localStorage.getItem('ff_auth')==='1'){
     if(_pendingDriveSave){clearTimeout(_pendingDriveSave);_pendingDriveSave=null;}
     saveToDrive(S.data);
