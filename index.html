@@ -45,6 +45,8 @@ input,select,textarea{font-family:inherit}
 .week-nav-btn:hover{background:#e2e8f0}
 .week-label{font-size:13px;font-weight:700;color:#0f172a;padding:0 6px;white-space:nowrap}
 .cur-week-btn{padding:3px 9px;background:#ecfeff;border:1px solid #a5f3fc;color:#0891b2;border-radius:7px;font-size:11px;font-weight:600}
+.tab-over-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#ef4444;margin-left:5px;vertical-align:middle;box-shadow:0 0 0 2px #fff;animation:pulseDot 1.6s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.55;transform:scale(1.25)}}
 
 /* WEEK BODY */
 .week-body{flex:1;display:flex;overflow:hidden;min-height:0}
@@ -229,6 +231,22 @@ input,select,textarea{font-family:inherit}
 .form-label{display:block;font-size:11.5px;font-weight:600;color:#374151;margin-bottom:4px}
 .form-input,.form-select,.form-textarea{width:100%;border:1px solid #e2e8f0;border-radius:9px;padding:7px 10px;font-size:12.5px;outline:none;transition:.15s;background:#fff;color:#0f172a}
 .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:#06b6d4;box-shadow:0 0 0 3px rgba(6,182,212,.1)}
+/* Custom dropdown — native select wordt op macOS Safari met system text size gerenderd
+   en negeert CSS font-size. Daarom verbergen we de echte <select> en bouwen we een eigen UI. */
+.cs{position:relative;display:block;width:100%}
+.cs-trigger{width:100%;text-align:left;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:12.5px;padding:7px 10px;border:1px solid #e2e8f0;border-radius:9px;background:#fff;color:#0f172a;font-family:inherit;transition:.15s}
+.cs-trigger:hover{border-color:#cbd5e1}
+.cs.open .cs-trigger,.cs-trigger:focus{border-color:#06b6d4;box-shadow:0 0 0 3px rgba(6,182,212,.1);outline:none}
+.cs-current{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
+.cs-arrow{margin-left:8px;color:#94a3b8;font-size:9px;flex-shrink:0;transition:transform .15s}
+.cs.open .cs-arrow{transform:rotate(180deg);color:#0891b2}
+.cs-popup{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;max-height:240px;overflow-y:auto;background:#fff;border:1px solid #e2e8f0;border-radius:9px;z-index:1500;box-shadow:0 8px 24px rgba(0,0,0,.12);padding:4px 0}
+.cs.open .cs-popup{display:block}
+.cs-option{display:block;width:100%;padding:7px 11px;text-align:left;font-size:12.5px;cursor:pointer;background:none;border:none;color:#0f172a;line-height:1.4;font-family:inherit;transition:background .1s}
+.cs-option:hover{background:#f1f5f9}
+.cs-option.selected{background:#ecfeff;color:#0891b2;font-weight:600}
+/* Native select wordt verborgen — wel in DOM voor change-listeners */
+select.cs-enhanced{position:absolute!important;left:-9999px;opacity:0;pointer-events:none;width:1px;height:1px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
 .form-textarea{resize:vertical;min-height:60px}
@@ -236,6 +254,9 @@ input,select,textarea{font-family:inherit}
 .c-swatch{width:23px;height:23px;border-radius:50%;cursor:pointer;transition:.15s;border:2px solid transparent}
 .c-swatch.selected{transform:scale(1.15);box-shadow:0 0 0 2px #fff,0 0 0 4px #94a3b8}
 .c-swatch:hover{transform:scale(1.1)}
+.suggestion-chip{padding:4px 9px;border-radius:7px;background:#f1f5f9;color:#475569;font-size:11px;font-weight:600;border:1px solid #e2e8f0;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:4px}
+.suggestion-chip:hover{background:#ecfeff;color:#0891b2;border-color:#a5f3fc}
+.suggestion-chip .sug-hrs{opacity:.6;font-size:9.5px;font-weight:500}
 .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f8fafc}
 .toggle-row:last-child{border-bottom:none}
 .toggle-label{font-size:12.5px;font-weight:600;color:#334155}
@@ -293,9 +314,15 @@ input,select,textarea{font-family:inherit}
 
 /* VACATION BLOCKS */
 .vacation-block{position:absolute;inset:0;background:rgba(251,146,60,.09);border-left:3px solid #fb923c;z-index:4;pointer-events:none;border-radius:0}
-.vacation-hdr{display:flex;align-items:center;justify-content:space-between;padding:4px 7px;background:rgba(251,146,60,.18);font-size:11px;font-weight:700;color:#c2410c;pointer-events:all}
-.vacation-del{font-size:16px;color:#c2410c;opacity:.55;transition:.15s;line-height:1;padding:0 1px}
+.vacation-block.half-am{bottom:auto;height:50%;background:repeating-linear-gradient(45deg,rgba(251,146,60,.13),rgba(251,146,60,.13) 6px,rgba(251,146,60,.05) 6px,rgba(251,146,60,.05) 12px)}
+.vacation-block.half-pm{top:50%;height:50%;background:repeating-linear-gradient(45deg,rgba(251,146,60,.13),rgba(251,146,60,.13) 6px,rgba(251,146,60,.05) 6px,rgba(251,146,60,.05) 12px)}
+.vacation-block.holiday-block.half-am,.vacation-block.holiday-block.half-pm{background:repeating-linear-gradient(45deg,rgba(14,165,233,.13),rgba(14,165,233,.13) 6px,rgba(14,165,233,.05) 6px,rgba(14,165,233,.05) 12px)}
+.vacation-hdr{display:flex;align-items:center;justify-content:space-between;padding:4px 7px;background:rgba(251,146,60,.18);font-size:11px;font-weight:700;color:#c2410c;pointer-events:all;gap:5px}
+.vacation-del{font-size:16px;color:#c2410c;opacity:.55;transition:.15s;line-height:1;padding:0 1px;background:none;border:none;cursor:pointer}
 .vacation-del:hover{opacity:1}
+.vacation-half-toggle{font-size:11px;font-weight:700;color:#c2410c;opacity:.65;background:rgba(255,255,255,.45);border:1px solid rgba(194,65,12,.25);border-radius:5px;padding:1px 5px;cursor:pointer;line-height:1.2;transition:.15s}
+.vacation-half-toggle:hover{opacity:1;background:#fff}
+.vacation-actions{display:flex;align-items:center;gap:4px}
 .cal-day-hdr.has-vacation{background:linear-gradient(180deg,#fff7ed,#fff)}
 .cal-day-hdr.has-vacation .cal-day-name::after{content:' 🏖';font-size:10px}
 .intern-badge{display:inline-flex;align-items:center;gap:3px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;border-radius:5px;padding:2px 6px;font-size:10px;font-weight:700}
@@ -361,6 +388,11 @@ input,select,textarea{font-family:inherit}
 /* LOGOUT */
 .logout-btn{display:flex;align-items:center;gap:7px;padding:7px 12px;margin:2px 7px;border-radius:9px;font-size:12px;color:#94a3b8;width:calc(100% - 14px);transition:.15s;text-align:left;border:none;background:none;cursor:pointer}
 .logout-btn:hover{background:#fef2f2;color:#ef4444}
+/* PRIVACY MODE — blur alléén € bedragen, niet uren of projectnamen */
+.eur-val{display:inline-block;transition:filter .2s}
+body.privacy-on .eur-val{filter:blur(6px);user-select:none}
+body.privacy-on #btn-privacy{background:#1e293b;color:#fff;border-color:#0f172a}
+#btn-privacy{transition:.15s}
 </style>
 </head>
 <body>
@@ -401,6 +433,7 @@ input,select,textarea{font-family:inherit}
         </div>
         <button class="cur-week-btn btn" id="btn-cur">Huidige week</button>
         <div style="flex:1"></div>
+        <button id="btn-privacy" class="week-nav-btn" style="width:auto;padding:0 10px;gap:5px;font-size:11px;font-weight:700;color:#64748b" title="Verberg omzet & uren">👁 Privé</button>
         <button id="btn-lock-week" class="week-nav-btn" style="width:auto;padding:0 10px;gap:5px;font-size:11px;font-weight:700;color:#64748b" title="Week vergrendelen">🔓 Lock</button>
         <div id="gauge-wrap"></div>
       </div>
@@ -565,17 +598,25 @@ function startDriveSync(){
   if(!GAS_URL)return;
   // Laad eerst van Drive (stil bij fout — geen melding)
   loadFromDrive().then(remote=>{
-    if(remote){
-      S.data=remote;
-      S.data.tasks=S.data.tasks.map(migrateTask);
-      ensureInternProject();
-      // Tijdelijk sync uitschakelen tijdens initieel render zodat we geen fout tonen
-      const wasAuth=localStorage.getItem('ff_auth');
-      localStorage.removeItem('ff_auth');
-      render();
-      if(wasAuth)localStorage.setItem('ff_auth',wasAuth);
-      showSyncBar('ok');
+    if(!remote)return;
+    // KRITISCH: alleen overschrijven als Drive ECHT verser is dan local.
+    // Anders verliezen we lokale wijzigingen die nog niet naar Drive waren gesynced (bv. snel refresh).
+    const localTs=S.data?._lastModified||0;
+    const remoteTs=remote?._lastModified||0;
+    if(remoteTs<=localTs){
+      // Local is even nieuw of nieuwer → push local nog even naar Drive zodat ze gelijk staan
+      if(remoteTs<localTs)saveToDrive(S.data);
+      return;
     }
+    S.data=remote;
+    S.data.tasks=S.data.tasks.map(migrateTask);
+    ensureInternProject();
+    // Tijdelijk sync uitschakelen tijdens initieel render zodat we geen fout tonen
+    const wasAuth=localStorage.getItem('ff_auth');
+    localStorage.removeItem('ff_auth');
+    render();
+    if(wasAuth)localStorage.setItem('ff_auth',wasAuth);
+    showSyncBar('ok');
   }).catch(()=>{/* stil falen bij laden */});
   if(driveInterval)clearInterval(driveInterval);
   // Periodieke save elke 30s
@@ -596,7 +637,9 @@ const PX_PER_HOUR=64, TIME_START=8, TIME_END=19, KEY='ff_v6';
 // ═══════════════════════════════════════════════
 const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36);
 const fmtD=d=>`${d.getDate()} ${MONTHS[d.getMonth()]}`;
-const eur=n=>new Intl.NumberFormat('nl-NL',{style:'currency',currency:'EUR',minimumFractionDigits:0}).format(n||0);
+// eur() wraps in span.eur-val zodat privacy-mode alléén euro's blurt (niet uren/projectnamen)
+const _eurFmt=n=>new Intl.NumberFormat('nl-NL',{style:'currency',currency:'EUR',minimumFractionDigits:0}).format(n||0);
+const eur=n=>`<span class="eur-val">${_eurFmt(n)}</span>`;
 const rgba=(h,a)=>{const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return`rgba(${r},${g},${b},${a})`};
 const fmtTime=m=>{const h=Math.floor(m/60),min=m%60;return`${String(h).padStart(2,'0')}:${String(min).padStart(2,'0')}`};
 const fmtSecs=s=>{const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;return h>0?`${h}:${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`:`${m}:${String(ss).padStart(2,'0')}`};
@@ -653,6 +696,8 @@ let fileHandle=null;
 function loadData(){try{const s=localStorage.getItem(KEY);return s?JSON.parse(s):null}catch{return null}}
 let _pendingDriveSave=null;
 function saveData(d){
+  // Stempel elke wijziging met een timestamp — zo weten we welke kant (Drive vs local) verser is
+  d._lastModified=Date.now();
   try{localStorage.setItem(KEY,JSON.stringify(d))}catch{}
   if(fileHandle){writeToFile(d).catch(()=>{})}
   // Debounced Drive save: wacht 500ms na laatste wijziging, dan pas sync
@@ -778,6 +823,18 @@ function cappedRev(proj,weekH,allTasks){
 const getWeekTasks=()=>S.data.tasks.filter(t=>t.allocatedWeek===S.viewW&&t.allocatedYear===S.viewY);
 const getCli=id=>S.data.clients.find(c=>c.id===id);
 const getProj=id=>S.data.projects.find(p=>p.id===id);
+// EÉN gedeelde berekening: welke projecten hebben overuren in de bekeken maand?
+// Gebruik in zowel het tab-badge nummer als de tab-content zodat ze NOOIT verschillen.
+function getOverProjectsForView(){
+  const ws=weekDates(S.viewW,S.viewY)[0];
+  const vm=ws.getMonth(),vy=ws.getFullYear(),vcur=vy*12+vm;
+  return S.data.projects.filter(p=>{
+    if(p.isInternal)return false;
+    if(p.startMonth!==undefined&&p.startYear!==undefined&&vcur<p.startYear*12+p.startMonth)return false;
+    if(p.endMonth!==undefined&&p.endYear!==undefined&&vcur>p.endYear*12+p.endMonth)return false;
+    return overInfo(p,S.data.tasks,vm,vy).isOver;
+  });
+}
 
 // migrate old tasks — also derive billingMonth/Year from calendar week
 function migrateTask(t){
@@ -972,6 +1029,72 @@ function resumeRunningTimer(){
 }
 
 // ═══════════════════════════════════════════════
+//  CUSTOM DROPDOWN — vervangt native <select> zodat macOS Safari niet
+//  zijn system-font opdringt aan de option-tags
+// ═══════════════════════════════════════════════
+function enhanceSelects(root){
+  if(!root)return;
+  root.querySelectorAll('select:not(.cs-enhanced)').forEach(sel=>{
+    sel.classList.add('cs-enhanced');
+    const wrap=document.createElement('div');
+    wrap.className='cs';
+    // Behoud inline flex/width zodat layout in form-rows niet breekt
+    if(sel.style.flex)wrap.style.flex=sel.style.flex;
+    if(sel.style.width)wrap.style.width=sel.style.width;
+    // Trigger
+    const trigger=document.createElement('button');
+    trigger.type='button';
+    trigger.className='cs-trigger';
+    const current=document.createElement('span');
+    current.className='cs-current';
+    current.textContent=sel.options[sel.selectedIndex]?.text||'';
+    const arrow=document.createElement('span');
+    arrow.className='cs-arrow';
+    arrow.textContent='▾';
+    trigger.appendChild(current);trigger.appendChild(arrow);
+    // Popup met opties
+    const popup=document.createElement('div');
+    popup.className='cs-popup';
+    Array.from(sel.options).forEach((opt,idx)=>{
+      const o=document.createElement('button');
+      o.type='button';
+      o.className='cs-option'+(idx===sel.selectedIndex?' selected':'');
+      o.dataset.value=opt.value;
+      o.textContent=opt.text;
+      o.title=opt.text;
+      o.addEventListener('click',e=>{
+        e.stopPropagation();
+        sel.value=opt.value;
+        current.textContent=opt.text;
+        popup.querySelectorAll('.cs-option').forEach(x=>x.classList.remove('selected'));
+        o.classList.add('selected');
+        wrap.classList.remove('open');
+        sel.dispatchEvent(new Event('change',{bubbles:true}));
+      });
+      popup.appendChild(o);
+    });
+    trigger.addEventListener('click',e=>{
+      e.stopPropagation();
+      document.querySelectorAll('.cs.open').forEach(c=>c!==wrap&&c.classList.remove('open'));
+      wrap.classList.toggle('open');
+    });
+    // Plaats wrap voor select, en zet select erin (verborgen, maar in DOM voor change-listeners)
+    sel.parentNode.insertBefore(wrap,sel);
+    wrap.appendChild(trigger);
+    wrap.appendChild(popup);
+    wrap.appendChild(sel);
+  });
+}
+// Sluit dropdowns bij klik buiten
+document.addEventListener('click',()=>{
+  document.querySelectorAll('.cs.open').forEach(c=>c.classList.remove('open'));
+});
+// Sluit ook bij Escape
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')document.querySelectorAll('.cs.open').forEach(c=>c.classList.remove('open'));
+});
+
+// ═══════════════════════════════════════════════
 //  MODAL SYSTEM
 // ═══════════════════════════════════════════════
 function openModal(html){
@@ -982,7 +1105,8 @@ function openModal(html){
   div.addEventListener('click',e=>{if(e.target===div)close()});
   div.querySelectorAll('.modal-close').forEach(b=>b.addEventListener('click',close));
   document.getElementById('modals').appendChild(div);
-  setTimeout(()=>div.querySelector('input:not([type=file]):not([type=checkbox]):not([type=range]),select')?.focus(),60);
+  enhanceSelects(div); // vervang native selects door custom dropdown
+  setTimeout(()=>div.querySelector('input:not([type=file]):not([type=checkbox]):not([type=range])')?.focus(),60);
   return{el:div,close};
 }
 
@@ -1110,9 +1234,12 @@ function renderCalendar(){
       }else{
         const vd=e.dataTransfer.getData('vacationDrop');
         if(vd){
-          // Only one vacation per day
+          // Only one vacation per day (halve / hele dag wisselen kan via knop op blok)
           const alreadyHas=(data.vacations||[]).some(v=>v.allocatedWeek===viewW&&v.allocatedYear===viewY&&v.allocatedDay===di);
-          if(!alreadyHas)setData(d=>({...d,vacations:[...(d.vacations||[]),{id:uid(),allocatedWeek:viewW,allocatedYear:viewY,allocatedDay:di,label:'Vakantie'}]}));
+          if(!alreadyHas){
+            const isHalf=(vd==='half');
+            setData(d=>({...d,vacations:[...(d.vacations||[]),{id:uid(),allocatedWeek:viewW,allocatedYear:viewY,allocatedDay:di,label:isHalf?'Halve vrije dag':'Vakantie',halfDay:isHalf?'am':null}]}));
+          }
         }
       }
     });
@@ -1134,7 +1261,14 @@ function renderCalendar(){
     dayTasks.forEach(task=>{
       const block=createCalTaskBlock(task,calStart,col);
       if(isLocked||dayDone){block.classList.add('locked');}
-      if(isLocked){block.draggable=false;block.style.cursor='default';}
+      if(isLocked){
+        block.classList.add('week-locked');
+        block.draggable=false;
+        block.style.cursor='default';
+        // Verberg de resize-handle volledig zodat slepen/aanpassen onmogelijk is
+        const rh=block.querySelector('.task-resize');
+        if(rh){rh.style.display='none';rh.style.pointerEvents='none';}
+      }
       col.appendChild(block);
     });
 
@@ -1142,9 +1276,14 @@ function renderCalendar(){
     const dayVac=(data.vacations||[]).find(v=>v.allocatedWeek===viewW&&v.allocatedYear===viewY&&v.allocatedDay===di);
     if(dayVac){
       const isHol=!!dayVac.isHoliday;
+      const half=dayVac.halfDay; // null/undefined | 'am' | 'pm'
       const vb=document.createElement('div');
-      vb.className='vacation-block'+(isHol?' holiday-block':'');
-      vb.innerHTML=`<div class="vacation-hdr">${isHol?'🎉':'🏖'} ${dayVac.label||'Vakantie'}<button class="vacation-del" title="Verwijder">×</button></div>`;
+      vb.className='vacation-block'+(isHol?' holiday-block':'')+(half==='am'?' half-am':'')+(half==='pm'?' half-pm':'');
+      const icon=isHol?'🎉':(half?'🌗':'🏖');
+      const baseLabel=dayVac.label||'Vakantie';
+      const halfSuffix=half==='am'?' (ochtend)':half==='pm'?' (middag)':'';
+      const halfBtn=isHol?'':`<button class="vacation-half-toggle" title="Hele dag → ochtend → middag">${half?(half==='am'?'AM':'PM'):'½'}</button>`;
+      vb.innerHTML=`<div class="vacation-hdr">${icon} ${baseLabel}${halfSuffix}<div class="vacation-actions">${halfBtn}<button class="vacation-del" title="Verwijder">×</button></div></div>`;
       vb.querySelector('.vacation-del').addEventListener('click',e=>{
         e.stopPropagation();
         setData(d=>({
@@ -1153,6 +1292,12 @@ function renderCalendar(){
           // Onthoud verwijderde feestdagen zodat ze niet automatisch terugkomen
           removedHolidays:isHol&&dayVac.holidayKey?[...(d.removedHolidays||[]),dayVac.holidayKey]:(d.removedHolidays||[]),
         }));
+      });
+      vb.querySelector('.vacation-half-toggle')?.addEventListener('click',e=>{
+        e.stopPropagation();
+        // Cycle: null/full → am → pm → null
+        const next=!half?'am':half==='am'?'pm':null;
+        setData(d=>({...d,vacations:(d.vacations||[]).map(v=>v.id===dayVac.id?{...v,halfDay:next,label:next?'Halve vrije dag':'Vakantie'}:v)}));
       });
       col.appendChild(vb);
     }
@@ -1211,6 +1356,7 @@ function createCalTaskBlock(task,calStart){
   // Drag task
   block.draggable=true;
   block.addEventListener('dragstart',e=>{
+    if(block.classList.contains('week-locked')){e.preventDefault();return;}
     e.dataTransfer.setData('taskId',task.id);
     e.dataTransfer.effectAllowed='move';
     block.classList.add('dragging');
@@ -1231,6 +1377,7 @@ function createCalTaskBlock(task,calStart){
 
   // Resize
   block.querySelector(`[data-resize="${task.id}"]`).addEventListener('mousedown',e=>{
+    if(block.classList.contains('week-locked'))return; // week vergrendeld → geen resize
     e.preventDefault();e.stopPropagation();
     const startY=e.clientY,startH=height;
     const onMove=ev=>{
@@ -1265,11 +1412,12 @@ function renderWeek(){
   // Exclude intern from billable hours shown in gauge (still count for capacity fill)
   const totalH=weekTasks.reduce((s,t)=>s+(t.hours||0),0);
   const maxH=data.settings.hoursPerWeek||40;
-  // Vacation days reduce available capacity
+  // Vacation days reduce available capacity (halve dagen tellen voor 0.5)
   const weekVacs=(data.vacations||[]).filter(v=>v.allocatedWeek===viewW&&v.allocatedYear===viewY);
+  const weekVacEq=weekVacs.reduce((s,v)=>s+(v.halfDay?0.5:1),0);
   const hoursPerDay=maxH/5;
-  const availH=Math.max(0,maxH-weekVacs.length*hoursPerDay);
-  const vacLabel=weekVacs.length>0?` <span style="font-size:10px;color:#c2410c">(${weekVacs.length}d vakantie)</span>`:'';
+  const availH=Math.max(0,maxH-weekVacEq*hoursPerDay);
+  const vacLabel=weekVacs.length>0?` <span style="font-size:10px;color:#c2410c">(${weekVacEq===Math.floor(weekVacEq)?weekVacEq:weekVacEq.toFixed(1)}d vakantie)</span>`:'';
 
   // Lock state (also computed in renderCalendar for scope reasons)
   const isLocked=(data.lockedWeeks||[]).some(l=>l.week===viewW&&l.year===viewY);
@@ -1281,6 +1429,8 @@ function renderWeek(){
     lockBtn.style.borderColor=isLocked?'#fed7aa':'';
     lockBtn.title=isLocked?'Week ontgrendelen':'Week vergrendelen';
   }
+  document.getElementById('btn-prev').innerHTML='&#8249;';
+  document.getElementById('btn-next').innerHTML='&#8250;';
   document.getElementById('week-label').textContent=`Week ${viewW} · ${fmtD(dates[0])} – ${fmtD(dates[6])} ${viewY}`;
   document.getElementById('gauge-wrap').innerHTML=gaugeHtml(totalH,availH)+vacLabel+(isLocked?` <span style="font-size:10px;color:#c2410c;font-weight:700">🔒 vergrendeld</span>`:'');
   document.getElementById('btn-cur').style.display=isCur?'none':'';
@@ -1290,18 +1440,20 @@ function renderWeek(){
 
   // Tabs
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===S.activeTab));
-  const _now=new Date();
-  const _nm=_now.getMonth(),_ny=_now.getFullYear(),_ncur=_ny*12+_nm;
-  const overCount=data.projects.filter(p=>{
-    if(p.isInternal)return false;
-    // Zelfde datum-range filter als renderTabOveruren
-    if(p.startMonth!==undefined&&p.startYear!==undefined&&_ncur<p.startYear*12+p.startMonth)return false;
-    if(p.endMonth!==undefined&&p.endYear!==undefined&&_ncur>p.endYear*12+p.endMonth)return false;
-    return overInfo(p,data.tasks,_nm,_ny).isOver;
-  }).length;
+  // Gebruik de gedeelde helper — badge & tab-content kunnen nu niet meer afwijken
+  const overProjs=getOverProjectsForView();
+  const overCount=overProjs.length;
+  const _vm=weekDates(viewW,viewY)[0].getMonth();
   const tabOB=document.getElementById('tab-over-btn');
   tabOB.querySelector('.tab-badge')?.remove();
-  if(overCount>0){const sp=document.createElement('span');sp.className='tab-badge';sp.textContent=overCount;tabOB.appendChild(sp)}
+  tabOB.querySelector('.tab-over-dot')?.remove();
+  if(overCount>0){
+    const sp=document.createElement('span');
+    sp.className='tab-badge';
+    sp.title=`${overCount} project${overCount>1?'en':''} met overuren in ${MONTH_NL[_vm]}`;
+    sp.textContent=overCount;
+    tabOB.appendChild(sp);
+  }
   document.getElementById('tab-omzet').style.display=S.activeTab==='omzet'?'':'none';
   document.getElementById('tab-overuren').style.display=S.activeTab==='overuren'?'':'none';
   if(S.activeTab==='omzet')renderTabOmzet(weekTasks);
@@ -1323,13 +1475,21 @@ function renderInplan(){
   inplanEl.style.display=inplanOpen?'':'none';
   if(!inplanOpen)return;
   inplanEl.innerHTML='<p style="font-size:10px;color:#94a3b8;margin-bottom:5px">Sleep naar de kalender →</p>';
-  // Vacation drag row
+  // Vacation drag rows — hele dag + halve dag
   const vacRow=document.createElement('div');
   vacRow.className='vacation-drag-row';
   vacRow.draggable=true;
-  vacRow.innerHTML=`<span style="font-size:16px">🏖</span><div style="flex:1"><div style="font-size:11px;font-weight:600;color:#c2410c">Vakantie / Vrije dag</div><div style="font-size:10px;color:#94a3b8">Sleep naar een dag om te blokkeren</div></div>`;
-  vacRow.addEventListener('dragstart',e=>{e.dataTransfer.setData('vacationDrop','1');e.dataTransfer.effectAllowed='copy'});
+  vacRow.innerHTML=`<span style="font-size:16px">🏖</span><div style="flex:1"><div style="font-size:11px;font-weight:600;color:#c2410c">Hele vrije dag</div><div style="font-size:10px;color:#94a3b8">Sleep naar een dag</div></div>`;
+  vacRow.addEventListener('dragstart',e=>{e.dataTransfer.setData('vacationDrop','full');e.dataTransfer.effectAllowed='copy'});
   inplanEl.appendChild(vacRow);
+  const halfRow=document.createElement('div');
+  halfRow.className='vacation-drag-row';
+  halfRow.draggable=true;
+  halfRow.style.borderColor='#fde68a';
+  halfRow.style.background='#fffbeb';
+  halfRow.innerHTML=`<span style="font-size:16px">🌗</span><div style="flex:1"><div style="font-size:11px;font-weight:600;color:#92400e">Halve vrije dag</div><div style="font-size:10px;color:#94a3b8">Klik op ½ om ochtend/middag te wisselen</div></div>`;
+  halfRow.addEventListener('dragstart',e=>{e.dataTransfer.setData('vacationDrop','half');e.dataTransfer.effectAllowed='copy'});
+  inplanEl.appendChild(halfRow);
 
   // For retainers: use the month of the viewed week; for fixed: all-time
   const viewMonth=weekStart.getMonth(),viewYear=weekStart.getFullYear();
@@ -1461,14 +1621,8 @@ function renderTabOveruren(){
   const{data}=S;
   const _ws=weekDates(S.viewW,S.viewY)[0];
   const viewMonth=_ws.getMonth(),viewYear=_ws.getFullYear();
-  const cur=viewYear*12+viewMonth;
-  const overProjs=data.projects.filter(p=>{
-    if(p.isInternal)return false;
-    // Skip project als het buiten zijn looptijd valt
-    if(p.startMonth!==undefined&&p.startYear!==undefined&&cur<p.startYear*12+p.startMonth)return false;
-    if(p.endMonth!==undefined&&p.endYear!==undefined&&cur>p.endYear*12+p.endMonth)return false;
-    return true;
-  }).map(p=>({proj:p,cli:getCli(p.clientId),info:overInfo(p,data.tasks,viewMonth,viewYear)})).filter(x=>x.info.isOver);
+  // Gebruik dezelfde helper als de badge — gegarandeerde consistency
+  const overProjs=getOverProjectsForView().map(p=>({proj:p,cli:getCli(p.clientId),info:overInfo(p,data.tasks,viewMonth,viewYear)}));
   if(!overProjs.length){document.getElementById('tab-overuren').innerHTML=`<div class="empty-state" style="padding:24px 0"><div style="font-size:34px;margin-bottom:7px">✅</div><p>Geen overuren!</p><small>Alle projecten binnen budget.</small></div>`;return}
   const totLoss=overProjs.reduce((s,x)=>s+x.info.loss,0);
   const totOver=overProjs.reduce((s,x)=>s+x.info.over,0);
@@ -1627,6 +1781,38 @@ function getMonthTasks(month,year){
   });
 }
 
+// Kopieer alle taken van een maand naar de volgende — handig om snel een vooruitplanning te maken
+function copyMonthForward(srcM,srcY){
+  const srcTasks=S.data.tasks.filter(t=>t.billingMonth===srcM&&t.billingYear===srcY&&t.projectId!=='__intern__');
+  if(!srcTasks.length){alert('Geen taken om te kopiëren in deze maand.');return;}
+  const dstM=srcM===11?0:srcM+1;
+  const dstY=srcM===11?srcY+1:srcY;
+  const dim=new Date(dstY,dstM+1,0).getDate();
+  const newTasks=srcTasks.map(t=>{
+    const srcDate=weekDates(t.allocatedWeek,t.allocatedYear)[t.allocatedDay||0];
+    const dayOfMonth=Math.min(srcDate.getDate(),dim);
+    const targetDate=new Date(dstY,dstM,dayOfMonth);
+    const wn=weekNum(targetDate);
+    const dow=targetDate.getDay()===0?6:targetDate.getDay()-1;
+    return{
+      ...t,
+      id:uid(),
+      allocatedWeek:wn.week,
+      allocatedYear:wn.year,
+      allocatedDay:dow,
+      billingMonth:dstM,
+      billingYear:dstY,
+      timerSeconds:0,
+      timerRunning:false,
+      timerRunningSince:null,
+    };
+  });
+  setData(d=>({...d,tasks:[...d.tasks,...newTasks],projects:d.projects.map(p=>{
+    const ids=newTasks.filter(t=>t.projectId===p.id).map(t=>t.id);
+    return ids.length?{...p,tasks:[...(p.tasks||[]),...ids]}:p;
+  })}));
+}
+
 function calcMonthProjStats(monthTasks,allTasks,projects,month,year){
   const stats=[];
   projects.forEach(proj=>{
@@ -1684,14 +1870,16 @@ function renderAnalyse(){
   const totalMissed=projStats.reduce((s,x)=>s+x.missedRev,0);
   const totalBonus=projStats.reduce((s,x)=>s+(x.bonusRev||0),0);
 
-  // Vakantie- en vrije dagen in deze maand tellen
+  // Vakantie- en vrije dagen in deze maand tellen (halve dagen = 0.5)
   const vacsThisMonth=(data.vacations||[]).filter(v=>{
     const d=weekDates(v.allocatedWeek,v.allocatedYear)[v.allocatedDay||0];
     return d&&d.getMonth()===analyseMonth&&d.getFullYear()===analyseYear;
   });
-  const holidayDays=vacsThisMonth.filter(v=>v.isHoliday).length;
-  const vacationDays=vacsThisMonth.filter(v=>!v.isHoliday).length;
+  const halfFactor=v=>v.halfDay?0.5:1;
+  const holidayDays=vacsThisMonth.filter(v=>v.isHoliday).reduce((s,v)=>s+halfFactor(v),0);
+  const vacationDays=vacsThisMonth.filter(v=>!v.isHoliday).reduce((s,v)=>s+halfFactor(v),0);
   const totalOffDays=holidayDays+vacationDays;
+  const fmtDays=n=>n===Math.floor(n)?n:n.toFixed(1);
   // Totaal dagen gewerkt deze maand
   const totalDaysWorked=Math.round((billableMonthH/8)*10)/10;
 
@@ -1736,11 +1924,48 @@ function renderAnalyse(){
         <div class="an-card-sub">${totalBonus>0?'verkocht > gewerkt 🎉':totalMissed>0?'door overuren':'op schema'}</div>
       </div>
       <div class="an-card" style="border-color:${totalOffDays>0?'#fed7aa':'#e2e8f0'};background:${totalOffDays>0?'linear-gradient(135deg,#fff7ed,#ffedd5)':'#fff'}">
-        <div class="an-card-v" style="color:${totalOffDays>0?'#c2410c':'#94a3b8'}">${totalOffDays}<span style="font-size:11px;font-weight:400">d</span></div>
+        <div class="an-card-v" style="color:${totalOffDays>0?'#c2410c':'#94a3b8'}">${fmtDays(totalOffDays)}<span style="font-size:11px;font-weight:400">d</span></div>
         <div class="an-card-l">Vrije dagen</div>
-        <div class="an-card-sub">${holidayDays>0?holidayDays+'× vrij':''}${holidayDays>0&&vacationDays>0?' · ':''}${vacationDays>0?vacationDays+'× vakantie':''}${totalOffDays===0?'volle maand werken':''}</div>
+        <div class="an-card-sub">${holidayDays>0?fmtDays(holidayDays)+'× vrij':''}${holidayDays>0&&vacationDays>0?' · ':''}${vacationDays>0?fmtDays(vacationDays)+'× vakantie':''}${totalOffDays===0?'volle maand werken':''}</div>
       </div>
     </div>`;
+
+  // 📅 Plan-vooruit nudge — altijd evalueren, ook als deze maand leeg is.
+  // Alleen tonen bij huidige of toekomstige maanden (geen gezeur over verleden).
+  (() => {
+    const _today=new Date();
+    const _viewIdx=analyseYear*12+analyseMonth;
+    const _todayIdx=_today.getFullYear()*12+_today.getMonth();
+    if(_viewIdx<_todayIdx)return; // verleden — niet zeuren
+    const _nm=analyseMonth===11?0:analyseMonth+1;
+    const _ny=analyseMonth===11?analyseYear+1:analyseYear;
+    const _nt=getMonthTasks(_nm,_ny).filter(t=>getProj(t.projectId)&&!getProj(t.projectId).isInternal);
+    const _nh=_nt.reduce((s,t)=>s+(t.hours||0),0);
+    // Threshold: 30% van huidige maand, met minimum van 8u. Als huidige maand leeg is → minimum 8u.
+    const minThreshold=Math.max(8,billableMonthH*0.3);
+    if(_nh>=minThreshold)return; // genoeg gepland, geen nudge
+    const hasCurrent=billableMonthH>0;
+    const title=hasCurrent
+      ?`Plan ${MONTH_NL[_nm]} alvast in`
+      :`Plan vooruit voor reëel advies`;
+    const body=hasCurrent
+      ?`${MONTH_NL[_nm]} ${_ny} heeft pas <strong>${_nh}u</strong> gepland (deze maand: <strong>${billableMonthH}u</strong>). Vooruit plannen geeft een reëler capaciteitsadvies en voorkomt verrassingen.`
+      :`${MONTH_NL[analyseMonth]} ${analyseYear} en ${MONTH_NL[_nm]} ${_ny} zijn nog (bijna) leeg. Plan je werk in zodat het capaciteitsadvies klopt en je nieuwe klanten kunt aannemen met vertrouwen.`;
+    const copyBtn=hasCurrent
+      ?`<button class="btn btn-secondary btn-sm" data-act="copy-month-forward" style="font-size:11px;border-color:#93c5fd;color:#1e40af">📋 Kopieer ${MONTH_NL[analyseMonth]} → ${MONTH_NL[_nm]}</button>`
+      :'';
+    h+=`<div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #93c5fd;border-radius:12px;padding:13px 15px;margin-bottom:18px;display:flex;gap:11px;align-items:flex-start">
+      <span style="font-size:22px;flex-shrink:0">📅</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12.5px;font-weight:800;color:#1e3a8a;margin-bottom:3px">${title}</div>
+        <div style="font-size:11.5px;color:#1e40af;line-height:1.5;margin-bottom:9px">${body}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn btn-primary btn-sm" data-act="goto-next-month" style="font-size:11px">→ Ga naar ${MONTH_NL[_nm]}</button>
+          ${copyBtn}
+        </div>
+      </div>
+    </div>`;
+  })();
 
   if(!projStats.length){
     h+=`<div class="an-empty"><div style="font-size:36px;margin-bottom:8px">📭</div><p style="font-size:14px;font-weight:600;color:#64748b">Geen taken in ${MONTH_NL[analyseMonth]} ${analyseYear}</p><p style="font-size:12px;margin-top:4px">Plan taken in de weekweergave om analyse te zien.</p></div>`;
@@ -1786,23 +2011,26 @@ function renderAnalyse(){
       <div style="flex:1;min-width:110px">${svgLegend}</div>
     </div>`;
 
-    // Capaciteitsadvies — houd rekening met vrije dagen (geen werk op die dagen)
-    const CAP_WEEK=32; // 40u/week min 8u overhead (acquisitie, boekhouding, belasting)
-    // Bereken effectieve werkdagen in deze maand
+    // Capaciteitsadvies — leest nu de slider uit Instellingen i.p.v. hardcoded 40u
+    // Overhead = niet-factureerbare uren (admin, boekhouding, acquisitie). Default 20%.
+    const weeklyCap=data.settings?.hoursPerWeek||40;
+    const OVERHEAD_PCT=0.20;
+    const CAP_WEEK=Math.round(weeklyCap*(1-OVERHEAD_PCT)); // bv. 40u → 32u, 24u → 19u, 50u → 40u
+    const overheadH=weeklyCap-CAP_WEEK;
+    // Bereken effectieve werkdagen in deze maand (na aftrek vrije dagen + NL feestdagen)
     const workingDaysInMonth=(()=>{
       let n=0;const dim=new Date(analyseYear,analyseMonth+1,0).getDate();
       for(let d=1;d<=dim;d++){const dow=new Date(analyseYear,analyseMonth,d).getDay();if(dow!==0&&dow!==6)n++}
       return n;
     })();
     const effectiveWorkDays=Math.max(1,workingDaysInMonth-totalOffDays);
-    // Beschikbare uren in deze maand (32u/week × 5 dagen = 6.4u per werkdag)
-    const dailyCap=CAP_WEEK/5; // 6.4u per dag bij 32u/week
+    const dailyCap=CAP_WEEK/5; // factureerbare uren per werkdag
     const monthCapH=effectiveWorkDays*dailyCap;
     const freeMonthH=Math.round(monthCapH-totalCliH);
     const freeWeekH=Math.round(freeMonthH/(effectiveWorkDays/5||1));
     const pctBusy=monthCapH>0?Math.min(Math.round((totalCliH/monthCapH)*100),100):0;
     let advIcon,advBg,advClr,advTitle,advMsg;
-    const offDaysNote=totalOffDays>0?` (na aftrek van ${totalOffDays} vrije ${totalOffDays===1?'dag':'dagen'})`:'';
+    const offDaysNote=totalOffDays>0?` (na aftrek van ${fmtDays(totalOffDays)} vrije ${totalOffDays===1?'dag':'dagen'})`:'';
     if(freeWeekH<0){
       advIcon='🔴';advBg='#fee2e2';advClr='#991b1b';
       advTitle=`Je werkt ${Math.abs(freeWeekH)}u/week boven capaciteit${offDaysNote}`;
@@ -1834,7 +2062,7 @@ function renderAnalyse(){
         <span style="font-size:10px;color:${advClr};font-weight:600;white-space:nowrap">${pctBusy}% bezet</span>
       </div>
       <div style="font-size:11px;color:${advClr};opacity:.85;line-height:1.5">${advMsg}</div>
-      <div style="font-size:10px;color:${advClr};opacity:.7;margin-top:4px">📅 ${effectiveWorkDays} effectieve werkdagen × ${dailyCap.toFixed(1)}u = ${Math.round(monthCapH)}u beschikbaar</div>
+      <div style="font-size:10px;color:${advClr};opacity:.7;margin-top:4px">📅 ${effectiveWorkDays} effectieve werkdagen × ${dailyCap.toFixed(1)}u = ${Math.round(monthCapH)}u beschikbaar <span style="opacity:.7">(${weeklyCap}u/week − ${overheadH}u overhead)</span></div>
     </div>`;
 
     // Per project detail cards
@@ -1924,6 +2152,19 @@ function renderAnalyse(){
   el.innerHTML=h;
   el.querySelector('#an-month')?.addEventListener('change',e=>setState({analyseMonth:parseInt(e.target.value)}));
   el.querySelector('#an-year')?.addEventListener('change',e=>setState({analyseYear:parseInt(e.target.value)}));
+  el.querySelector('[data-act="goto-next-month"]')?.addEventListener('click',()=>{
+    const nm=analyseMonth===11?0:analyseMonth+1;
+    const ny=analyseMonth===11?analyseYear+1:analyseYear;
+    setState({analyseMonth:nm,analyseYear:ny});
+  });
+  el.querySelector('[data-act="copy-month-forward"]')?.addEventListener('click',()=>{
+    const nm=analyseMonth===11?0:analyseMonth+1;
+    const ny=analyseMonth===11?analyseYear+1:analyseYear;
+    if(confirm(`Alle taken van ${MONTH_NL[analyseMonth]} ${analyseYear} kopiëren naar ${MONTH_NL[nm]} ${ny}?\n\nJe kunt ze daarna verschuiven in de kalender.`)){
+      copyMonthForward(analyseMonth,analyseYear);
+      setState({analyseMonth:nm,analyseYear:ny});
+    }
+  });
 }
 
 // ═══════════════════════════════════════════════
@@ -1940,6 +2181,8 @@ function render(){
   if(S.screen==='projects')renderProjects();
   if(S.screen==='analyse')renderAnalyse();
   if(S.screen==='settings')renderSettings();
+  // Vervang alle native selects door custom dropdown (Safari-fix)
+  enhanceSelects(document.body);
 }
 
 // ═══════════════════════════════════════════════
@@ -1963,6 +2206,7 @@ function openRetainerOverrideModal(projId){
       <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:9px 12px;font-size:12px;color:#166534;margin-bottom:14px">
         Standaard: <strong>${p.retainerHoursPerMonth||p.agreedHours||0}u/mnd</strong> · <strong>${eur(p.retainerBudgetPerMonth||p.agreedBudget||0)}/mnd</strong>. Stel hieronder een afwijkende waarde in voor één specifieke maand.
       </div>
+      <div id="ro-range-warn" style="display:none;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px 12px;font-size:12px;color:#92400e;margin-bottom:14px"></div>
       <div class="form-row">
         <div class="form-group"><label class="form-label">Maand</label><select class="form-select" id="ro-month">${monthOpts}</select></div>
         <div class="form-group"><label class="form-label">Jaar</label><select class="form-select" id="ro-year">${yearOpts}</select></div>
@@ -1995,6 +2239,34 @@ function openRetainerOverrideModal(projId){
   };
   refreshList();
 
+  // Check of geselecteerde maand binnen looptijd valt — toon waarschuwing + verleng-knop
+  const checkRange=()=>{
+    const proj=getProj2();
+    const m=parseInt(el.querySelector('#ro-month').value);
+    const y=parseInt(el.querySelector('#ro-year').value);
+    const cur=y*12+m;
+    const warnEl=el.querySelector('#ro-range-warn');
+    let outOfRange=null;// 'before' | 'after'
+    if(proj.startMonth!==undefined&&proj.startYear!==undefined&&cur<proj.startYear*12+proj.startMonth)outOfRange='before';
+    if(proj.endMonth!==undefined&&proj.endYear!==undefined&&cur>proj.endYear*12+proj.endMonth)outOfRange='after';
+    if(!outOfRange){warnEl.style.display='none';return false;}
+    const rangeText=`${proj.startMonth!==undefined?MONTH_NL[proj.startMonth]+' '+proj.startYear:'…'} → ${proj.endMonth!==undefined?MONTH_NL[proj.endMonth]+' '+proj.endYear:'doorlopend'}`;
+    const selText=`${MONTH_NL[m]} ${y}`;
+    const action=outOfRange==='after'?`Verleng eindmaand t/m ${selText}`:`Vervroeg startmaand naar ${selText}`;
+    warnEl.style.display='';
+    warnEl.innerHTML=`<div style="display:flex;align-items:flex-start;gap:8px"><span style="font-size:14px">⚠️</span><div style="flex:1"><div style="font-weight:700;margin-bottom:3px">${selText} valt buiten de looptijd</div><div style="font-size:11px;opacity:.85;margin-bottom:7px">Project loopt: <strong>${rangeText}</strong>. Sla je nu op, dan verschijnt deze maand niet in het overzicht.</div><button class="btn btn-primary btn-sm" id="ro-extend" style="font-size:11px">📅 ${action}</button></div></div>`;
+    warnEl.querySelector('#ro-extend').addEventListener('click',()=>{
+      setData(d=>({...d,projects:d.projects.map(pp=>{
+        if(pp.id!==projId)return pp;
+        if(outOfRange==='after')return{...pp,endMonth:m,endYear:y};
+        return{...pp,startMonth:m,startYear:y};
+      })}));
+      // herbereken na update
+      checkRange();
+    });
+    return true;
+  };
+
   // When month/year changes, prefill inputs from existing override or default
   const syncInputs=()=>{
     const m=parseInt(el.querySelector('#ro-month').value);
@@ -2004,7 +2276,10 @@ function openRetainerOverrideModal(projId){
     const cap=getRetainerCap(getProj2(),m,y);
     el.querySelector('#ro-hours').value=existing?existing.hours:cap.hours;
     el.querySelector('#ro-budget').value=existing?existing.budget:cap.budget;
+    checkRange();
   };
+  // Initial check
+  checkRange();
   el.querySelector('#ro-month').addEventListener('change',syncInputs);
   el.querySelector('#ro-year').addEventListener('change',syncInputs);
   el.querySelector('#ro-cancel').addEventListener('click',close);
@@ -2043,7 +2318,44 @@ function openTaskModal(task,dayIdx=0,prefProjId,prefHours,prefTime,prefBillingMo
   const yearRange=[curY-1,curY,curY+1];
   const billingMonthOpts=MONTHS.map((m,i)=>`<option value="${i}"${i===defBM?' selected':''}>${m.charAt(0).toUpperCase()+m.slice(1)}</option>`).join('');
   const billingYearOpts=yearRange.map(y=>`<option value="${y}"${y===defBY?' selected':''}>${y}</option>`).join('');
-  const{el,close}=openModal(`<div class="modal"><div class="modal-hdr"><span class="modal-title">${isEdit?'Taak bewerken':'Taak toevoegen'}</span><button class="modal-close">×</button></div><div class="modal-body"><div class="form-group"><label class="form-label">Project *</label><select class="form-select" id="mt-proj">${projOpts||'<option value="">— Voeg eerst een project toe —</option>'}</select></div><div class="form-group"><label class="form-label">Taaknaam *</label><input class="form-input" id="mt-name" placeholder="bijv. Homepage ontwerpen" value="${task?.name||''}"></div><div class="form-row"><div class="form-group"><label class="form-label">Starttijd</label><input class="form-input" id="mt-time" type="time" value="${timeVal}"></div><div class="form-group"><label class="form-label">Duur (uren)</label><input class="form-input" id="mt-hours" type="number" min="0.25" step="0.25" value="${task?.hours||prefHours||2}"></div></div><div class="form-group"><label class="form-label">Facturatiemaand <span style="font-weight:400;color:#94a3b8">— telt mee in welk maandbudget</span></label><div style="display:flex;gap:7px"><select class="form-select" id="mt-bm" style="flex:2">${billingMonthOpts}</select><select class="form-select" id="mt-by" style="flex:1">${billingYearOpts}</select></div></div>${isEdit&&(task.timerSeconds||0)>0?`<div style="background:#f0fdfe;border:1px solid #a5f3fc;border-radius:9px;padding:8px;font-size:11.5px;color:#0891b2;margin-bottom:10px">⏱ Getrackte tijd: <strong>${fmtSecs(task.timerSeconds)}</strong> <button onclick="resetTimer('${task.id}')" style="font-size:10.5px;color:#94a3b8;margin-left:8px;text-decoration:underline">reset</button></div>`:''}<div style="display:flex;gap:7px;justify-content:flex-end">${isEdit?'<button class="btn btn-danger" id="mt-del">✕</button>':''}<button class="btn btn-secondary" id="mt-cancel">Annuleren</button><button class="btn btn-primary" id="mt-save">Opslaan</button></div></div></div>`);
+  const{el,close}=openModal(`<div class="modal"><div class="modal-hdr"><span class="modal-title">${isEdit?'Taak bewerken':'Taak toevoegen'}</span><button class="modal-close">×</button></div><div class="modal-body"><div class="form-group"><label class="form-label">Project *</label><select class="form-select" id="mt-proj">${projOpts||'<option value="">— Voeg eerst een project toe —</option>'}</select></div><div class="form-group" id="mt-suggestions-wrap" style="display:none"><label class="form-label">💡 Vaak gebruikt <span style="font-weight:400;color:#94a3b8">— klik om in te vullen</span></label><div id="mt-suggestions" style="display:flex;flex-wrap:wrap;gap:4px;max-height:84px;overflow-y:auto"></div></div><div class="form-group"><label class="form-label">Taaknaam *</label><input class="form-input" id="mt-name" placeholder="bijv. Homepage ontwerpen" value="${task?.name||''}"></div><div class="form-row"><div class="form-group"><label class="form-label">Starttijd</label><input class="form-input" id="mt-time" type="time" value="${timeVal}"></div><div class="form-group"><label class="form-label">Duur (uren)</label><input class="form-input" id="mt-hours" type="number" min="0.25" step="0.25" value="${task?.hours||prefHours||2}"></div></div><div class="form-group"><label class="form-label">Facturatiemaand <span style="font-weight:400;color:#94a3b8">— telt mee in welk maandbudget</span></label><div style="display:flex;gap:7px"><select class="form-select" id="mt-bm" style="flex:2">${billingMonthOpts}</select><select class="form-select" id="mt-by" style="flex:1">${billingYearOpts}</select></div></div>${isEdit&&(task.timerSeconds||0)>0?`<div style="background:#f0fdfe;border:1px solid #a5f3fc;border-radius:9px;padding:8px;font-size:11.5px;color:#0891b2;margin-bottom:10px">⏱ Getrackte tijd: <strong>${fmtSecs(task.timerSeconds)}</strong> <button onclick="resetTimer('${task.id}')" style="font-size:10.5px;color:#94a3b8;margin-left:8px;text-decoration:underline">reset</button></div>`:''}<div style="display:flex;gap:7px;justify-content:flex-end">${isEdit?'<button class="btn btn-danger" id="mt-del">✕</button>':''}<button class="btn btn-secondary" id="mt-cancel">Annuleren</button><button class="btn btn-primary" id="mt-save">Opslaan</button></div></div></div>`);
+
+  // Suggesties op basis van eerdere taken in hetzelfde project
+  const escapeAttr=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  const refreshSuggestions=projId=>{
+    const wrap=el.querySelector('#mt-suggestions-wrap');
+    const list=el.querySelector('#mt-suggestions');
+    if(!projId){wrap.style.display='none';return;}
+    // Verzamel unieke taaknamen voor dit project, gerangschikt op recentheid + frequentie
+    const tasks=S.data.tasks.filter(t=>t.projectId===projId&&t.name&&(!isEdit||t.id!==task.id));
+    const grouped={};
+    tasks.forEach(t=>{
+      const k=t.name.trim();
+      if(!k)return;
+      if(!grouped[k])grouped[k]={name:k,count:0,lastHours:t.hours||2,recencyKey:0};
+      grouped[k].count++;
+      grouped[k].lastHours=t.hours||grouped[k].lastHours;
+      // Recency op basis van billingYear*12+billingMonth + allocatedDay/100
+      const rec=(t.billingYear||0)*12+(t.billingMonth||0)+(t.allocatedDay||0)/100;
+      if(rec>grouped[k].recencyKey)grouped[k].recencyKey=rec;
+    });
+    const suggestions=Object.values(grouped).sort((a,b)=>b.recencyKey-a.recencyKey||b.count-a.count).slice(0,12);
+    if(!suggestions.length){wrap.style.display='none';return;}
+    wrap.style.display='';
+    list.innerHTML=suggestions.map(s=>`<button type="button" class="suggestion-chip" data-name="${escapeAttr(s.name)}" data-hours="${s.lastHours}">${escapeAttr(s.name)} <span class="sug-hrs">${s.lastHours}u${s.count>1?' ·×'+s.count:''}</span></button>`).join('');
+    list.querySelectorAll('.suggestion-chip').forEach(b=>b.addEventListener('click',()=>{
+      el.querySelector('#mt-name').value=b.dataset.name;
+      el.querySelector('#mt-hours').value=b.dataset.hours;
+      // Visuele bevestiging
+      b.style.background='#dcfce7';b.style.borderColor='#86efac';b.style.color='#166534';
+      setTimeout(()=>{b.style.background='';b.style.borderColor='';b.style.color='';},600);
+    }));
+  };
+  el.querySelector('#mt-proj').addEventListener('change',e=>refreshSuggestions(e.target.value));
+  // Bij nieuwe taak zonder pre-selectie: gebruik de huidige waarde van de select (eerste project)
+  // zodat ook bij klik-op-kalender direct suggesties verschijnen.
+  refreshSuggestions(task?task.projectId:(prefProjId||el.querySelector('#mt-proj').value));
+
   el.querySelector('#mt-cancel').addEventListener('click',close);
   el.querySelector('#mt-del')?.addEventListener('click',()=>{if(S.timerTaskId===task.id){clearInterval(S.timerInterval);S.timerTaskId=null}setData(d=>({...d,tasks:d.tasks.filter(t=>t.id!==task.id),projects:d.projects.map(p=>({...p,tasks:(p.tasks||[]).filter(tid=>tid!==task.id)}))}));close()});
   el.querySelector('#mt-save').addEventListener('click',()=>{
@@ -2069,8 +2381,12 @@ window.resetTimer=function(taskId){setData(d=>({...d,tasks:d.tasks.map(t=>t.id==
 // ═══════════════════════════════════════════════
 function openCliModal(id){
   const ex=id?S.data.clients.find(c=>c.id===id):null;
-  const{el,close}=openModal(`<div class="modal"><div class="modal-hdr"><span class="modal-title">${ex?'Klant bewerken':'Klant toevoegen'}</span><button class="modal-close">×</button></div><div class="modal-body"><div class="form-group"><label class="form-label">Naam *</label><input class="form-input" id="mc-name" value="${ex?.name||''}" placeholder="bijv. TechCorp BV"></div><div class="form-group"><label class="form-label">E-mail</label><input class="form-input" id="mc-email" type="email" value="${ex?.email||''}" placeholder="contact@bedrijf.nl"></div><div class="form-group"><label class="form-label">Logo (optioneel)</label><div class="logo-upload-area" id="mc-logo-area">${ex?.logo?`<img src="${ex.logo}" style="width:48px;height:48px;border-radius:8px;object-fit:cover"><br><span style="font-size:10px;color:#94a3b8;margin-top:4px;display:block">Klik om te wijzigen</span>`:'<div style="font-size:20px;margin-bottom:4px">🖼</div>Upload logo<br><span style="font-size:10.5px">(PNG, JPG)</span>'}<input type="file" id="mc-logo" accept="image/*" style="display:none"></div></div><div style="display:flex;gap:7px;justify-content:flex-end"><button class="btn btn-secondary" id="mc-cancel">Annuleren</button><button class="btn btn-primary" id="mc-save">Opslaan</button></div></div></div>`);
+  // Standaardkleur: bestaande klant.defaultColor, anders eerste vrije kleur
+  let pickedDefaultColor=ex?.defaultColor||COLORS.find(c=>!S.data.clients.map(cc=>cc.defaultColor).filter(Boolean).includes(c))||COLORS[0];
+  const colorSwatchesHtml=COLORS.map(c=>`<div class="c-swatch${c===pickedDefaultColor?' selected':''}" style="background:${c}" data-color="${c}"></div>`).join('');
+  const{el,close}=openModal(`<div class="modal"><div class="modal-hdr"><span class="modal-title">${ex?'Klant bewerken':'Klant toevoegen'}</span><button class="modal-close">×</button></div><div class="modal-body"><div class="form-group"><label class="form-label">Naam *</label><input class="form-input" id="mc-name" value="${ex?.name||''}" placeholder="bijv. TechCorp BV"></div><div class="form-group"><label class="form-label">E-mail</label><input class="form-input" id="mc-email" type="email" value="${ex?.email||''}" placeholder="contact@bedrijf.nl"></div><div class="form-group"><label class="form-label">Standaard projectkleur <span style="font-weight:400;color:#94a3b8">— nieuwe projecten van deze klant krijgen deze kleur</span></label><div class="color-grid" id="mc-colors">${colorSwatchesHtml}</div></div><div class="form-group"><label class="form-label">Logo (optioneel)</label><div class="logo-upload-area" id="mc-logo-area">${ex?.logo?`<img src="${ex.logo}" style="width:48px;height:48px;border-radius:8px;object-fit:cover"><br><span style="font-size:10px;color:#94a3b8;margin-top:4px;display:block">Klik om te wijzigen</span>`:'<div style="font-size:20px;margin-bottom:4px">🖼</div>Upload logo<br><span style="font-size:10.5px">(PNG, JPG)</span>'}<input type="file" id="mc-logo" accept="image/*" style="display:none"></div></div><div style="display:flex;gap:7px;justify-content:flex-end"><button class="btn btn-secondary" id="mc-cancel">Annuleren</button><button class="btn btn-primary" id="mc-save">Opslaan</button></div></div></div>`);
   let logoB64=ex?.logo||'';
+  el.querySelectorAll('#mc-colors .c-swatch').forEach(s=>s.addEventListener('click',()=>{el.querySelectorAll('#mc-colors .c-swatch').forEach(x=>x.classList.remove('selected'));s.classList.add('selected');pickedDefaultColor=s.dataset.color}));
   el.querySelector('#mc-logo-area').addEventListener('click',()=>el.querySelector('#mc-logo').click());
   el.querySelector('#mc-logo').addEventListener('change',e=>{
     const f=e.target.files[0];if(!f)return;
@@ -2081,8 +2397,11 @@ function openCliModal(id){
     const name=el.querySelector('#mc-name').value.trim();
     const email=el.querySelector('#mc-email').value.trim();
     if(!name)return;
-    if(ex){setData(d=>({...d,clients:d.clients.map(c=>c.id===id?{...c,name,email,logo:logoB64}:c)}))}
-    else{setData(d=>({...d,clients:[...d.clients,{id:uid(),name,email,logo:logoB64,projects:[]}]}))}
+    if(ex){
+      // Bij wijzigen van defaultColor: ook lopende projecten (zonder eigen overschrijving) updaten? Nee — projecten hebben hun eigen color. Laat bestaande projecten met rust.
+      setData(d=>({...d,clients:d.clients.map(c=>c.id===id?{...c,name,email,logo:logoB64,defaultColor:pickedDefaultColor}:c)}));
+    }
+    else{setData(d=>({...d,clients:[...d.clients,{id:uid(),name,email,logo:logoB64,defaultColor:pickedDefaultColor,projects:[]}]}))}
     close();
   });
 }
@@ -2093,8 +2412,12 @@ function openCliModal(id){
 function openProjModal(id){
   const ex=id?S.data.projects.find(p=>p.id===id):null;
   if(!S.data.clients.length){openModal(`<div class="modal modal-sm"><div class="modal-hdr"><span class="modal-title">Geen klanten</span><button class="modal-close">×</button></div><div class="modal-body"><p style="font-size:13px;color:#64748b;margin-bottom:12px">Voeg eerst een klant toe.</p><div style="text-align:right"><button class="btn btn-primary modal-close">OK</button></div></div></div>`);return}
-  let pickedColor=ex?.color||COLORS.find(c=>!S.data.projects.map(p=>p.color).includes(c))||COLORS[0];
-  const cliOpts=S.data.clients.map(c=>`<option value="${c.id}"${ex?.clientId===c.id?' selected':''}>${c.name}</option>`).join('');
+  // Bij NIEUW project: pak de standaardkleur van de geselecteerde klant. Bij bewerken: huidige kleur.
+  const initialCli=ex?S.data.clients.find(c=>c.id===ex.clientId):S.data.clients[0];
+  let pickedColor=ex?.color||initialCli?.defaultColor||COLORS.find(c=>!S.data.projects.map(p=>p.color).includes(c))||COLORS[0];
+  // Track of de gebruiker handmatig een kleur heeft gekozen — zo ja, dan niet meer automatisch overschrijven bij wisselen klant
+  let userPickedColor=!!ex;
+  const cliOpts=S.data.clients.map(c=>`<option value="${c.id}"${ex?.clientId===c.id||(!ex&&c.id===initialCli?.id)?' selected':''}>${c.name}</option>`).join('');
   const isRetainer=ex?.isRetainer||false;
   const autoRate=ex&&effRate(ex)>0?Math.round(effRate(ex)):'';
   const curY2=new Date().getFullYear();
@@ -2127,7 +2450,15 @@ function openProjModal(id){
       }
     }
   });
-  el.querySelectorAll('.c-swatch').forEach(s=>s.addEventListener('click',()=>{el.querySelectorAll('.c-swatch').forEach(x=>x.classList.remove('selected'));s.classList.add('selected');pickedColor=s.dataset.color}));
+  el.querySelectorAll('.c-swatch').forEach(s=>s.addEventListener('click',()=>{el.querySelectorAll('.c-swatch').forEach(x=>x.classList.remove('selected'));s.classList.add('selected');pickedColor=s.dataset.color;userPickedColor=true}));
+  // Bij wisselen van klant in een NIEUW project: automatisch klant-standaardkleur invullen (tenzij gebruiker al handmatig koos)
+  el.querySelector('#mp-cli').addEventListener('change',e=>{
+    if(userPickedColor)return;
+    const cli=S.data.clients.find(c=>c.id===e.target.value);
+    if(!cli?.defaultColor)return;
+    pickedColor=cli.defaultColor;
+    el.querySelectorAll('.c-swatch').forEach(x=>x.classList.toggle('selected',x.dataset.color===pickedColor));
+  });
   el.querySelector('#mp-cancel').addEventListener('click',close);
   el.querySelector('#mp-save').addEventListener('click',()=>{
     const name=el.querySelector('#mp-name').value.trim();
@@ -2192,8 +2523,12 @@ document.getElementById('btn-lock-week').addEventListener('click',()=>{
   const locked=(S.data.lockedWeeks||[]);
   const idx=locked.findIndex(l=>l.week===viewW&&l.year===viewY);
   if(idx>=0){
-    // ontgrendelen — laat day-done states staan (gebruiker kan ze los uitzetten)
-    setData(d=>({...d,lockedWeeks:d.lockedWeeks.filter((_,i)=>i!==idx)}));
+    // ontgrendelen — verwijder ook de checklist (groene vinkjes) van deze week
+    setData(d=>({
+      ...d,
+      lockedWeeks:d.lockedWeeks.filter((_,i)=>i!==idx),
+      daysDone:(d.daysDone||[]).filter(x=>!(x.week===viewW&&x.year===viewY)),
+    }));
   }else{
     // vergrendelen + mark alle 5 weekdagen als done (dopamine!)
     setData(d=>{
@@ -2210,6 +2545,19 @@ document.getElementById('btn-lock-week').addEventListener('click',()=>{
     setTimeout(()=>{triggerConfetti(document.getElementById('btn-lock-week'),60);playDoneSound();showWeekCompleteToast()},80);
   }
 });
+// Privacy mode (verberg omzet/uren) — voorkeur persisteren in localStorage
+function applyPrivacyState(){
+  const on=localStorage.getItem('ff_privacy')==='1';
+  document.body.classList.toggle('privacy-on',on);
+  const btn=document.getElementById('btn-privacy');
+  if(btn){btn.innerHTML=on?'🙈 Verborgen':'👁 Privé';btn.title=on?'Toon omzet weer':'Verberg omzet & uren';}
+}
+document.getElementById('btn-privacy').addEventListener('click',()=>{
+  const cur=localStorage.getItem('ff_privacy')==='1';
+  if(cur)localStorage.removeItem('ff_privacy');else localStorage.setItem('ff_privacy','1');
+  applyPrivacyState();
+});
+applyPrivacyState();
 document.getElementById('btn-demo').addEventListener('click',()=>{const n=weekNum(new Date());S.data=makeDemo(n.week,n.year);saveData(S.data);render()});
 document.getElementById('btn-clear').addEventListener('click',()=>{if(confirm('Alle data verwijderen?')){localStorage.removeItem(KEY);const n=weekNum(new Date());S.data=makeDemo(n.week,n.year);saveData(S.data);render()}});
 
@@ -2239,7 +2587,33 @@ window.addEventListener('beforeunload',()=>{
   if(S.timerTaskId){persistTimerState()}
   if(GAS_URL&&localStorage.getItem('ff_auth')==='1'){
     if(_pendingDriveSave){clearTimeout(_pendingDriveSave);_pendingDriveSave=null;}
-    saveToDrive(S.data);
+    // sendBeacon is non-blocking en overleeft page-unload — async fetch zou worden afgebroken.
+    // Hierdoor gaat een wijziging vlak voor refresh niet verloren.
+    try{
+      if(navigator.sendBeacon){
+        // Zorg dat de timestamp up-to-date is
+        S.data._lastModified=Date.now();
+        try{localStorage.setItem(KEY,JSON.stringify(S.data))}catch{}
+        const blob=new Blob([JSON.stringify(S.data)],{type:'text/plain;charset=utf-8'});
+        navigator.sendBeacon(GAS_URL+'?action=save',blob);
+      }else{
+        saveToDrive(S.data);
+      }
+    }catch{saveToDrive(S.data)}
+  }
+});
+// Ook bij tab onzichtbaar worden (mobile pwa): doe een save
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='hidden'&&GAS_URL&&localStorage.getItem('ff_auth')==='1'){
+    if(_pendingDriveSave){clearTimeout(_pendingDriveSave);_pendingDriveSave=null;}
+    try{
+      if(navigator.sendBeacon){
+        S.data._lastModified=Date.now();
+        try{localStorage.setItem(KEY,JSON.stringify(S.data))}catch{}
+        const blob=new Blob([JSON.stringify(S.data)],{type:'text/plain;charset=utf-8'});
+        navigator.sendBeacon(GAS_URL+'?action=save',blob);
+      }
+    }catch{}
   }
 });
 </script>
