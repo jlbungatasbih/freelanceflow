@@ -39,6 +39,85 @@ input,select,textarea{font-family:inherit}
 #screen-week{display:none;flex-direction:column;height:100%;overflow:hidden}
 #screen-week.active{display:flex}
 
+/* TO-DO TAB */
+.todo-wrap{max-width:780px;margin:0 auto}
+.todo-daynav{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.todo-daynav button{background:#f8fafc;border:1px solid #e2e8f0;color:#475569;padding:6px 10px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:.15s}
+.todo-daynav button:hover{background:#ecfeff;border-color:#a5f3fc;color:#0891b2}
+.todo-daynav .today-pill{padding:4px 10px;background:#ecfeff;color:#0891b2;border:1px solid #a5f3fc;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer}
+.todo-daynav .day-label{flex:1;font-size:14px;font-weight:700;color:#0f172a;text-align:center;min-width:140px}
+.todo-daynav input[type="date"]{padding:5px 8px;border:1px solid #e2e8f0;border-radius:8px;font-size:11.5px;color:#475569;background:#fff;font-family:inherit}
+.todo-future-tag{font-size:9.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#7c3aed;background:#f3e8ff;border:1px solid #ddd6fe;padding:2px 7px;border-radius:9px;margin-left:6px}
+.todo-past-tag{font-size:9.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#64748b;background:#f1f5f9;border:1px solid #e2e8f0;padding:2px 7px;border-radius:9px;margin-left:6px}
+.todo-move-btn{font-size:10.5px;color:#94a3b8;background:transparent;border:none;cursor:pointer;padding:2px 6px;border-radius:6px;flex-shrink:0}
+.todo-move-btn:hover{color:#7c3aed;background:#f3e8ff}
+.todo-date{font-size:11.5px;color:#94a3b8;letter-spacing:.4px;margin-bottom:6px;text-transform:uppercase;font-weight:600}
+.todo-prog-text{font-size:13.5px;color:#475569;margin-bottom:8px;font-weight:500}
+.todo-prog-bar{height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;margin-bottom:24px}
+.todo-prog-fill{height:100%;background:linear-gradient(90deg,#0891b2 0%,#06b6d4 100%);width:0%;transition:width .4s ease;border-radius:3px}
+.todo-sec-hdr{font-size:11px;font-weight:700;color:#94a3b8;letter-spacing:1.1px;text-transform:uppercase;margin:22px 0 10px 2px;display:flex;align-items:center;gap:8px}
+.todo-sec-hdr .sec-count{font-size:10px;background:#f1f5f9;color:#64748b;padding:1px 7px;border-radius:9px;letter-spacing:.4px}
+.todo-row{background:#fff;border:1px solid #e2e8f0;border-radius:11px;padding:11px 13px;margin-bottom:7px;display:flex;align-items:center;gap:11px;transition:.2s}
+.todo-row.focused{background:#ecfeff;border-color:#a5f3fc}
+.todo-row.done{opacity:.45}
+.todo-row.done .todo-text{text-decoration:line-through;color:#94a3b8}
+.todo-check{width:21px;height:21px;border:2px solid #cbd5e1;border-radius:6px;flex-shrink:0;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center;background:#fff}
+.todo-check:hover{border-color:#0891b2;background:#ecfeff}
+.todo-row.done .todo-check{background:#0891b2;border-color:#0891b2;color:#fff}
+.todo-row.done .todo-check::after{content:'✓';color:#fff;font-size:13px;font-weight:700}
+.todo-body{flex:1;min-width:0;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.todo-text{font-size:13px;color:#0f172a;font-weight:500;flex:1;min-width:120px;background:transparent;border:none;outline:none;padding:2px 0}
+.todo-text:focus{border-bottom:1px dashed #a5f3fc}
+.todo-tag-focus{font-size:9.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#0891b2;background:#ecfeff;border:1px solid #a5f3fc;padding:2px 7px;border-radius:9px;cursor:pointer;transition:.15s;flex-shrink:0}
+.todo-tag-focus.inactive{color:#cbd5e1;background:#fff;border-color:#e2e8f0}
+.todo-tag-focus:hover{background:#cffafe}
+.todo-time{font-size:11.5px;color:#64748b;white-space:nowrap;font-variant-numeric:tabular-nums;cursor:pointer;padding:2px 6px;border-radius:6px;transition:.15s}
+.todo-time:hover{background:#f1f5f9;color:#0891b2}
+.todo-time.learned{color:#0891b2;font-weight:600}
+.todo-time.learned::after{content:'•';color:#a5f3fc;margin-left:2px;font-weight:900}
+.todo-timer-btn{display:inline-flex;align-items:center;gap:4px;background:#f8fafc;border:1px solid #e2e8f0;color:#475569;padding:4px 8px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap;flex-shrink:0}
+.todo-timer-btn:hover{background:#ecfeff;border-color:#a5f3fc;color:#0891b2}
+.todo-timer-btn.running{background:#0891b2;color:#fff;border-color:#0891b2;animation:todoPulse 1.6s ease-in-out infinite}
+@keyframes todoPulse{0%,100%{box-shadow:0 0 0 0 rgba(8,145,178,.4)}50%{box-shadow:0 0 0 4px rgba(8,145,178,0)}}
+.todo-timer-elapsed{font-variant-numeric:tabular-nums;font-size:11px}
+.todo-actual{font-size:10.5px;color:#10b981;font-weight:600;white-space:nowrap;flex-shrink:0;padding:2px 6px;background:#f0fdf4;border-radius:6px}
+.todo-actual.over{color:#f59e0b;background:#fffbeb}
+.todo-actual.way-over{color:#ef4444;background:#fef2f2}
+.todo-learn-box{background:linear-gradient(135deg,#ecfeff,#f0f9ff);border:1px solid #a5f3fc;border-radius:11px;padding:12px 14px;margin:18px 0;font-size:12px;color:#0e7490}
+.todo-learn-box-hdr{font-weight:700;color:#0891b2;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.todo-learn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin-top:6px}
+.todo-learn-item{display:flex;justify-content:space-between;font-size:11px;padding:3px 7px;background:rgba(255,255,255,.6);border-radius:6px}
+.todo-learn-item .lk{font-weight:600;color:#0e7490;text-transform:capitalize}
+.todo-learn-item .lv{color:#64748b;font-variant-numeric:tabular-nums}
+.todo-del{color:#cbd5e1;font-size:14px;padding:2px 5px;cursor:pointer;border-radius:6px;flex-shrink:0;line-height:1}
+.todo-del:hover{color:#ef4444;background:#fef2f2}
+.todo-add-btn{width:100%;background:transparent;border:1px dashed #cbd5e1;color:#64748b;padding:10px;border-radius:11px;font-size:12.5px;cursor:pointer;transition:.15s;margin-top:5px}
+.todo-add-btn:hover{border-color:#0891b2;color:#0891b2;background:#ecfeff}
+.todo-add-form{display:flex;gap:7px;margin-top:5px}
+.todo-add-form input{flex:1;padding:10px 12px;border:1px solid #e2e8f0;border-radius:11px;font-size:13px;outline:none}
+.todo-add-form input:focus{border-color:#0891b2;background:#f8fafc}
+.todo-add-form button{padding:10px 16px;background:#0891b2;color:#fff;border:none;border-radius:11px;font-size:12.5px;font-weight:600;cursor:pointer}
+.todo-bulk{background:#f8fafc;border:1px solid #e2e8f0;border-radius:11px;padding:12px;margin-top:18px}
+.todo-bulk-hdr{font-size:11.5px;font-weight:700;color:#475569;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.todo-bulk-body{display:none;margin-top:8px}
+.todo-bulk-body.open{display:block}
+.todo-bulk textarea{width:100%;min-height:90px;padding:10px;border:1px solid #e2e8f0;border-radius:9px;font-size:12.5px;font-family:inherit;outline:none;resize:vertical}
+.todo-bulk textarea:focus{border-color:#0891b2}
+.todo-bulk-actions{display:flex;gap:7px;margin-top:8px}
+.todo-bulk-actions button{padding:7px 13px;font-size:11.5px;font-weight:600;border-radius:8px;cursor:pointer;border:1px solid #e2e8f0;background:#fff;color:#475569}
+.todo-bulk-actions button.primary{background:#0891b2;color:#fff;border-color:#0891b2}
+.todo-history{margin-top:32px;border-top:1px solid #e2e8f0;padding-top:16px}
+.todo-hist-toggle{font-size:11.5px;font-weight:600;color:#64748b;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.todo-hist-toggle:hover{color:#0891b2}
+.todo-hist-body{margin-top:12px;display:none}
+.todo-hist-body.open{display:block}
+.todo-hist-day{margin-bottom:14px}
+.todo-hist-day-hdr{font-size:11px;color:#94a3b8;font-weight:600;margin-bottom:5px}
+.todo-hist-item{font-size:12px;color:#64748b;padding:3px 0;display:flex;align-items:center;gap:7px}
+.todo-hist-item::before{content:'✓';color:#10b981;font-weight:700}
+.todo-empty{text-align:center;padding:28px 16px;color:#94a3b8;font-size:12.5px}
+.todo-empty .ei{font-size:32px;margin-bottom:8px;opacity:.7}
+
 /* WEEK HEADER */
 .week-header{padding:11px 16px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:wrap}
 .week-nav-btn{width:28px;height:28px;border-radius:7px;background:#f8fafc;border:1px solid #e2e8f0;font-size:15px;display:flex;align-items:center;justify-content:center;color:#334155;transition:.15s}
@@ -479,6 +558,8 @@ body.privacy-on #btn-privacy{background:#1e293b;color:#fff;border-color:#0f172a}
     </div>
     <!-- ANALYSE -->
     <div id="screen-analyse" class="screen"></div>
+    <!-- TO-DO -->
+    <div id="screen-todo" class="screen"></div>
     <!-- SETTINGS -->
     <div id="screen-settings" class="screen">
       <div style="max-width:560px">
@@ -643,6 +724,9 @@ const eur=n=>`<span class="eur-val">${_eurFmt(n)}</span>`;
 const rgba=(h,a)=>{const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return`rgba(${r},${g},${b},${a})`};
 const fmtTime=m=>{const h=Math.floor(m/60),min=m%60;return`${String(h).padStart(2,'0')}:${String(min).padStart(2,'0')}`};
 const fmtSecs=s=>{const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;return h>0?`${h}:${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`:`${m}:${String(ss).padStart(2,'0')}`};
+// Format hours human-friendly: rounds to whole minutes (kills floating-point junk
+// like 0.9000000000000004) and shows '1u 26m', '34m', or '2u' as appropriate.
+const fmtH=h=>{const tot=Math.round((h||0)*60);if(tot===0)return'0u';const hrs=Math.floor(tot/60),mins=tot%60;if(hrs===0)return`${mins}m`;if(mins===0)return`${hrs}u`;return`${hrs}u ${mins}m`};
 
 // Compute Easter Sunday (Gregorian) for a given year — used for Goede Vrijdag/Paasmaandag/Hemelvaart/Pinksteren
 function easterSunday(year){
@@ -755,6 +839,7 @@ function makeDemo(week,year){
       {id:'t7',projectId:'p4',name:'Form componenten',hours:4,status:'open',allocatedWeek:week,allocatedYear:year,allocatedDay:1,startTime:780,timerSeconds:0},
     ],
     vacations:[],lockedWeeks:[],
+    todos:[],dailyTodoSnapshots:{},
     settings:{hoursPerWeek:40,calStart:6,calEnd:23},
   };
 }
@@ -1514,7 +1599,7 @@ function renderInplan(){
     row.className='inplan-row'+(info.isOver?' over':'');
     row.draggable=true;
     const retainerSub=proj.isRetainer?` · <span style="color:#0891b2;font-size:9px">${MONTHS[viewMonth]}</span>`:'';
-    row.innerHTML=`<span style="color:#cbd5e1;font-size:10px">⠿</span><div class="proj-dot" style="background:${proj.color}"></div><div style="flex:1;min-width:0"><div class="inplan-name">${proj.name}${proj.isRetainer?'<span class="retainer-badge">retainer</span>':''}</div><div class="inplan-sub">${cli?.name||'—'} · ${eur(effRate(proj))}/u${retainerSub}</div></div><div class="inplan-right">${info.isOver?`<div class="inplan-over">+${info.over}u</div>`:`<div class="inplan-free">${rem}u vrij</div>`}</div>`;
+    row.innerHTML=`<span style="color:#cbd5e1;font-size:10px">⠿</span><div class="proj-dot" style="background:${proj.color}"></div><div style="flex:1;min-width:0"><div class="inplan-name">${proj.name}${proj.isRetainer?'<span class="retainer-badge">retainer</span>':''}</div><div class="inplan-sub">${cli?.name||'—'} · ${eur(effRate(proj))}/u${retainerSub}</div></div><div class="inplan-right">${info.isOver?`<div class="inplan-over">+${fmtH(info.over)}</div>`:`<div class="inplan-free">${fmtH(rem)} vrij</div>`}</div>`;
     row.addEventListener('dragstart',e=>{e.dataTransfer.setData('projectDrop',JSON.stringify({projectId:proj.id,defaultHours:defH,billingMonth:viewMonth,billingYear:viewYear}));e.dataTransfer.effectAllowed='copy'});
     inplanEl.appendChild(row);
   });
@@ -1604,7 +1689,7 @@ function renderTabOmzet(weekTasks){
       const maxH2=proj.isRetainer?getRetainerCap(proj,viewMonth,viewYear).hours:(proj.agreedHours||0);
       const pct=Math.min((info.total/(maxH2||1))*100,100);
       const bc=info.isOver?'#ef4444':proj.color;
-      h+=`<div class="proj-sum"${info.isOver?' style="border-color:#fecaca"':''}><div class="proj-sum-head" style="border-left-color:${proj.color};background:${rgba(proj.color,.05)}"><div style="flex:1;min-width:0"><div class="ps-name">${proj.name}${info.isOver?' ⚠️':''}</div><div class="ps-cli">${cli?.name||'—'}${proj.isRetainer?'<span class="retainer-badge" style="margin-left:4px">retainer</span>':''}</div><div class="ps-prog"><div class="ps-prog-fill" style="width:${pct}%;background:${bc}"></div></div><div class="ps-hours">${info.total}/${maxH2||0}u</div></div><div class="ps-right"><div class="ps-h">${weekH}u</div><div class="ps-rev">${eur(weekRev)}</div><div class="ps-rate">${eur(effRate(proj))}/u</div></div></div>${tasks.map(t=>`<div class="t-row-s"><span class="trn">${t.name}</span><span class="trh">${t.hours}u</span></div>`).join('')}</div>`;
+      h+=`<div class="proj-sum"${info.isOver?' style="border-color:#fecaca"':''}><div class="proj-sum-head" style="border-left-color:${proj.color};background:${rgba(proj.color,.05)}"><div style="flex:1;min-width:0"><div class="ps-name">${proj.name}${info.isOver?' ⚠️':''}</div><div class="ps-cli">${cli?.name||'—'}${proj.isRetainer?'<span class="retainer-badge" style="margin-left:4px">retainer</span>':''}</div><div class="ps-prog"><div class="ps-prog-fill" style="width:${pct}%;background:${bc}"></div></div><div class="ps-hours">${fmtH(info.total)}/${fmtH(maxH2||0)}</div></div><div class="ps-right"><div class="ps-h">${fmtH(weekH)}</div><div class="ps-rev">${eur(weekRev)}</div><div class="ps-rate">${eur(effRate(proj))}/u</div></div></div>${tasks.map(t=>`<div class="t-row-s"><span class="trn">${t.name}</span><span class="trh">${fmtH(t.hours)}</span></div>`).join('')}</div>`;
     });
     if(Object.keys(byCli).length){
       h+=`<div class="sec-title" style="margin-top:9px">Per klant</div>`;
@@ -1626,11 +1711,11 @@ function renderTabOveruren(){
   if(!overProjs.length){document.getElementById('tab-overuren').innerHTML=`<div class="empty-state" style="padding:24px 0"><div style="font-size:34px;margin-bottom:7px">✅</div><p>Geen overuren!</p><small>Alle projecten binnen budget.</small></div>`;return}
   const totLoss=overProjs.reduce((s,x)=>s+x.info.loss,0);
   const totOver=overProjs.reduce((s,x)=>s+x.info.over,0);
-  let h=`<div class="loss-box"><h4>Totaal verlies <span style="font-size:10px;font-weight:400;color:#94a3b8">${MONTH_NL[viewMonth]} ${viewYear}</span></h4><div class="loss-grid"><div class="loss-card"><div class="loss-v">${totOver}u</div><div class="loss-l">onbetaald</div></div><div class="loss-card"><div class="loss-v" style="font-size:13px">${eur(totLoss)}</div><div class="loss-l">misgelopen</div></div></div></div><div class="sec-title">Per project</div>`;
+  let h=`<div class="loss-box"><h4>Totaal verlies <span style="font-size:10px;font-weight:400;color:#94a3b8">${MONTH_NL[viewMonth]} ${viewYear}</span></h4><div class="loss-grid"><div class="loss-card"><div class="loss-v">${fmtH(totOver)}</div><div class="loss-l">onbetaald</div></div><div class="loss-card"><div class="loss-v" style="font-size:13px">${eur(totLoss)}</div><div class="loss-l">misgelopen</div></div></div></div><div class="sec-title">Per project</div>`;
   overProjs.forEach(({proj,cli,info})=>{
     const cap=info.cap||proj.agreedHours||0;
     const pct=Math.min((info.total/(cap||1))*100,100);
-    h+=`<div class="over-proj"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><div><div style="font-size:11.5px;font-weight:700">${proj.name}</div><div style="font-size:10px;color:#94a3b8">${cli?.name||'—'}</div></div><div style="font-size:12.5px;font-weight:800;color:#ef4444">−${eur(info.loss)}</div></div><div class="over-prog"><div class="over-prog-fill" style="width:${pct}%"></div></div><div style="font-size:10px;color:#94a3b8;display:flex;justify-content:space-between"><span>${info.total}u / ${cap}u</span><span>+${info.over}u</span></div></div>`;
+    h+=`<div class="over-proj"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><div><div style="font-size:11.5px;font-weight:700">${proj.name}</div><div style="font-size:10px;color:#94a3b8">${cli?.name||'—'}</div></div><div style="font-size:12.5px;font-weight:800;color:#ef4444">−${eur(info.loss)}</div></div><div class="over-prog"><div class="over-prog-fill" style="width:${pct}%"></div></div><div style="font-size:10px;color:#94a3b8;display:flex;justify-content:space-between"><span>${fmtH(info.total)} / ${fmtH(cap)}</span><span>+${fmtH(info.over)}</span></div></div>`;
   });
   document.getElementById('tab-overuren').innerHTML=h;
 }
@@ -1704,7 +1789,7 @@ function renderProjects(){
       :data.tasks.filter(t=>t.projectId===proj.id);
     const retainerSub=proj.isRetainer?`<br><span style="font-size:10.5px;color:${capObj.hasOverride?'#0891b2':'#16a34a'}">${capObj.hours}u/mnd${capObj.hasOverride?' 📅':''} · ${eur(capObj.budget)}/mnd</span>`:'';
     const dateRangeSub=(proj.startMonth!==undefined||proj.endMonth!==undefined)?`<br><span style="font-size:10px;color:#94a3b8">📅 ${proj.startMonth!==undefined?MONTHS[proj.startMonth]+' '+proj.startYear:'...'} → ${proj.endMonth!==undefined?MONTHS[proj.endMonth]+' '+proj.endYear:'doorlopend'}</span>`:'';
-    return`<div class="card"${info.isOver?' style="border-color:#fecaca"':''}><div class="proj-card-hdr"><div class="proj-dot-lg" style="background:${proj.color}"></div><div class="proj-card-title">${proj.name}</div>${proj.isRetainer?`<span class="retainer-tag">🔁 retainer</span>`:''} ${info.isOver?'<span>⚠️</span>':''}</div><div style="font-size:11.5px;color:#64748b;margin-bottom:8px">${cli?.name||'—'}${effRate(proj)>0?` · ${eur(effRate(proj))}/u`:''}${retainerSub}${dateRangeSub}</div><div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${bc}"></div></div><div class="prog-meta"><span>${info.total} / ${maxH}u ${proj.isRetainer?MONTH_NL[projM]:'gepland'}</span>${info.isOver?`<span style="color:#ef4444;font-weight:700">+${info.over}u over</span>`:`<span>${Math.max(0,maxH-info.total)}u vrij</span>`}</div>${tasks.length?`<div class="task-list-card">${tasks.slice(0,4).map(t=>`<div class="task-item-card"><span class="ti-name">${t.name}</span><span class="ti-hrs">${t.hours||0}u${t.timerSeconds>0?` <span style="font-size:9.5px;color:#0891b2">(${fmtSecs(t.timerSeconds)} getrackt)</span>`:''}</span><button class="btn-icon" data-act="edit-task" data-id="${t.id}">✎</button><button class="btn-icon" data-act="del-task" data-id="${t.id}" style="font-size:11px">✕</button></div>`).join('')}${tasks.length>4?`<div style="padding:4px 9px;font-size:10.5px;color:#94a3b8">+${tasks.length-4} meer</div>`:''}</div>`:''}<button class="add-task-btn-card" data-act="add-task" data-proj="${proj.id}"><span style="font-size:13px">+</span> Taak toevoegen</button><div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap">${proj.isRetainer?`<button class="btn btn-secondary btn-sm" data-act="override-month" data-id="${proj.id}" style="color:#0891b2;border-color:#a5f3fc">📅 Maand aanpassen${Object.keys(proj.monthlyOverrides||{}).length>0?` <span style="background:#0891b2;color:#fff;border-radius:9px;padding:0 5px;font-size:9px">${Object.keys(proj.monthlyOverrides||{}).length}</span>`:''}</button>`:''}<button class="btn btn-secondary btn-sm" data-act="edit-proj" data-id="${proj.id}">✎ Bewerken</button><button class="btn btn-danger btn-sm" data-act="del-proj" data-id="${proj.id}">✕</button></div></div>`;
+    return`<div class="card"${info.isOver?' style="border-color:#fecaca"':''}><div class="proj-card-hdr"><div class="proj-dot-lg" style="background:${proj.color}"></div><div class="proj-card-title">${proj.name}</div>${proj.isRetainer?`<span class="retainer-tag">🔁 retainer</span>`:''} ${info.isOver?'<span>⚠️</span>':''}</div><div style="font-size:11.5px;color:#64748b;margin-bottom:8px">${cli?.name||'—'}${effRate(proj)>0?` · ${eur(effRate(proj))}/u`:''}${retainerSub}${dateRangeSub}</div><div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${bc}"></div></div><div class="prog-meta"><span>${fmtH(info.total)} / ${fmtH(maxH)} ${proj.isRetainer?MONTH_NL[projM]:'gepland'}</span>${info.isOver?`<span style="color:#ef4444;font-weight:700">+${fmtH(info.over)} over</span>`:`<span>${fmtH(Math.max(0,maxH-info.total))} vrij</span>`}</div>${tasks.length?`<div class="task-list-card">${tasks.slice(0,4).map(t=>`<div class="task-item-card"><span class="ti-name">${t.name}</span><span class="ti-hrs">${t.hours||0}u${t.timerSeconds>0?` <span style="font-size:9.5px;color:#0891b2">(${fmtSecs(t.timerSeconds)} getrackt)</span>`:''}</span><button class="btn-icon" data-act="edit-task" data-id="${t.id}">✎</button><button class="btn-icon" data-act="del-task" data-id="${t.id}" style="font-size:11px">✕</button></div>`).join('')}${tasks.length>4?`<div style="padding:4px 9px;font-size:10.5px;color:#94a3b8">+${tasks.length-4} meer</div>`:''}</div>`:''}<button class="add-task-btn-card" data-act="add-task" data-proj="${proj.id}"><span style="font-size:13px">+</span> Taak toevoegen</button><div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap">${proj.isRetainer?`<button class="btn btn-secondary btn-sm" data-act="override-month" data-id="${proj.id}" style="color:#0891b2;border-color:#a5f3fc">📅 Maand aanpassen${Object.keys(proj.monthlyOverrides||{}).length>0?` <span style="background:#0891b2;color:#fff;border-radius:9px;padding:0 5px;font-size:9px">${Object.keys(proj.monthlyOverrides||{}).length}</span>`:''}</button>`:''}<button class="btn btn-secondary btn-sm" data-act="edit-proj" data-id="${proj.id}">✎ Bewerken</button><button class="btn btn-danger btn-sm" data-act="del-proj" data-id="${proj.id}">✕</button></div></div>`;
   }).join('');
   el.querySelectorAll('[data-act="override-month"]').forEach(b=>b.addEventListener('click',()=>openRetainerOverrideModal(b.dataset.id)));
   el.querySelectorAll('[data-act="edit-proj"]').forEach(b=>b.addEventListener('click',()=>openProjModal(b.dataset.id)));
@@ -1750,7 +1835,7 @@ function renderSidebar(){
   const max=data.settings.hoursPerWeek||40;
   const pct=Math.round(h/max*100);
   const over=data.projects.filter(p=>overInfo(p,data.tasks).isOver).length;
-  const navItems=[{id:'week',icon:'📅',label:'Week View'},{id:'clients',icon:'👥',label:'Klanten'},{id:'projects',icon:'📁',label:'Projecten'},{id:'analyse',icon:'📊',label:'Analyse'},{id:'settings',icon:'⚙️',label:'Instellingen'}];
+  const navItems=[{id:'week',icon:'📅',label:'Week View'},{id:'todo',icon:'✅',label:'To-do'},{id:'clients',icon:'👥',label:'Klanten'},{id:'projects',icon:'📁',label:'Projecten'},{id:'analyse',icon:'📊',label:'Analyse'},{id:'settings',icon:'⚙️',label:'Instellingen'}];
   const pc=pct>100?'#ef4444':pct>85?'#f59e0b':'#0891b2';
   const timerRunning=!!S.timerTaskId;
   const timerTask=timerRunning?S.data.tasks.find(t=>t.id===S.timerTaskId):null;
@@ -2168,15 +2253,452 @@ function renderAnalyse(){
 }
 
 // ═══════════════════════════════════════════════
+//  TO-DO TAB
+// ═══════════════════════════════════════════════
+// Keyword-lookup tijdsschatting (in minuten). Volgorde = prioriteit: eerste match wint.
+// Inclusief NL+EN variaties die in Nina's wereld voorkomen.
+// `key` = stabiele bucket-naam waar de leersamples onder vallen — verander deze niet,
+// anders verlies je je leergeschiedenis. `mins` is de baseline-schatting.
+const TODO_KEYWORDS=[
+  {key:'editten',     re:/\b(editten|editen|edit|montage|monteren|monteer)\b/i,                   mins:120},
+  {key:'script',      re:/\b(scripten|scripts?|script schrijven|script opzetten)\b/i,             mins:90},
+  {key:'blog',        re:/\b(blog|artikel|long.?form|long.?read)\b/i,                              mins:180},
+  {key:'nieuwsbrief', re:/\b(nieuwsbrief|newsletter)\b/i,                                          mins:90},
+  {key:'podcast',     re:/\b(podcast)\b/i,                                                         mins:90},
+  {key:'video',       re:/\b(video|vlog|youtube|reel|tiktok|shorts?)\b/i,                          mins:90},
+  {key:'social',      re:/\b(social|post|caption|instagram|linkedin)\b/i,                          mins:30},
+  {key:'mail',        re:/\b(mail|mailen|email|inbox|reageren)\b/i,                                mins:30},
+  {key:'call',        re:/\b(bellen|belletje|call|videocall|gesprek|meeting|overleg|stand.?up)\b/i,mins:45},
+  {key:'briefje',     re:/\b(briefje|notitie|note|kort)\b/i,                                       mins:15},
+  {key:'admin',       re:/\b(factuur|factureren|administratie|admin|boekhouding|btw)\b/i,          mins:45},
+  {key:'plannen',     re:/\b(plannen|planning|inplannen)\b/i,                                      mins:30},
+  {key:'research',    re:/\b(onderzoek|research|uitzoeken|opzoeken|verkennen)\b/i,                 mins:60},
+  {key:'brainstorm',  re:/\b(brainstorm|ideeen|outline|opzet)\b/i,                                 mins:45},
+  {key:'design',      re:/\b(designen?|ontwerpen?|mockup|wireframe)\b/i,                           mins:120},
+  {key:'review',      re:/\b(reviewen?|nakijken|checken|controleren)\b/i,                          mins:30},
+  {key:'presentatie', re:/\b(presentatie|deck|slides)\b/i,                                         mins:120},
+  {key:'opruimen',    re:/\b(opruimen|sorteren|organiseren)\b/i,                                   mins:30},
+  {key:'download',    re:/\b(downloaden|uploaden|exporteren)\b/i,                                  mins:10},
+];
+// Pas baseline aan met leerhistorie als we ≥3 samples hebben voor deze bucket.
+// Weging: 70% leerwaarde + 30% baseline → adapteert maar niet wild op outliers.
+function applyLearning(bucket,baselineMin){
+  if(!bucket)return{minutes:baselineMin,learned:false};
+  const L=(S.data.todoLearning||{})[bucket];
+  if(!L||!L.samples||L.samples<3)return{minutes:baselineMin,learned:false};
+  const learnedAvg=L.totalActualMin/L.samples;
+  // Bescherm tegen extreme uitschieters
+  const clamped=Math.max(5,Math.min(learnedAvg,baselineMin*4));
+  const blended=Math.round(clamped*0.7+baselineMin*0.3);
+  return{minutes:blended,learned:true,learnedAvg:Math.round(learnedAvg),samples:L.samples};
+}
+function estimateInfo(text){
+  if(!text)return{minutes:30,bucket:null,learned:false};
+  for(const{key,re,mins}of TODO_KEYWORDS){
+    if(re.test(text)){
+      const L=applyLearning(key,mins);
+      return{minutes:L.minutes,bucket:key,learned:L.learned,baseline:mins,learnedAvg:L.learnedAvg,samples:L.samples};
+    }
+  }
+  // Heuristiek op woordlengte voor onbekende taken
+  const words=text.trim().split(/\s+/).length;
+  const base=words<=3?15:words<=6?30:45;
+  return{minutes:base,bucket:null,learned:false};
+}
+function estimateMinutes(text){return estimateInfo(text).minutes}
+function fmtMin(m){
+  if(!m||m<=0)return '0m';
+  if(m<60)return `${m}m`;
+  const h=Math.floor(m/60),rest=m%60;
+  return rest===0?`~${h}u`:`~${h}u${String(rest).padStart(2,'0')}`;
+}
+// Score voor top-3 focus selectie. Hoger = belangrijker.
+function focusScore(t){
+  let s=0;
+  if(t.focus)s+=1000; // door gebruiker als focus gemarkeerd: altijd bovenaan
+  // Ouderdom: hoe langer op de lijst, hoe meer urgentie (anti-uitstel)
+  const ageDays=t.createdAt?Math.max(0,(Date.now()-t.createdAt)/86400000):0;
+  s+=Math.min(ageDays*15,150);
+  // Snelle taken krijgen kleine boost (quick wins)
+  const est=t.estimateMin||30;
+  if(est<=30)s+=10;
+  else if(est>=180)s-=15;
+  return s;
+}
+function todayKey(d=new Date()){
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function todayLabel(d=new Date()){
+  const days=['Zondag','Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag'];
+  const months=['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
+  return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+}
+// Parse YYYY-MM-DD naar Date (lokale tijd, niet UTC)
+function parseDayKey(k){
+  if(!k)return new Date();
+  const [y,m,d]=k.split('-').map(Number);
+  return new Date(y,m-1,d);
+}
+// Verschuif dag-key met N dagen
+function shiftDay(key,delta){
+  const d=parseDayKey(key);
+  d.setDate(d.getDate()+delta);
+  return todayKey(d);
+}
+// Relatief label voor dagnav: "Vandaag", "Morgen", "Gisteren", anders volle datum
+function relativeDayLabel(key){
+  const today=todayKey();
+  if(key===today)return 'Vandaag';
+  if(key===shiftDay(today,1))return 'Morgen';
+  if(key===shiftDay(today,-1))return 'Gisteren';
+  if(key===shiftDay(today,2))return 'Overmorgen';
+  return todayLabel(parseDayKey(key));
+}
+// Schuif klaar-getikte taken van vorige dagen naar het dagarchief.
+// Idempotent — veilig om bij elke render te draaien.
+function rollOverTodos(){
+  const todos=S.data.todos||[];
+  const snaps={...(S.data.dailyTodoSnapshots||{})};
+  const todayStart=new Date();todayStart.setHours(0,0,0,0);
+  const keep=[];
+  let changed=false;
+  todos.forEach(t=>{
+    if(t.done&&t.completedAt&&t.completedAt<todayStart.getTime()){
+      const k=todayKey(new Date(t.completedAt));
+      if(!snaps[k])snaps[k]=[];
+      snaps[k].push({text:t.text,estimateMin:t.estimateMin,focus:!!t.focus,completedAt:t.completedAt});
+      changed=true;
+    }else{keep.push(t)}
+  });
+  if(changed){
+    S.data.todos=keep;
+    S.data.dailyTodoSnapshots=snaps;
+    saveData(S.data);
+  }
+}
+// State helpers
+const S_TODO={addOpen:false,bulkOpen:false,histOpen:false,viewDate:todayKey()};
+// Aparte timer-state voor to-do's (los van de project-task timer in S.timerTaskId).
+// Maar één to-do timer tegelijk: starten van een nieuwe stopt de vorige.
+S.todoTimerId=null;S.todoTimerStart=null;S.todoTimerBase=0;S.todoTimerInterval=null;
+function todoTimerElapsed(){
+  if(!S.todoTimerId||!S.todoTimerStart)return 0;
+  return S.todoTimerBase+Math.floor((Date.now()-S.todoTimerStart)/1000);
+}
+function stopTodoTimer(persist=true){
+  if(!S.todoTimerId)return;
+  const id=S.todoTimerId;
+  const total=todoTimerElapsed();
+  if(S.todoTimerInterval){clearInterval(S.todoTimerInterval);S.todoTimerInterval=null}
+  S.todoTimerId=null;S.todoTimerStart=null;S.todoTimerBase=0;
+  if(persist){
+    setData(d=>({...d,todos:(d.todos||[]).map(t=>t.id===id?{...t,actualSeconds:total}:t)}));
+  }
+}
+function startTodoTimer(id){
+  // Als al deze taak loopt: stop (toggle gedrag)
+  if(S.todoTimerId===id){stopTodoTimer(true);return}
+  // Andere todo-timer of project-task-timer loopt: stop die eerst
+  if(S.todoTimerId)stopTodoTimer(true);
+  if(typeof S.timerTaskId!=='undefined'&&S.timerTaskId&&typeof startTimer==='function'){
+    try{startTimer(S.timerTaskId)}catch{} // toggle stopt de project-task timer
+  }
+  const t=(S.data.todos||[]).find(x=>x.id===id);
+  if(!t)return;
+  S.todoTimerId=id;
+  S.todoTimerStart=Date.now();
+  S.todoTimerBase=t.actualSeconds||0;
+  S.todoTimerInterval=setInterval(()=>{
+    // Update inline badge zonder volledige re-render (smoother)
+    const badge=document.querySelector(`.todo-row[data-id="${id}"] .todo-timer-elapsed`);
+    if(badge)badge.textContent=fmtSecs(todoTimerElapsed());
+  },1000);
+  render();
+}
+function addTodo(text,opts={}){
+  const txt=(text||'').trim();
+  if(!txt)return;
+  const info=estimateInfo(txt);
+  const todo={
+    id:uid(),text:txt,
+    estimateMin:opts.estimateMin||info.minutes,
+    bucket:info.bucket,
+    estimateLocked:!!opts.estimateLocked,
+    focus:!!opts.focus,done:false,completedAt:null,
+    actualSeconds:0,
+    scheduledDate:opts.scheduledDate||S_TODO.viewDate||todayKey(),
+    createdAt:Date.now(),
+  };
+  setData(d=>({...d,todos:[...(d.todos||[]),todo]}));
+}
+function updateTodo(id,patch){
+  setData(d=>({...d,todos:(d.todos||[]).map(t=>t.id===id?{...t,...patch}:t)}));
+}
+function deleteTodo(id){
+  if(S.todoTimerId===id)stopTodoTimer(false);
+  setData(d=>({...d,todos:(d.todos||[]).filter(t=>t.id!==id)}));
+}
+// Bij afvinken: als we tijd hebben gemeten EN een bucket hebben, voeg toe aan
+// data.todoLearning[bucket]. Bij ontvinken: doe niets met learning.
+function recordLearningSample(todo){
+  if(!todo.bucket)return;
+  const actualMin=Math.round((todo.actualSeconds||0)/60);
+  if(actualMin<1)return; // minder dan 1 minuut = waarschijnlijk per ongeluk gestart
+  setData(d=>{
+    const L={...(d.todoLearning||{})};
+    const prev=L[todo.bucket]||{samples:0,totalActualMin:0,totalEstMin:0,lastUpdated:0};
+    L[todo.bucket]={
+      samples:prev.samples+1,
+      totalActualMin:prev.totalActualMin+actualMin,
+      totalEstMin:prev.totalEstMin+(todo.estimateMin||0),
+      lastUpdated:Date.now(),
+    };
+    return{...d,todoLearning:L};
+  });
+}
+function toggleTodoDone(id){
+  const t=(S.data.todos||[]).find(x=>x.id===id);
+  if(!t)return;
+  // Als timer nog loopt voor deze taak: stop & persisteer eerst
+  if(S.todoTimerId===id)stopTodoTimer(true);
+  const becomingDone=!t.done;
+  // Refresh todo na timer-stop (actualSeconds kan net gewijzigd zijn)
+  const fresh=(S.data.todos||[]).find(x=>x.id===id)||t;
+  if(becomingDone)recordLearningSample(fresh);
+  updateTodo(id,{done:becomingDone,completedAt:becomingDone?Date.now():null});
+}
+function bulkImportTodos(raw){
+  const lines=(raw||'').split(/\r?\n/).map(l=>l.replace(/^\s*[-*•·□☐✓✔✗✕\[\]x□\d]+[.)]?\s*/i,'').replace(/^\s*\[[ x]\]\s*/i,'').trim()).filter(Boolean);
+  if(!lines.length)return 0;
+  const scheduledDate=S_TODO.viewDate||todayKey();
+  const news=lines.map(text=>{
+    const info=estimateInfo(text);
+    return{id:uid(),text,estimateMin:info.minutes,bucket:info.bucket,estimateLocked:false,
+      focus:false,done:false,completedAt:null,actualSeconds:0,
+      scheduledDate,createdAt:Date.now()};
+  });
+  setData(d=>({...d,todos:[...(d.todos||[]),...news]}));
+  return news.length;
+}
+
+function renderTodo(){
+  rollOverTodos();
+  const el=document.getElementById('screen-todo');
+  if(!el)return;
+  const viewDate=S_TODO.viewDate||todayKey();
+  const today=todayKey();
+  const isToday=viewDate===today;
+  const isPast=viewDate<today;
+  const isFuture=viewDate>today;
+  // Filter op scheduledDate; oude todos zonder scheduledDate vallen op vandaag
+  const allTodos=(S.data.todos||[]).slice();
+  const todos=allTodos.filter(t=>(t.scheduledDate||today)===viewDate);
+  const open=todos.filter(t=>!t.done);
+  const doneToday=todos.filter(t=>t.done);
+  const total=open.length+doneToday.length;
+  // Tellingen voor andere dagen — handig voor de "Andere dagen" hint
+  const upcomingCounts={};
+  allTodos.forEach(t=>{
+    if(t.done)return;
+    const k=t.scheduledDate||today;
+    if(k!==viewDate)upcomingCounts[k]=(upcomingCounts[k]||0)+1;
+  });
+  const otherDays=Object.entries(upcomingCounts).sort((a,b)=>a[0].localeCompare(b[0]));
+  const donePct=total?Math.round(doneToday.length/total*100):0;
+  // Top-3 focus: gesorteerd op focusScore
+  const ranked=[...open].sort((a,b)=>focusScore(b)-focusScore(a));
+  const topIds=new Set(ranked.slice(0,3).map(t=>t.id));
+  const focusList=open.filter(t=>topIds.has(t.id)).sort((a,b)=>focusScore(b)-focusScore(a));
+  const restList=open.filter(t=>!topIds.has(t.id));
+  const totalOpenMin=open.reduce((s,t)=>s+(t.estimateMin||0),0);
+
+  const renderRow=t=>{
+    const running=S.todoTimerId===t.id;
+    const elapsed=running?todoTimerElapsed():(t.actualSeconds||0);
+    const estMin=t.estimateMin||0;
+    const actMin=Math.round(elapsed/60);
+    // Leer-indicator: heeft deze taak een bekende bucket waarvan we ≥3 samples hebben?
+    const L=t.bucket?(S.data.todoLearning||{})[t.bucket]:null;
+    const isLearned=L&&L.samples>=3;
+    // Vergelijking schatting vs werkelijk (alleen bij done of timer-data)
+    let actualBadge='';
+    if((t.done||elapsed>0)&&elapsed>0&&estMin>0){
+      const ratio=actMin/estMin;
+      const overCls=ratio>1.5?' way-over':ratio>1.1?' over':'';
+      actualBadge=`<span class="todo-actual${overCls}" title="Werkelijke tijd">✓ ${fmtMin(actMin).replace('~','')}</span>`;
+    }else if(t.done&&elapsed===0){
+      actualBadge='';
+    }
+    const timerBtn=t.done?'':`<button class="todo-timer-btn${running?' running':''}" data-act="timer" title="${running?'Stop timer':'Start timer'}">${running?'⏸':'▶'} <span class="todo-timer-elapsed">${fmtSecs(elapsed)}</span></button>`;
+    return`<div class="todo-row${t.focus?' focused':''}${t.done?' done':''}" data-id="${t.id}">
+      <div class="todo-check" data-act="toggle"></div>
+      <div class="todo-body">
+        <input class="todo-text" value="${escapeHtml(t.text)}" data-act="edit-text" />
+        <span class="todo-tag-focus${t.focus?'':' inactive'}" data-act="toggle-focus" title="Markeer als focus">focus</span>
+      </div>
+      ${actualBadge}
+      ${timerBtn}
+      <span class="todo-time${isLearned?' learned':''}" data-act="edit-time" title="${isLearned?`Aangepast op basis van ${L.samples} eerdere taken — klik om handmatig aan te passen`:'Klik om aan te passen'}">${fmtMin(estMin)}</span>
+      <button class="todo-move-btn" data-act="move" title="Verplaats naar andere dag">📅</button>
+      <span class="todo-del" data-act="del" title="Verwijder">✕</span>
+    </div>`;
+  };
+
+  // Leerblok: alleen tonen als er buckets zijn met ≥3 samples
+  const learnBuckets=Object.entries(S.data.todoLearning||{}).filter(([k,L])=>L.samples>=3);
+  const learnHtml=learnBuckets.length?`<div class="todo-learn-box">
+    <div class="todo-learn-box-hdr">🧠 Wat ik geleerd heb van jouw timer-data</div>
+    <div style="font-size:11px;color:#0e7490">Voor deze taaktypes pas ik de schatting nu automatisch aan op basis van hoe lang je er werkelijk over doet. ${learnBuckets.length} ${learnBuckets.length===1?'bucket':'buckets'} actief — verzamel meer data om accurater te worden.</div>
+    <div class="todo-learn-grid">${learnBuckets.map(([k,L])=>{
+      const avg=Math.round(L.totalActualMin/L.samples);
+      const avgEst=Math.round(L.totalEstMin/L.samples);
+      const diff=avg-avgEst;
+      const arrow=diff>5?'↑':diff<-5?'↓':'≈';
+      return`<div class="todo-learn-item" title="${L.samples} samples"><span class="lk">${arrow} ${k}</span><span class="lv">${fmtMin(avg).replace('~','')} <span style="color:#cbd5e1">(was ${fmtMin(avgEst).replace('~','')})</span></span></div>`;
+    }).join('')}</div>
+  </div>`:'';
+  const histKeys=Object.keys(S.data.dailyTodoSnapshots||{}).sort().reverse().slice(0,14);
+  const historyHtml=histKeys.length?`<div class="todo-history">
+    <span class="todo-hist-toggle" data-act="toggle-hist">${S_TODO.histOpen?'▾':'▸'} Geschiedenis (${histKeys.length} ${histKeys.length===1?'dag':'dagen'})</span>
+    <div class="todo-hist-body${S_TODO.histOpen?' open':''}">
+      ${histKeys.map(k=>{
+        const items=S.data.dailyTodoSnapshots[k]||[];
+        const d=new Date(k+'T12:00:00');
+        return `<div class="todo-hist-day"><div class="todo-hist-day-hdr">${todayLabel(d)} · ${items.length} ${items.length===1?'taak':'taken'} af</div>
+          ${items.map(it=>`<div class="todo-hist-item">${escapeHtml(it.text)} <span style="color:#cbd5e1;margin-left:auto">${fmtMin(it.estimateMin||0)}</span></div>`).join('')}
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`:'';
+
+  const dayLabel=relativeDayLabel(viewDate);
+  const fullLabel=todayLabel(parseDayKey(viewDate));
+  const dayTag=isFuture?`<span class="todo-future-tag">${dayLabel}</span>`:isPast?`<span class="todo-past-tag">${dayLabel}</span>`:'';
+  const focusSecLabel=isFuture?`Hoofdfocus — ${dayLabel.toLowerCase()}`:isPast?'Hoofdfocus':'Hoofdfocus — vandaag';
+  const doneSecLabel=isToday?'Klaar vandaag':isFuture?'Al afgevinkt':'Was klaar';
+  const emptyText=isFuture?`Nog geen plannen voor ${dayLabel.toLowerCase()}`:isPast?'Geen taken voor deze dag':'Nog geen taken voor vandaag';
+  el.innerHTML=`<div class="todo-wrap">
+    <div class="screen-hdr"><div><h1>✅ To-do</h1><p>Top 3 focus eerst · automatische tijdsschatting · per dag gearchiveerd</p></div></div>
+    <div class="todo-daynav">
+      <button data-act="day-prev" title="Vorige dag">◀</button>
+      <div class="day-label">${fullLabel}${dayTag}</div>
+      <button data-act="day-next" title="Volgende dag">▶</button>
+      ${!isToday?`<button class="today-pill" data-act="day-today">Vandaag</button>`:''}
+      <input type="date" id="todo-date-picker" value="${viewDate}" />
+    </div>
+    <div class="todo-prog-text">${doneToday.length} van ${total} ${total===1?'taak':'taken'} ${isPast?'was af':'klaar'}${open.length?` · nog ~${fmtMin(totalOpenMin).replace('~','')} ${isFuture?'gepland':'te gaan'}`:''}</div>
+    <div class="todo-prog-bar"><div class="todo-prog-fill" style="width:${donePct}%"></div></div>
+    ${otherDays.length?`<div style="font-size:11px;color:#94a3b8;margin-bottom:14px">Andere dagen met taken: ${otherDays.map(([k,n])=>`<a data-act="day-jump" data-day="${k}" style="color:#0891b2;cursor:pointer;margin-right:8px">${relativeDayLabel(k)} (${n})</a>`).join('')}</div>`:''}
+    ${total===0?`<div class="todo-empty"><div class="ei">📝</div><p>${emptyText}</p><small>Voeg er hieronder een toe, of plak een lijst.</small></div>`:''}
+    ${focusList.length?`<div class="todo-sec-hdr">${focusSecLabel} <span class="sec-count">${focusList.length}</span></div>${focusList.map(renderRow).join('')}`:''}
+    ${restList.length?`<div class="todo-sec-hdr">Overig <span class="sec-count">${restList.length}</span></div>${restList.map(renderRow).join('')}`:''}
+    ${doneToday.length?`<div class="todo-sec-hdr">${doneSecLabel} <span class="sec-count">${doneToday.length}</span></div>${doneToday.map(renderRow).join('')}`:''}
+    ${learnHtml}
+    ${S_TODO.addOpen
+      ?`<form class="todo-add-form" id="todo-add-form"><input id="todo-add-input" placeholder="Wat moet er gedaan worden?" autofocus /><button type="submit">Voeg toe</button><button type="button" data-act="cancel-add" style="background:#fff;color:#64748b;border:1px solid #e2e8f0">✕</button></form>`
+      :`<button class="todo-add-btn" data-act="open-add">+ voeg taak toe</button>`}
+    <div class="todo-bulk">
+      <div class="todo-bulk-hdr" data-act="toggle-bulk">📋 Plak je lijst hier <span style="font-weight:400;color:#94a3b8;font-size:11px">${S_TODO.bulkOpen?'▾':'▸'}</span></div>
+      <div class="todo-bulk-body${S_TODO.bulkOpen?' open':''}">
+        <textarea id="todo-bulk-text" placeholder="Eén taak per regel. Bullets, checkboxes en nummers worden er automatisch afgehaald."></textarea>
+        <div class="todo-bulk-actions">
+          <button class="primary" data-act="bulk-add">Voeg toe & schat tijd</button>
+          <button data-act="toggle-bulk">Annuleren</button>
+        </div>
+      </div>
+    </div>
+    ${historyHtml}
+  </div>`;
+
+  // Listeners
+  el.querySelectorAll('.todo-row').forEach(row=>{
+    const id=row.dataset.id;
+    row.querySelector('[data-act="toggle"]').addEventListener('click',()=>toggleTodoDone(id));
+    row.querySelector('[data-act="toggle-focus"]').addEventListener('click',()=>{
+      const t=(S.data.todos||[]).find(x=>x.id===id);if(t)updateTodo(id,{focus:!t.focus});
+    });
+    row.querySelector('[data-act="del"]').addEventListener('click',()=>deleteTodo(id));
+    const timerBtn=row.querySelector('[data-act="timer"]');
+    if(timerBtn)timerBtn.addEventListener('click',e=>{e.stopPropagation();startTodoTimer(id)});
+    const moveBtn=row.querySelector('[data-act="move"]');
+    if(moveBtn)moveBtn.addEventListener('click',e=>{
+      e.stopPropagation();
+      const t=(S.data.todos||[]).find(x=>x.id===id);if(!t)return;
+      const cur=t.scheduledDate||todayKey();
+      const ans=prompt('Verplaats naar welke datum? (YYYY-MM-DD, of "vandaag" / "morgen" / "+3" voor 3 dagen vooruit):',cur);
+      if(ans===null)return;
+      const a=String(ans).trim().toLowerCase();
+      let target=null;
+      if(a==='vandaag'||a==='today')target=todayKey();
+      else if(a==='morgen'||a==='tomorrow')target=shiftDay(todayKey(),1);
+      else if(a==='gisteren'||a==='yesterday')target=shiftDay(todayKey(),-1);
+      else if(/^[+-]?\d+$/.test(a))target=shiftDay(todayKey(),parseInt(a,10));
+      else if(/^\d{4}-\d{2}-\d{2}$/.test(a))target=a;
+      if(!target){alert('Onbekend datumformaat. Gebruik YYYY-MM-DD, "morgen", of "+2".');return}
+      updateTodo(id,{scheduledDate:target});
+    });
+    const textInput=row.querySelector('[data-act="edit-text"]');
+    textInput.addEventListener('blur',()=>{
+      const t=(S.data.todos||[]).find(x=>x.id===id);if(!t)return;
+      const v=textInput.value.trim();
+      if(!v){deleteTodo(id);return}
+      if(v===t.text)return;
+      const patch={text:v};
+      if(!t.estimateLocked)patch.estimateMin=estimateMinutes(v);
+      updateTodo(id,patch);
+    });
+    textInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();textInput.blur()}});
+    row.querySelector('[data-act="edit-time"]').addEventListener('click',()=>{
+      const t=(S.data.todos||[]).find(x=>x.id===id);if(!t)return;
+      const cur=t.estimateMin||0;
+      const ans=prompt('Tijdsschatting in minuten (bijv. 30 voor 30 min, 90 voor 1u30):',String(cur));
+      if(ans===null)return;
+      const v=parseInt(String(ans).replace(/\D/g,''),10);
+      if(isNaN(v)||v<0)return;
+      updateTodo(id,{estimateMin:v,estimateLocked:true});
+    });
+  });
+  const addBtn=el.querySelector('[data-act="open-add"]');
+  if(addBtn)addBtn.addEventListener('click',()=>{S_TODO.addOpen=true;renderTodo()});
+  const addForm=el.querySelector('#todo-add-form');
+  if(addForm){
+    addForm.addEventListener('submit',e=>{e.preventDefault();const inp=document.getElementById('todo-add-input');if(inp&&inp.value.trim()){addTodo(inp.value);S_TODO.addOpen=false}});
+    addForm.querySelector('[data-act="cancel-add"]').addEventListener('click',()=>{S_TODO.addOpen=false;renderTodo()});
+  }
+  el.querySelectorAll('[data-act="toggle-bulk"]').forEach(b=>b.addEventListener('click',()=>{S_TODO.bulkOpen=!S_TODO.bulkOpen;renderTodo()}));
+  const bulkAdd=el.querySelector('[data-act="bulk-add"]');
+  if(bulkAdd)bulkAdd.addEventListener('click',()=>{
+    const ta=document.getElementById('todo-bulk-text');if(!ta)return;
+    const n=bulkImportTodos(ta.value);
+    if(n>0){ta.value='';S_TODO.bulkOpen=false}
+  });
+  const histTog=el.querySelector('[data-act="toggle-hist"]');
+  if(histTog)histTog.addEventListener('click',()=>{S_TODO.histOpen=!S_TODO.histOpen;renderTodo()});
+  // Dag-navigator
+  const prevBtn=el.querySelector('[data-act="day-prev"]');
+  const nextBtn=el.querySelector('[data-act="day-next"]');
+  const todayBtn=el.querySelector('[data-act="day-today"]');
+  const picker=el.querySelector('#todo-date-picker');
+  if(prevBtn)prevBtn.addEventListener('click',()=>{S_TODO.viewDate=shiftDay(S_TODO.viewDate||todayKey(),-1);renderTodo()});
+  if(nextBtn)nextBtn.addEventListener('click',()=>{S_TODO.viewDate=shiftDay(S_TODO.viewDate||todayKey(),1);renderTodo()});
+  if(todayBtn)todayBtn.addEventListener('click',()=>{S_TODO.viewDate=todayKey();renderTodo()});
+  if(picker)picker.addEventListener('change',e=>{if(e.target.value){S_TODO.viewDate=e.target.value;renderTodo()}});
+  el.querySelectorAll('[data-act="day-jump"]').forEach(a=>a.addEventListener('click',()=>{S_TODO.viewDate=a.dataset.day;renderTodo()}));
+}
+// Klein utility — escape voor user-tekst in HTML attributen
+function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+// ═══════════════════════════════════════════════
 //  MAIN RENDER
 // ═══════════════════════════════════════════════
 function render(){
   renderSidebar();
-  ['week','clients','projects','analyse','settings'].forEach(s=>{
+  ['week','todo','clients','projects','analyse','settings'].forEach(s=>{
     const el=document.getElementById(`screen-${s}`);
     if(el)el.classList.toggle('active',S.screen===s);
   });
   if(S.screen==='week')renderWeek();
+  if(S.screen==='todo')renderTodo();
   if(S.screen==='clients')renderClients();
   if(S.screen==='projects')renderProjects();
   if(S.screen==='analyse')renderAnalyse();
