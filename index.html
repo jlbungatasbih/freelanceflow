@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FreelanceFlow</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%23ffffff'/><path d='M16 32 L16 54 Q 16 58 20 58 Q 24 58 24 54 L 24 32 Z' fill='%231e3a5f'/><path d='M16 8 H 40 Q 50 8 50 20 Q 50 32 40 32 H 16 Z M22 14 H 38 Q 44 14 44 20 Q 44 26 38 26 H 22 Z' fill='%2322c55e' fill-rule='evenodd'/><path d='M14 38 C 24 32, 36 24, 50 12' stroke='%23f59e0b' stroke-width='5' fill='none' stroke-linecap='round'/><polygon points='56,8 44,8 50,16' fill='%23f59e0b'/><circle cx='26' cy='20' r='1.5' fill='%231e3a5f'/><circle cx='30' cy='20' r='1.5' fill='%23f59e0b'/><circle cx='34' cy='20' r='1.5' fill='%2322c55e'/><path d='M26 22 L30 19 L34 21 L38 15' stroke='%2322c55e' stroke-width='1.5' fill='none' stroke-linecap='round'/></svg>"/>
+<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%23ffffff'/><path d='M16 32 L16 54 Q 16 58 20 58 Q 24 58 24 54 L 24 32 Z' fill='%231e3a5f'/><path d='M16 8 H 40 Q 50 8 50 20 Q 50 32 40 32 H 16 Z M22 14 H 38 Q 44 14 44 20 Q 44 26 38 26 H 22 Z' fill='%2322c55e' fill-rule='evenodd'/><path d='M14 38 C 24 32, 36 24, 50 12' stroke='%23f59e0b' stroke-width='5' fill='none' stroke-linecap='round'/><polygon points='56,8 44,8 50,16' fill='%23f59e0b'/><circle cx='26' cy='20' r='1.5' fill='%231e3a5f'/><circle cx='30' cy='20' r='1.5' fill='%23f59e0b'/><circle cx='34' cy='20' r='1.5' fill='%2322c55e'/><path d='M26 22 L30 19 L34 21 L38 15' stroke='%2322c55e' stroke-width='1.5' fill='none' stroke-linecap='round'/></svg>"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8fafc;height:100vh;overflow:hidden;color:#1e293b}
@@ -115,6 +117,19 @@ input,select,textarea{font-family:inherit}
 .todo-hist-day-hdr{font-size:11px;color:#94a3b8;font-weight:600;margin-bottom:5px}
 .todo-hist-item{font-size:12px;color:#64748b;padding:3px 0;display:flex;align-items:center;gap:7px}
 .todo-hist-item::before{content:'✓';color:#10b981;font-weight:700}
+/* "Koppel afgevinkte todo aan geplande taak" modal */
+.ltm-tabs{display:flex;gap:4px;background:#f1f5f9;padding:4px;border-radius:9px;margin-bottom:12px;border:1px solid #e2e8f0}
+.ltm-tab{flex:1;padding:7px 10px;border-radius:7px;font-size:11.5px;font-weight:600;color:#64748b;background:transparent;border:none;cursor:pointer;transition:.15s}
+.ltm-tab:hover{color:#0891b2}
+.ltm-tab-active{background:#fff;color:#0891b2;box-shadow:0 1px 3px rgba(15,23,42,.08)}
+.ltm-list{max-height:240px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:9px;background:#fff;padding:4px}
+.ltm-cand-row{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:.12s;border:1px solid transparent;margin-bottom:3px}
+.ltm-cand-row:hover{background:#f8fafc;border-color:#e2e8f0}
+.ltm-cand-row-hl{background:#fef9c3}
+.ltm-cand-row-hl:hover{background:#fef08a;border-color:#fde68a}
+.ltm-cand-row.selected{background:#ecfeff;border-color:#a5f3fc}
+.ltm-cand-row input[type="radio"]{flex-shrink:0;accent-color:#0891b2;margin:0}
+.ltm-empty{font-size:11.5px;color:#94a3b8;padding:14px;text-align:center;font-style:italic}
 .todo-empty{text-align:center;padding:28px 16px;color:#94a3b8;font-size:12.5px}
 .todo-empty .ei{font-size:32px;margin-bottom:8px;opacity:.7}
 
@@ -2260,25 +2275,52 @@ function renderAnalyse(){
 // `key` = stabiele bucket-naam waar de leersamples onder vallen — verander deze niet,
 // anders verlies je je leergeschiedenis. `mins` is de baseline-schatting.
 const TODO_KEYWORDS=[
-  {key:'editten',     re:/\b(editten|editen|edit|montage|monteren|monteer)\b/i,                   mins:120},
-  {key:'script',      re:/\b(scripten|scripts?|script schrijven|script opzetten)\b/i,             mins:90},
-  {key:'blog',        re:/\b(blog|artikel|long.?form|long.?read)\b/i,                              mins:180},
-  {key:'nieuwsbrief', re:/\b(nieuwsbrief|newsletter)\b/i,                                          mins:90},
-  {key:'podcast',     re:/\b(podcast)\b/i,                                                         mins:90},
-  {key:'video',       re:/\b(video|vlog|youtube|reel|tiktok|shorts?)\b/i,                          mins:90},
-  {key:'social',      re:/\b(social|post|caption|instagram|linkedin)\b/i,                          mins:30},
-  {key:'mail',        re:/\b(mail|mailen|email|inbox|reageren)\b/i,                                mins:30},
-  {key:'call',        re:/\b(bellen|belletje|call|videocall|gesprek|meeting|overleg|stand.?up)\b/i,mins:45},
-  {key:'briefje',     re:/\b(briefje|notitie|note|kort)\b/i,                                       mins:15},
-  {key:'admin',       re:/\b(factuur|factureren|administratie|admin|boekhouding|btw)\b/i,          mins:45},
-  {key:'plannen',     re:/\b(plannen|planning|inplannen)\b/i,                                      mins:30},
-  {key:'research',    re:/\b(onderzoek|research|uitzoeken|opzoeken|verkennen)\b/i,                 mins:60},
-  {key:'brainstorm',  re:/\b(brainstorm|ideeen|outline|opzet)\b/i,                                 mins:45},
-  {key:'design',      re:/\b(designen?|ontwerpen?|mockup|wireframe)\b/i,                           mins:120},
-  {key:'review',      re:/\b(reviewen?|nakijken|checken|controleren)\b/i,                          mins:30},
-  {key:'presentatie', re:/\b(presentatie|deck|slides)\b/i,                                         mins:120},
-  {key:'opruimen',    re:/\b(opruimen|sorteren|organiseren)\b/i,                                   mins:30},
-  {key:'download',    re:/\b(downloaden|uploaden|exporteren)\b/i,                                  mins:10},
+  // — Productie-werk (specifiek eerst, zodat 'video editten' onder editten valt) —
+  {key:'editten',        re:/\b(editten|editen|edit|montage|monteren|monteer|video.?edit)\b/i,                                                                                                                          mins:120},
+  {key:'transcribe',     re:/\b(transcriberen|transcript|transcriptie|ondertitelen|ondertiteling|subtitles?)\b/i,                                                                                                       mins:60},
+  {key:'grading',        re:/\b(kleurcorrectie|kleurcorrigeren|kleur.?correctie|color.?grading|grading)\b/i,                                                                                                            mins:45},
+  {key:'thumbnail',      re:/\b(thumbnails?|miniaturen?|miniatuur|cover.?(maken|ontwerpen)|omslag|kaft)\b/i,                                                                                                            mins:30},
+  {key:'script',         re:/\b(scripten|scripts?|script\s+(schrijven|opzetten|maken)|draaiboek)\b/i,                                                                                                                   mins:90},
+  {key:'blog',           re:/\b(blog|blogpost|blogartikel|artikel|long.?form|long.?read)\b/i,                                                                                                                            mins:180},
+  {key:'nieuwsbrief',    re:/\b(nieuwsbrief|newsletter|mailing)\b/i,                                                                                                                                                     mins:90},
+  {key:'podcast',        re:/\b(podcast|aflevering|episode)\b/i,                                                                                                                                                         mins:90},
+
+  // — Klant & sales (specifiek vóór social/admin) —
+  {key:'onboarding',     re:/\b(onboarding|klant.?onboarding|kickoff|kick.?off|welkomstpakket|klant\s+inschrijven|account\s+aanmaken|nieuwe\s+klant\s+(opzetten|aanmaken|verwelkomen)|klantmap\s+aanmaken)\b/i,         mins:90},
+  {key:'briefing',       re:/\b(briefing(en|s)?|debrief(en)?|brief\s+(schrijven|opstellen|maken|lezen|doornemen)|creatieve\s+briefing|klantbriefing)\b/i,                                                                mins:45},
+  {key:'offerte',        re:/\b(offerte(s)?|offerte\s+(maken|sturen|versturen|opstellen|opmaken|aanmaken)|prijsopgave|quote(s)?|voorstel\s+(sturen|maken)|proposal)\b/i,                                                  mins:45},
+  {key:'contract',       re:/\b(contract(en)?|contract\s+(opstellen|maken|tekenen|sturen|versturen)|overeenkomst|samenwerkingsovereenkomst|nda|geheimhouding|servicelevel|sla)\b/i,                                       mins:60},
+  {key:'producten',      re:/\b(product(en)?\s+(uploaden|toevoegen|invoeren|aanmaken|verwerken|fotograferen|inplannen)|productpagina(s)?|productbeschrijving(en)?|productinfo|productfoto(s)?|webshop|shopify|woocommerce|e.?commerce)\b/i, mins:30},
+
+  // — Social media management (vóór 'video' en 'social' zodat 'instagram ads' bij ads valt) —
+  {key:'ads',            re:/\b(ads|advertenties?|advertentie|adverteren|meta.?ads|facebook.?ads|insta.?ads|instagram.?ads|google.?ads|sea|tiktok.?ads|linkedin.?ads|betaalde\s+(campagne|posts?))\b/i,                  mins:90},
+  {key:'campagne',       re:/\b(campagne(s)?|campagne\s+(opzetten|maken|bouwen|lanceren)|launch(en)?|lancering|product.?launch)\b/i,                                                                                     mins:180},
+  {key:'contentkalender',re:/\b(contentkalender|content.?kalender|contentplanning|content.?planning|redactiekalender|content\s+(plannen|inplannen)|maandplanning|weekplanning\s+content)\b/i,                            mins:60},
+  {key:'community',      re:/\b(community.?management|comments?\s+(beantwoorden|reageren|verwerken)|dm.?s?\s+(beantwoorden|sturen|verwerken)|reageren\s+op\s+(comments?|dms?|berichten)|engagement)\b/i,                mins:30},
+  {key:'analytics',      re:/\b(analytics|statistieken|insights|rapport(age)?s?|kpi.?s?|cijfers\s+(bekijken|analyseren|doornemen|checken)|metrics)\b/i,                                                                  mins:45},
+  {key:'video',          re:/\b(video|vlog(gen)?|youtube|reels?|tiktok|shorts?|igtv)\b/i,                                                                                                                                mins:90},
+  {key:'social',         re:/\b(social.?media|social|posten|posting|plaatsen|posts?|caption(s)?|stories|story|instagram|insta|linkedin|facebook|twitter|x\.com|threads|pinterest|content\s+(maken|plaatsen|posten))\b/i, mins:30},
+
+  // — Communicatie —
+  {key:'mail',           re:/\b(mail(en|tje|s)?|email(s)?|inbox|mailbox|mailtje\s+sturen|mails?\s+(beantwoorden|verwerken)|reageren\s+op\s+mail)\b/i,                                                                    mins:30},
+  {key:'call',           re:/\b(bellen|belletje|call|videocall|video.?call|gesprek|meeting|overleg|stand.?up|zoom|teams.?meeting|kennismaking(sgesprek)?|intake)\b/i,                                                    mins:45},
+  {key:'briefje',        re:/\b(briefje|notitie|memo)\b/i,                                                                                                                                                                mins:15},
+
+  // — Administratie (specifiek eerst, dan admin als fallback) —
+  {key:'factuur',        re:/\b(factuur|factureren|facturen|factuurtje|factuur\s+(aanmaken|maken|sturen|versturen|opmaken|opstellen))\b/i,                                                                              mins:30},
+  {key:'kosten',         re:/\b(kosten\s+(inboeken|boeken|verwerken|bijwerken)|bonnen|bonnetjes|bonnetje|kostenbon|declaratie(s)?|uitgaven\s+(inboeken|verwerken))\b/i,                                                  mins:30},
+  {key:'belasting',      re:/\b(belasting(en|aangifte|dienst)?|btw|btw.?aangifte|aangifte|vooraangifte|omzetbelasting|inkomstenbelasting|jaarrekening|jaarcijfers|kor.?regeling)\b/i,                                    mins:90},
+  {key:'admin',          re:/\b(administratie\s+doen|administratie|administreren|admin|boekhouding|boekhouden|urenadministratie|crm\s+bijwerken|portaal\s+bijwerken)\b/i,                                                mins:45},
+
+  // — Overig kantoorwerk —
+  {key:'plannen',        re:/\b(plannen|planning|inplannen|agenda\s+(bijwerken|plannen|maken)|week.?planning|dag.?planning)\b/i,                                                                                         mins:30},
+  {key:'research',       re:/\b(onderzoek(en)?|research|uitzoeken|opzoeken|verkennen|inlezen)\b/i,                                                                                                                       mins:60},
+  {key:'brainstorm',     re:/\b(brainstorm(en)?|ideeen|outline|opzet\b|conceptfase|concepten\s+bedenken|conceptueel)\b/i,                                                                                                mins:45},
+  {key:'design',         re:/\b(designen?|design|ontwerpen?|mockup|wireframe|visuals?\s+maken|layout|huisstijl)\b/i,                                                                                                     mins:120},
+  {key:'review',         re:/\b(reviewen?|nakijken|checken|controleren|feedback\s+(geven|verwerken)|terugkoppelen|tegenlezen|proeflezen)\b/i,                                                                            mins:30},
+  {key:'presentatie',    re:/\b(presentatie|deck|slides|pitchdeck|keynote)\b/i,                                                                                                                                          mins:120},
+  {key:'opruimen',       re:/\b(opruimen|sorteren|organiseren|mappen\s+(opruimen|ordenen|sorteren)|files?\s+(opruimen|sorteren))\b/i,                                                                                    mins:30},
+  {key:'download',       re:/\b(downloaden|uploaden|exporteren|importeren|backup\s+maken)\b/i,                                                                                                                           mins:10},
 ];
 // Pas baseline aan met leerhistorie als we ≥3 samples hebben voor deze bucket.
 // Weging: 70% leerwaarde + 30% baseline → adapteert maar niet wild op outliers.
@@ -2456,6 +2498,188 @@ function recordLearningSample(todo){
     return{...d,todoLearning:L};
   });
 }
+// Modal: bij afvinken van een to-do — koppel aan een al geplande task in de week view.
+// Default-tab: bestaande taak kiezen + werkelijke uren overschrijven. Optioneel: nieuwe
+// task aanmaken als er nog niets gepland stond.
+function openLogTodoModal(todo){
+  const allTasks=S.data.tasks||[];
+  const allProjects=S.data.projects||[];
+  const sd=parseDayKey(todo.scheduledDate||todayKey());
+  const wn=weekNum(sd);
+  // Dag-index in week: 0=Ma, 6=Zo. JS getDay: 0=Zo, 1=Ma…
+  const dayIdx=sd.getDay()===0?6:sd.getDay()-1;
+  // Uren-bron: werkelijke timer-tijd, anders schatting; afgerond op 0.25u
+  const actualH=(todo.actualSeconds||0)/3600;
+  const estH=(todo.estimateMin||0)/60;
+  const rawH=actualH>0?actualH:estH;
+  const defaultHours=Math.max(0.25,Math.round(rawH*4)/4);
+  // Kandidaat-tasks: deze week + 1 week ervoor/erna, gesorteerd op nabijheid bij scheduledDate
+  const wnDist=(w,y)=>Math.abs((y-wn.year)*53+(w-wn.week));
+  const candidates=allTasks
+    .filter(t=>wnDist(t.allocatedWeek||0,t.allocatedYear||0)<=1)
+    .sort((a,b)=>{
+      const score=t=>{
+        const wd=wnDist(t.allocatedWeek||0,t.allocatedYear||0);
+        const dd=(t.allocatedWeek===wn.week&&t.allocatedYear===wn.year)?Math.abs((t.allocatedDay||0)-dayIdx):7;
+        return wd*100+dd*10+((t.startTime||0)/1440);
+      };
+      return score(a)-score(b);
+    });
+  const dayShort=['Ma','Di','Wo','Do','Vr','Za','Zo'];
+  const cardHtml=task=>{
+    const p=getProj(task.projectId);
+    const c=p?getCli(p.clientId):null;
+    const tDates=weekDates(task.allocatedWeek||wn.week,task.allocatedYear||wn.year);
+    const tDay=tDates[task.allocatedDay||0];
+    const sameDay=task.allocatedWeek===wn.week&&task.allocatedYear===wn.year&&task.allocatedDay===dayIdx;
+    const searchStr=((p?.name||'')+' '+(task.name||'')+' '+(c?.name||'')).toLowerCase();
+    const trackBadge=task.timerSeconds?` · ⏱ ${fmtSecs(task.timerSeconds)}`:'';
+    return`<label class="ltm-cand-row${sameDay?' ltm-cand-row-hl':''}" data-id="${task.id}" data-search="${escapeHtml(searchStr)}">
+      <input type="radio" name="ltm-task" value="${task.id}"/>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;font-weight:600;color:#0f172a;display:flex;align-items:center;gap:6px;line-height:1.3"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${p?.color||'#94a3b8'};flex-shrink:0"></span><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(task.name||'(geen naam)')}</span><span style="font-size:11px;color:#475569;font-weight:600;flex-shrink:0">${task.hours||0}u</span></div>
+        <div style="font-size:10.5px;color:#64748b;margin-top:2px">${p?escapeHtml(p.name):'—'}${c?` · ${escapeHtml(c.name)}`:''} · ${dayShort[task.allocatedDay||0]} ${tDay.getDate()}/${tDay.getMonth()+1}${trackBadge}</div>
+      </div>
+    </label>`;
+  };
+  const listHtml=candidates.length?candidates.map(cardHtml).join(''):'<div class="ltm-empty">Geen geplande taken in deze week. Maak hieronder een nieuwe.</div>';
+  // Voor "nieuwe taak"-tab
+  const projOpts=allProjects.map(p=>{const c=getCli(p.clientId);return`<option value="${p.id}">${escapeHtml(p.name)}${c?` (${escapeHtml(c.name)})`:p.isInternal?' (intern)':''}</option>`}).join('');
+  const weekDayLabels=['Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag','Zondag'];
+  const dates=weekDates(wn.week,wn.year);
+  const dayOpts=weekDayLabels.map((l,i)=>{const d=dates[i];return`<option value="${i}"${i===dayIdx?' selected':''}>${l} ${d.getDate()}/${d.getMonth()+1}</option>`}).join('');
+  // Vind eerste vrije slot op scheduledDate (voor de "nieuwe taak"-tab)
+  const sameDayTasks=allTasks.filter(t=>t.allocatedWeek===wn.week&&t.allocatedYear===wn.year&&t.allocatedDay===dayIdx).sort((a,b)=>(a.startTime||0)-(b.startTime||0));
+  let startMins=9*60;
+  if(sameDayTasks.length){
+    let cursor=startMins;
+    for(const ex of sameDayTasks){
+      const exStart=ex.startTime||0;
+      const exEnd=exStart+Math.round((ex.hours||0)*60);
+      if(cursor+defaultHours*60<=exStart)break;
+      cursor=Math.max(cursor,exEnd);
+    }
+    startMins=cursor;
+  }
+  const startStr=`${String(Math.floor(startMins/60)).padStart(2,'0')}:${String(startMins%60).padStart(2,'0')}`;
+  const timeSrcText=actualH>0?`Werkelijke timer-tijd: ${fmtSecs(todo.actualSeconds||0)} (≈ ${defaultHours}u)`:estH>0?`Op basis van schatting: ${fmtMin(todo.estimateMin||0)} (≈ ${defaultHours}u)`:'Nog geen tijd gemeten — vul handmatig in';
+  // Default-tab kiezen: als er kandidaten zijn, "bestaande"; anders meteen "nieuwe"
+  const startTab=candidates.length?'existing':'new';
+
+  const{el,close}=openModal(`<div class="modal modal-lg"><div class="modal-hdr"><span class="modal-title">⏱ Koppel afgevinkte to-do</span><button class="modal-close">×</button></div><div class="modal-body">
+    <div style="background:#ecfeff;border:1px solid #a5f3fc;border-radius:9px;padding:9px 11px;font-size:12px;color:#0e7490;margin-bottom:12px">
+      Je vinkte <strong>${escapeHtml(todo.text)}</strong> af.
+      <div style="font-size:10.5px;color:#0891b2;margin-top:3px">${timeSrcText}</div>
+    </div>
+    <div class="ltm-tabs">
+      <button type="button" class="ltm-tab${startTab==='existing'?' ltm-tab-active':''}" data-tab="existing">📌 Koppel aan geplande taak</button>
+      <button type="button" class="ltm-tab${startTab==='new'?' ltm-tab-active':''}" data-tab="new">＋ Maak nieuwe taak</button>
+    </div>
+
+    <div class="ltm-pane" id="ltm-pane-existing"${startTab==='existing'?'':' style="display:none"'}>
+      ${candidates.length?'<input type="text" class="form-input" id="ltm-search" placeholder="🔍 Zoek op project of taaknaam…" style="margin-bottom:9px"/>':''}
+      <div class="ltm-list" id="ltm-list">${listHtml}</div>
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;padding:10px;margin-top:11px">
+        <div style="font-size:11px;font-weight:700;color:#475569;margin-bottom:6px;letter-spacing:.3px">⚙ Werkelijke uren <span style="color:#94a3b8;font-weight:500">— overschrijft het geplande aantal op de taak</span></div>
+        <div style="display:flex;gap:9px;align-items:center">
+          <input class="form-input" id="ltm-hours" type="number" min="0.25" step="0.25" value="${defaultHours}" style="flex:1"/>
+          <span style="font-size:11px;color:#94a3b8">uur</span>
+        </div>
+        ${(todo.actualSeconds||0)>0?`<div style="font-size:10.5px;color:#64748b;margin-top:5px">Timer-tijd uit deze to-do (${fmtSecs(todo.actualSeconds||0)}) wordt opgeteld bij eventuele al getrackte tijd op de taak.</div>`:''}
+      </div>
+      <div style="display:flex;gap:7px;justify-content:flex-end;align-items:center;margin-top:12px">
+        <button class="btn btn-secondary" data-act="ltm-skip">Niet loggen</button>
+        <button class="btn btn-primary" id="ltm-link" disabled>📌 Koppel & update</button>
+      </div>
+    </div>
+
+    <div class="ltm-pane" id="ltm-pane-new"${startTab==='new'?'':' style="display:none"'}>
+      <div class="form-group"><label class="form-label">Project *</label><select class="form-select" id="ltn-proj">${projOpts||'<option value="">— Geen projecten —</option>'}</select></div>
+      <div class="form-group"><label class="form-label">Taaknaam *</label><input class="form-input" id="ltn-name" value="${escapeHtml(todo.text)}"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Dag</label><select class="form-select" id="ltn-day">${dayOpts}</select></div>
+        <div class="form-group"><label class="form-label">Starttijd</label><input class="form-input" id="ltn-time" type="time" value="${startStr}"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Uren</label><input class="form-input" id="ltn-hours" type="number" min="0.25" step="0.25" value="${defaultHours}"></div>
+      <div style="display:flex;gap:7px;justify-content:flex-end;align-items:center;margin-top:12px">
+        <button class="btn btn-secondary" data-act="ltm-skip">Niet loggen</button>
+        <button class="btn btn-primary" id="ltn-save">📅 Maak nieuwe taak</button>
+      </div>
+    </div>
+  </div></div>`);
+
+  // Tab-wissel
+  const tabs=el.querySelectorAll('.ltm-tab');
+  tabs.forEach(t=>t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.toggle('ltm-tab-active',x===t));
+    el.querySelector('#ltm-pane-existing').style.display=t.dataset.tab==='existing'?'':'none';
+    el.querySelector('#ltm-pane-new').style.display=t.dataset.tab==='new'?'':'none';
+  }));
+
+  // Skip-knoppen (beide tabs)
+  el.querySelectorAll('[data-act="ltm-skip"]').forEach(b=>b.addEventListener('click',close));
+
+  // Zoekfilter
+  const search=el.querySelector('#ltm-search');
+  if(search){
+    search.addEventListener('input',()=>{
+      const q=search.value.trim().toLowerCase();
+      el.querySelectorAll('.ltm-cand-row').forEach(r=>{
+        const txt=(r.dataset.search||'');
+        r.style.display=!q||txt.includes(q)?'':'none';
+      });
+    });
+  }
+
+  // Selectie → enable koppel-knop + visuele highlight
+  const linkBtn=el.querySelector('#ltm-link');
+  el.querySelectorAll('input[name="ltm-task"]').forEach(r=>r.addEventListener('change',()=>{
+    el.querySelectorAll('.ltm-cand-row').forEach(row=>row.classList.toggle('selected',row.querySelector('input[name="ltm-task"]')?.checked));
+    linkBtn.disabled=!el.querySelector('input[name="ltm-task"]:checked');
+  }));
+
+  // Koppel aan bestaande taak: overschrijf hours, tel timer-tijd op
+  linkBtn.addEventListener('click',()=>{
+    const sel=el.querySelector('input[name="ltm-task"]:checked');
+    if(!sel)return;
+    const tid=sel.value;
+    const newHours=parseFloat(el.querySelector('#ltm-hours').value)||0;
+    if(newHours<=0)return;
+    const todoSec=Math.round(todo.actualSeconds||0);
+    setData(d=>({...d,tasks:d.tasks.map(t=>{
+      if(t.id!==tid)return t;
+      return{...t,
+        hours:newHours,
+        timerSeconds:(t.timerSeconds||0)+todoSec,
+        linkedTodoIds:[...(t.linkedTodoIds||[]),todo.id],
+      };
+    })}));
+    close();
+  });
+
+  // Nieuwe taak aanmaken (fallback)
+  el.querySelector('#ltn-save').addEventListener('click',()=>{
+    const name=el.querySelector('#ltn-name').value.trim();
+    const projId=el.querySelector('#ltn-proj').value;
+    if(!name||!projId)return;
+    const di=parseInt(el.querySelector('#ltn-day').value);
+    const hours=parseFloat(el.querySelector('#ltn-hours').value)||0;
+    if(hours<=0)return;
+    const timeStr=el.querySelector('#ltn-time').value||'09:00';
+    const [hh,mm]=timeStr.split(':').map(Number);
+    const startTime=hh*60+mm;
+    const dDate=weekDates(wn.week,wn.year)[di];
+    const id=uid();
+    setData(d=>({...d,tasks:[...d.tasks,{
+      id,projectId:projId,name,hours,
+      allocatedWeek:wn.week,allocatedYear:wn.year,allocatedDay:di,
+      startTime,timerSeconds:Math.round(todo.actualSeconds||0),
+      billingMonth:dDate.getMonth(),billingYear:dDate.getFullYear(),
+      fromTodoId:todo.id,
+    }],projects:d.projects.map(p=>p.id===projId?{...p,tasks:[...(p.tasks||[]),id]}:p)}));
+    close();
+  });
+}
 function toggleTodoDone(id){
   const t=(S.data.todos||[]).find(x=>x.id===id);
   if(!t)return;
@@ -2466,6 +2690,12 @@ function toggleTodoDone(id){
   const fresh=(S.data.todos||[]).find(x=>x.id===id)||t;
   if(becomingDone)recordLearningSample(fresh);
   updateTodo(id,{done:becomingDone,completedAt:becomingDone?Date.now():null});
+  // Bij afvinken: open modal om als bestede tijd te loggen onder klant/project.
+  // Iets vertraagd zodat de check-animatie/re-render eerst rondt.
+  if(becomingDone){
+    const fresh2=(S.data.todos||[]).find(x=>x.id===id)||fresh;
+    setTimeout(()=>openLogTodoModal(fresh2),150);
+  }
 }
 function bulkImportTodos(raw){
   const lines=(raw||'').split(/\r?\n/).map(l=>l.replace(/^\s*[-*•·□☐✓✔✗✕\[\]x□\d]+[.)]?\s*/i,'').replace(/^\s*\[[ x]\]\s*/i,'').trim()).filter(Boolean);
