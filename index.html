@@ -477,8 +477,16 @@ select.cs-enhanced{position:absolute!important;left:-9999px;opacity:0;pointer-ev
 .login-btn{width:100%;padding:11px;background:linear-gradient(135deg,#06b6d4,#2563eb);color:#fff;border-radius:9px;font-size:13.5px;font-weight:700;margin-top:14px;transition:.15s;border:none;cursor:pointer}
 .login-btn:hover{opacity:.9}
 .login-err{font-size:11.5px;color:#ef4444;margin-top:7px;min-height:16px;text-align:center}
-/* SYNC BAR */
-#sync-bar{padding:5px 14px;font-size:11px;font-weight:600;text-align:center;display:none;transition:.3s}
+/* SYNC BAR — kleine pill in de sidebar, altijd zichtbaar, toont laatste sync-status */
+#sync-bar{margin:6px 9px 4px;padding:5px 9px;font-size:10.5px;font-weight:600;border-radius:8px;display:flex;align-items:center;gap:6px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;transition:.2s;cursor:default;line-height:1.2}
+#sync-bar.sync-ok{background:#dcfce7;color:#166534;border-color:#bbf7d0}
+#sync-bar.sync-pending{background:#fef9c3;color:#854d0e;border-color:#fde68a}
+#sync-bar.sync-err{background:#fee2e2;color:#991b1b;border-color:#fecaca;cursor:pointer}
+#sync-bar.sync-err:hover{background:#fecaca}
+#sync-bar.sync-conflict{background:#fef3c7;color:#92400e;border-color:#fde68a;cursor:pointer}
+#sync-bar .sync-dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
+#sync-bar.sync-pending .sync-dot{animation:syncPulse 1.4s ease-in-out infinite}
+@keyframes syncPulse{0%,100%{opacity:.4}50%{opacity:1}}
 /* LOGOUT */
 .logout-btn{display:flex;align-items:center;gap:7px;padding:7px 12px;margin:2px 7px;border-radius:9px;font-size:12px;color:#94a3b8;width:calc(100% - 14px);transition:.15s;text-align:left;border:none;background:none;cursor:pointer}
 .logout-btn:hover{background:#fef2f2;color:#ef4444}
@@ -656,14 +664,34 @@ function logout(){
 
 // ── Drive Sync ──────────────────────────────────────────────────────────────
 let driveInterval=null;
-function showSyncBar(type){
+// Persistent sync-state — getoond in de sidebar
+const _sync={lastOk:0,lastTry:0,pending:false,error:null,conflict:null};
+function fmtAgo(ts){
+  if(!ts)return 'nooit';
+  const s=Math.floor((Date.now()-ts)/1000);
+  if(s<5)return 'net';
+  if(s<60)return s+'s geleden';
+  if(s<3600)return Math.floor(s/60)+'m geleden';
+  if(s<86400)return Math.floor(s/3600)+'u geleden';
+  return Math.floor(s/86400)+'d geleden';
+}
+function setSyncStatus(state,msg){
   const bar=document.getElementById('sync-bar');
   if(!bar)return;
-  if(type==='ok'){bar.textContent='✓ Gesynchroniseerd';bar.style.background='#dcfce7';bar.style.color='#166534';}
-  else{bar.textContent='⚠ Sync mislukt — lokaal opgeslagen';bar.style.background='#fee2e2';bar.style.color='#991b1b';}
-  bar.style.display='block';
-  setTimeout(()=>{bar.style.display='none'},3000);
+  bar.classList.remove('sync-ok','sync-pending','sync-err','sync-conflict');
+  let txt='';
+  if(state==='ok'){bar.classList.add('sync-ok');txt='✓ Gesynced — '+fmtAgo(_sync.lastOk)}
+  else if(state==='pending'){bar.classList.add('sync-pending');txt='⟳ Opslaan…'}
+  else if(state==='err'){bar.classList.add('sync-err');txt=msg||'⚠ Sync mislukt — klik om opnieuw'}
+  else if(state==='conflict'){bar.classList.add('sync-conflict');txt=msg||'⚠ Drive-conflict — klik'}
+  else{txt='○ Niet gesynced'}
+  bar.innerHTML=`<span class="sync-dot"></span><span>${txt}</span>`;
 }
+// Auto-refresh sidebar pill elke 15s zodat "X seconden/minuten geleden" up-to-date blijft
+setInterval(()=>{if(_sync.lastOk&&!_sync.pending&&!_sync.error&&!_sync.conflict)setSyncStatus('ok')},15000);
+// Backwards-compat shim — oude code roept showSyncBar(type) aan
+function showSyncBar(type){setSyncStatus(type==='ok'?'ok':'err')}
+
 async function loadFromDrive(){
   if(!GAS_URL)return null;
   try{
@@ -673,51 +701,129 @@ async function loadFromDrive(){
     return j&&j.clients?j:null;
   }catch{return null}
 }
+// Schrijf naar Drive — met retry-with-backoff (max 3 pogingen) en persistente status.
+// Faalt 'ie alle 3 keer? Local blijft sowieso veilig, maar status gaat op 'err' zodat
+// de gebruiker het ziet (en handmatig kan herproberen door op de pill te klikken).
+async function _saveToDriveOnce(d){
+  const url=GAS_URL+'?action=save';
+  const res=await fetch(url,{
+    method:'POST',
+    redirect:'follow',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body:JSON.stringify(d)
+  });
+  const text=await res.text();
+  const r=JSON.parse(text);
+  if(!(r.ok===true||r.status==='ok'||r.status==='saved'))throw new Error('GAS responded: '+text.slice(0,80));
+  return r;
+}
 async function saveToDrive(d){
   if(!GAS_URL)return;
-  try{
-    // GAS werkt het beste met form-encoded POST of query param
-    const url=GAS_URL+'?action=save';
-    const res=await fetch(url,{
-      method:'POST',
-      redirect:'follow',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body:JSON.stringify(d)
-    });
-    const text=await res.text();
-    const r=JSON.parse(text);
-    // GAS geeft {ok:true,...} terug bij succes
-    if(r.ok===true||r.status==='ok'||r.status==='saved')showSyncBar('ok');else showSyncBar('err');
-  }catch(e){console.warn('Drive sync fout:',e);showSyncBar('err')}
+  _sync.lastTry=Date.now();
+  _sync.pending=true;_sync.error=null;
+  setSyncStatus('pending');
+  const delays=[0,800,2400]; // 3 pogingen, exponentiële backoff
+  for(let i=0;i<delays.length;i++){
+    if(delays[i])await new Promise(r=>setTimeout(r,delays[i]));
+    try{
+      await _saveToDriveOnce(d);
+      _sync.lastOk=Date.now();_sync.pending=false;_sync.error=null;
+      setSyncStatus('ok');
+      return;
+    }catch(e){
+      console.warn(`Drive sync poging ${i+1}/${delays.length}:`,e.message||e);
+      if(i===delays.length-1){
+        _sync.pending=false;_sync.error=String(e.message||e);
+        setSyncStatus('err');
+      }
+    }
+  }
+}
+// Tel hoeveel items in Drive ontbreken die lokaal wél bestaan — vangnet tegen
+// een Drive-snapshot die per ongeluk de lokale data zou overschrijven.
+function _diffMissing(local,remote){
+  const lt=new Set((local.todos||[]).map(t=>t.id));
+  const rt=new Set((remote.todos||[]).map(t=>t.id));
+  const lk=new Set((local.tasks||[]).map(t=>t.id));
+  const rk=new Set((remote.tasks||[]).map(t=>t.id));
+  const missingTodos=[...lt].filter(id=>!rt.has(id));
+  const missingTasks=[...lk].filter(id=>!rk.has(id));
+  return{missingTodos,missingTasks,totalMissing:missingTodos.length+missingTasks.length};
 }
 function startDriveSync(){
   if(!GAS_URL)return;
-  // Laad eerst van Drive (stil bij fout — geen melding)
+  setSyncStatus('pending');
+  // Laad eerst van Drive
   loadFromDrive().then(remote=>{
-    if(!remote)return;
-    // KRITISCH: alleen overschrijven als Drive ECHT verser is dan local.
-    // Anders verliezen we lokale wijzigingen die nog niet naar Drive waren gesynced (bv. snel refresh).
+    if(!remote){setSyncStatus(_sync.lastOk?'ok':'idle');return}
     const localTs=S.data?._lastModified||0;
     const remoteTs=remote?._lastModified||0;
-    if(remoteTs<=localTs){
-      // Local is even nieuw of nieuwer → push local nog even naar Drive zodat ze gelijk staan
-      if(remoteTs<localTs)saveToDrive(S.data);
+    const diff=_diffMissing(S.data,remote);
+    const localHasContent=(S.data.todos||[]).length+(S.data.tasks||[]).length>0;
+    // VEILIGHEIDSNET: weiger lokaal te overschrijven als Drive items mist die lokaal wel
+    // bestaan, ook als Drive's timestamp jonger is. Dit voorkomt verlies van vandaag's werk
+    // door een ouder Drive-snapshot dat ten onrechte als 'nieuwer' wordt aangeleverd.
+    if(remoteTs>localTs&&diff.totalMissing>=3&&localHasContent){
+      _sync.conflict={remote,diff,remoteTs,localTs};
+      const lbl=`⚠ Drive mist ${diff.missingTodos.length} todos, ${diff.missingTasks.length} taken — klik`;
+      setSyncStatus('conflict',lbl);
+      // Push local naar Drive zodat Drive weer in lijn komt met local
+      saveToDrive(S.data);
       return;
     }
+    if(remoteTs<=localTs){
+      if(remoteTs<localTs)saveToDrive(S.data);
+      else{_sync.lastOk=Date.now();setSyncStatus('ok')}
+      return;
+    }
+    // Drive is nieuwer en mist geen lokale items → veilig overschrijven
     S.data=remote;
     S.data.tasks=S.data.tasks.map(migrateTask);
     ensureInternProject();
-    // Tijdelijk sync uitschakelen tijdens initieel render zodat we geen fout tonen
     const wasAuth=localStorage.getItem('ff_auth');
     localStorage.removeItem('ff_auth');
     render();
     if(wasAuth)localStorage.setItem('ff_auth',wasAuth);
-    showSyncBar('ok');
-  }).catch(()=>{/* stil falen bij laden */});
+    _sync.lastOk=Date.now();setSyncStatus('ok');
+  }).catch(()=>{setSyncStatus('err','⚠ Drive niet bereikbaar — klik')});
   if(driveInterval)clearInterval(driveInterval);
-  // Periodieke save elke 30s
   driveInterval=setInterval(()=>{if(localStorage.getItem('ff_auth')==='1')saveToDrive(S.data)},SYNC_INTERVAL_MS);
 }
+// Conflict-modal: laat user kiezen wat te doen als Drive minder data heeft dan lokaal
+function openSyncConflictModal(){
+  if(!_sync.conflict){return}
+  const{remote,diff,remoteTs,localTs}=_sync.conflict;
+  const fmtT=t=>t?new Date(t).toLocaleString('nl-NL'):'onbekend';
+  const{el,close}=openModal(`<div class="modal modal-lg"><div class="modal-hdr"><span class="modal-title">⚠ Drive-conflict gedetecteerd</span><button class="modal-close">×</button></div><div class="modal-body">
+    <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:9px;padding:10px;font-size:12px;color:#92400e;margin-bottom:14px">
+      Drive zou je lokale data hebben overschreven met een snapshot die <strong>${diff.missingTodos.length} todos en ${diff.missingTasks.length} taken mist</strong> die je hier wel hebt. Ik heb dat tegengehouden.
+    </div>
+    <div style="font-size:11.5px;color:#475569;margin-bottom:10px"><strong>Lokaal (deze browser):</strong> ${(S.data.todos||[]).length} todos, ${(S.data.tasks||[]).length} taken · laatst gewijzigd ${fmtT(localTs)}</div>
+    <div style="font-size:11.5px;color:#475569;margin-bottom:14px"><strong>Drive:</strong> ${(remote.todos||[]).length} todos, ${(remote.tasks||[]).length} taken · laatst gewijzigd ${fmtT(remoteTs)}</div>
+    <div style="font-size:11.5px;color:#64748b;margin-bottom:14px">Lokaal is veilig en wordt nu naar Drive gepusht. Wil je toch Drive's versie laden (en je lokale wijzigingen weggooien)?</div>
+    <div style="display:flex;gap:7px;justify-content:flex-end">
+      <button class="btn btn-secondary" id="sc-cancel">Houd lokaal (aanbevolen)</button>
+      <button class="btn btn-danger" id="sc-overwrite">Laad Drive — gooi lokaal weg</button>
+    </div>
+  </div></div>`);
+  el.querySelector('#sc-cancel').addEventListener('click',()=>{_sync.conflict=null;setSyncStatus('ok');close()});
+  el.querySelector('#sc-overwrite').addEventListener('click',()=>{
+    S.data=remote;
+    S.data.tasks=S.data.tasks.map(migrateTask);
+    ensureInternProject();
+    saveData(S.data);
+    _sync.conflict=null;
+    render();
+    close();
+  });
+}
+// Klik op de sync-pill: open conflict-modal bij conflict, anders forceer een save
+document.addEventListener('click',e=>{
+  const bar=e.target.closest('#sync-bar');
+  if(!bar)return;
+  if(_sync.conflict){openSyncConflictModal();return}
+  if(_sync.error&&GAS_URL&&localStorage.getItem('ff_auth')==='1'){saveToDrive(S.data)}
+});
 
 // ═══════════════════════════════════════════════
 //  CONSTANTS
@@ -802,7 +908,9 @@ function saveData(d){
   // Debounced Drive save: wacht 500ms na laatste wijziging, dan pas sync
   if(GAS_URL&&localStorage.getItem('ff_auth')==='1'){
     if(_pendingDriveSave)clearTimeout(_pendingDriveSave);
-    _pendingDriveSave=setTimeout(()=>{saveToDrive(d);_pendingDriveSave=null},500);
+    // Korte debounce (150ms) zodat snelle wijzigingen worden samengevoegd maar
+    // het risico klein blijft dat een refresh de save afkapt
+    _pendingDriveSave=setTimeout(()=>{saveToDrive(d);_pendingDriveSave=null},150);
   }
 }
 async function writeToFile(d){
