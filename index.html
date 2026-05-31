@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FreelanceFlow</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%23ffffff'/><path d='M16 32 L16 54 Q 16 58 20 58 Q 24 58 24 54 L 24 32 Z' fill='%231e3a5f'/><path d='M16 8 H 40 Q 50 8 50 20 Q 50 32 40 32 H 16 Z M22 14 H 38 Q 44 14 44 20 Q 44 26 38 26 H 22 Z' fill='%2322c55e' fill-rule='evenodd'/><path d='M14 38 C 24 32, 36 24, 50 12' stroke='%23f59e0b' stroke-width='5' fill='none' stroke-linecap='round'/><polygon points='56,8 44,8 50,16' fill='%23f59e0b'/><circle cx='26' cy='20' r='1.5' fill='%231e3a5f'/><circle cx='30' cy='20' r='1.5' fill='%23f59e0b'/><circle cx='34' cy='20' r='1.5' fill='%2322c55e'/><path d='M26 22 L30 19 L34 21 L38 15' stroke='%2322c55e' stroke-width='1.5' fill='none' stroke-linecap='round'/></svg>"/>
-<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%23ffffff'/><path d='M16 32 L16 54 Q 16 58 20 58 Q 24 58 24 54 L 24 32 Z' fill='%231e3a5f'/><path d='M16 8 H 40 Q 50 8 50 20 Q 50 32 40 32 H 16 Z M22 14 H 38 Q 44 14 44 20 Q 44 26 38 26 H 22 Z' fill='%2322c55e' fill-rule='evenodd'/><path d='M14 38 C 24 32, 36 24, 50 12' stroke='%23f59e0b' stroke-width='5' fill='none' stroke-linecap='round'/><polygon points='56,8 44,8 50,16' fill='%23f59e0b'/><circle cx='26' cy='20' r='1.5' fill='%231e3a5f'/><circle cx='30' cy='20' r='1.5' fill='%23f59e0b'/><circle cx='34' cy='20' r='1.5' fill='%2322c55e'/><path d='M26 22 L30 19 L34 21 L38 15' stroke='%2322c55e' stroke-width='1.5' fill='none' stroke-linecap='round'/></svg>"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8fafc;height:100vh;overflow:hidden;color:#1e293b}
@@ -41,106 +39,12 @@ input,select,textarea{font-family:inherit}
 #screen-week{display:none;flex-direction:column;height:100%;overflow:hidden}
 #screen-week.active{display:flex}
 
-/* TO-DO TAB */
-.todo-wrap{max-width:780px;margin:0 auto}
-.todo-daynav{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.todo-daynav button{background:#f8fafc;border:1px solid #e2e8f0;color:#475569;padding:6px 10px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:.15s}
-.todo-daynav button:hover{background:#ecfeff;border-color:#a5f3fc;color:#0891b2}
-.todo-daynav .today-pill{padding:4px 10px;background:#ecfeff;color:#0891b2;border:1px solid #a5f3fc;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer}
-.todo-daynav .day-label{flex:1;font-size:14px;font-weight:700;color:#0f172a;text-align:center;min-width:140px}
-.todo-daynav input[type="date"]{padding:5px 8px;border:1px solid #e2e8f0;border-radius:8px;font-size:11.5px;color:#475569;background:#fff;font-family:inherit}
-.todo-future-tag{font-size:9.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#7c3aed;background:#f3e8ff;border:1px solid #ddd6fe;padding:2px 7px;border-radius:9px;margin-left:6px}
-.todo-past-tag{font-size:9.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#64748b;background:#f1f5f9;border:1px solid #e2e8f0;padding:2px 7px;border-radius:9px;margin-left:6px}
-.todo-move-btn{font-size:10.5px;color:#94a3b8;background:transparent;border:none;cursor:pointer;padding:2px 6px;border-radius:6px;flex-shrink:0}
-.todo-move-btn:hover{color:#7c3aed;background:#f3e8ff}
-.todo-date{font-size:11.5px;color:#94a3b8;letter-spacing:.4px;margin-bottom:6px;text-transform:uppercase;font-weight:600}
-.todo-prog-text{font-size:13.5px;color:#475569;margin-bottom:8px;font-weight:500}
-.todo-prog-bar{height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;margin-bottom:24px}
-.todo-prog-fill{height:100%;background:linear-gradient(90deg,#0891b2 0%,#06b6d4 100%);width:0%;transition:width .4s ease;border-radius:3px}
-.todo-sec-hdr{font-size:11px;font-weight:700;color:#94a3b8;letter-spacing:1.1px;text-transform:uppercase;margin:22px 0 10px 2px;display:flex;align-items:center;gap:8px}
-.todo-sec-hdr .sec-count{font-size:10px;background:#f1f5f9;color:#64748b;padding:1px 7px;border-radius:9px;letter-spacing:.4px}
-.todo-row{background:#fff;border:1px solid #e2e8f0;border-radius:11px;padding:11px 13px;margin-bottom:7px;display:flex;align-items:center;gap:11px;transition:.2s}
-.todo-row.focused{background:#ecfeff;border-color:#a5f3fc}
-.todo-row.done{opacity:.45}
-.todo-row.done .todo-text{text-decoration:line-through;color:#94a3b8}
-.todo-check{width:21px;height:21px;border:2px solid #cbd5e1;border-radius:6px;flex-shrink:0;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center;background:#fff}
-.todo-check:hover{border-color:#0891b2;background:#ecfeff}
-.todo-row.done .todo-check{background:#0891b2;border-color:#0891b2;color:#fff}
-.todo-row.done .todo-check::after{content:'✓';color:#fff;font-size:13px;font-weight:700}
-.todo-body{flex:1;min-width:0;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
-.todo-text{font-size:13px;color:#0f172a;font-weight:500;flex:1;min-width:120px;background:transparent;border:none;outline:none;padding:2px 0}
-.todo-text:focus{border-bottom:1px dashed #a5f3fc}
-.todo-tag-focus{font-size:9.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#0891b2;background:#ecfeff;border:1px solid #a5f3fc;padding:2px 7px;border-radius:9px;cursor:pointer;transition:.15s;flex-shrink:0}
-.todo-tag-focus.inactive{color:#cbd5e1;background:#fff;border-color:#e2e8f0}
-.todo-tag-focus:hover{background:#cffafe}
-.todo-time{font-size:11.5px;color:#64748b;white-space:nowrap;font-variant-numeric:tabular-nums;cursor:pointer;padding:2px 6px;border-radius:6px;transition:.15s}
-.todo-time:hover{background:#f1f5f9;color:#0891b2}
-.todo-time.learned{color:#0891b2;font-weight:600}
-.todo-time.learned::after{content:'•';color:#a5f3fc;margin-left:2px;font-weight:900}
-.todo-timer-btn{display:inline-flex;align-items:center;gap:4px;background:#f8fafc;border:1px solid #e2e8f0;color:#475569;padding:4px 8px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap;flex-shrink:0}
-.todo-timer-btn:hover{background:#ecfeff;border-color:#a5f3fc;color:#0891b2}
-.todo-timer-btn.running{background:#0891b2;color:#fff;border-color:#0891b2;animation:todoPulse 1.6s ease-in-out infinite}
-@keyframes todoPulse{0%,100%{box-shadow:0 0 0 0 rgba(8,145,178,.4)}50%{box-shadow:0 0 0 4px rgba(8,145,178,0)}}
-.todo-timer-elapsed{font-variant-numeric:tabular-nums;font-size:11px}
-.todo-actual{font-size:10.5px;color:#10b981;font-weight:600;white-space:nowrap;flex-shrink:0;padding:2px 6px;background:#f0fdf4;border-radius:6px}
-.todo-actual.over{color:#f59e0b;background:#fffbeb}
-.todo-actual.way-over{color:#ef4444;background:#fef2f2}
-.todo-learn-box{background:linear-gradient(135deg,#ecfeff,#f0f9ff);border:1px solid #a5f3fc;border-radius:11px;padding:12px 14px;margin:18px 0;font-size:12px;color:#0e7490}
-.todo-learn-box-hdr{font-weight:700;color:#0891b2;margin-bottom:6px;display:flex;align-items:center;gap:6px}
-.todo-learn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin-top:6px}
-.todo-learn-item{display:flex;justify-content:space-between;font-size:11px;padding:3px 7px;background:rgba(255,255,255,.6);border-radius:6px}
-.todo-learn-item .lk{font-weight:600;color:#0e7490;text-transform:capitalize}
-.todo-learn-item .lv{color:#64748b;font-variant-numeric:tabular-nums}
-.todo-del{color:#cbd5e1;font-size:14px;padding:2px 5px;cursor:pointer;border-radius:6px;flex-shrink:0;line-height:1}
-.todo-del:hover{color:#ef4444;background:#fef2f2}
-.todo-add-btn{width:100%;background:transparent;border:1px dashed #cbd5e1;color:#64748b;padding:10px;border-radius:11px;font-size:12.5px;cursor:pointer;transition:.15s;margin-top:5px}
-.todo-add-btn:hover{border-color:#0891b2;color:#0891b2;background:#ecfeff}
-.todo-add-form{display:flex;gap:7px;margin-top:5px}
-.todo-add-form input{flex:1;padding:10px 12px;border:1px solid #e2e8f0;border-radius:11px;font-size:13px;outline:none}
-.todo-add-form input:focus{border-color:#0891b2;background:#f8fafc}
-.todo-add-form button{padding:10px 16px;background:#0891b2;color:#fff;border:none;border-radius:11px;font-size:12.5px;font-weight:600;cursor:pointer}
-.todo-bulk{background:#f8fafc;border:1px solid #e2e8f0;border-radius:11px;padding:12px;margin-top:18px}
-.todo-bulk-hdr{font-size:11.5px;font-weight:700;color:#475569;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
-.todo-bulk-body{display:none;margin-top:8px}
-.todo-bulk-body.open{display:block}
-.todo-bulk textarea{width:100%;min-height:90px;padding:10px;border:1px solid #e2e8f0;border-radius:9px;font-size:12.5px;font-family:inherit;outline:none;resize:vertical}
-.todo-bulk textarea:focus{border-color:#0891b2}
-.todo-bulk-actions{display:flex;gap:7px;margin-top:8px}
-.todo-bulk-actions button{padding:7px 13px;font-size:11.5px;font-weight:600;border-radius:8px;cursor:pointer;border:1px solid #e2e8f0;background:#fff;color:#475569}
-.todo-bulk-actions button.primary{background:#0891b2;color:#fff;border-color:#0891b2}
-.todo-history{margin-top:32px;border-top:1px solid #e2e8f0;padding-top:16px}
-.todo-hist-toggle{font-size:11.5px;font-weight:600;color:#64748b;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
-.todo-hist-toggle:hover{color:#0891b2}
-.todo-hist-body{margin-top:12px;display:none}
-.todo-hist-body.open{display:block}
-.todo-hist-day{margin-bottom:14px}
-.todo-hist-day-hdr{font-size:11px;color:#94a3b8;font-weight:600;margin-bottom:5px}
-.todo-hist-item{font-size:12px;color:#64748b;padding:3px 0;display:flex;align-items:center;gap:7px}
-.todo-hist-item::before{content:'✓';color:#10b981;font-weight:700}
-/* "Koppel afgevinkte todo aan geplande taak" modal */
-.ltm-tabs{display:flex;gap:4px;background:#f1f5f9;padding:4px;border-radius:9px;margin-bottom:12px;border:1px solid #e2e8f0}
-.ltm-tab{flex:1;padding:7px 10px;border-radius:7px;font-size:11.5px;font-weight:600;color:#64748b;background:transparent;border:none;cursor:pointer;transition:.15s}
-.ltm-tab:hover{color:#0891b2}
-.ltm-tab-active{background:#fff;color:#0891b2;box-shadow:0 1px 3px rgba(15,23,42,.08)}
-.ltm-list{max-height:240px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:9px;background:#fff;padding:4px}
-.ltm-cand-row{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:.12s;border:1px solid transparent;margin-bottom:3px}
-.ltm-cand-row:hover{background:#f8fafc;border-color:#e2e8f0}
-.ltm-cand-row-hl{background:#fef9c3}
-.ltm-cand-row-hl:hover{background:#fef08a;border-color:#fde68a}
-.ltm-cand-row.selected{background:#ecfeff;border-color:#a5f3fc}
-.ltm-cand-row input[type="radio"]{flex-shrink:0;accent-color:#0891b2;margin:0}
-.ltm-empty{font-size:11.5px;color:#94a3b8;padding:14px;text-align:center;font-style:italic}
-.todo-empty{text-align:center;padding:28px 16px;color:#94a3b8;font-size:12.5px}
-.todo-empty .ei{font-size:32px;margin-bottom:8px;opacity:.7}
-
 /* WEEK HEADER */
 .week-header{padding:11px 16px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:wrap}
 .week-nav-btn{width:28px;height:28px;border-radius:7px;background:#f8fafc;border:1px solid #e2e8f0;font-size:15px;display:flex;align-items:center;justify-content:center;color:#334155;transition:.15s}
 .week-nav-btn:hover{background:#e2e8f0}
 .week-label{font-size:13px;font-weight:700;color:#0f172a;padding:0 6px;white-space:nowrap}
 .cur-week-btn{padding:3px 9px;background:#ecfeff;border:1px solid #a5f3fc;color:#0891b2;border-radius:7px;font-size:11px;font-weight:600}
-.tab-over-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#ef4444;margin-left:5px;vertical-align:middle;box-shadow:0 0 0 2px #fff;animation:pulseDot 1.6s ease-in-out infinite}
-@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.55;transform:scale(1.25)}}
 
 /* WEEK BODY */
 .week-body{flex:1;display:flex;overflow:hidden;min-height:0}
@@ -175,37 +79,10 @@ input,select,textarea{font-family:inherit}
 .task-cal:hover{box-shadow:0 3px 10px rgba(0,0,0,.15);z-index:15}
 .task-cal:active{cursor:grabbing}
 .task-cal.dragging{opacity:.5;z-index:50}
-.task-cal.locked{opacity:.85}
-.task-cal.locked .task-cal-name{color:#0f172a}
-.day-col-cal.day-locked{background:rgba(220,252,231,.18)}
-
-/* DAY-DONE CHECKBOX (per-day dopamine boost) */
-.cal-day-hdr{position:relative}
-.day-done-toggle{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;border:1.5px solid #cbd5e1;background:#fff;cursor:pointer;font-size:11px;font-weight:800;color:transparent;transition:.2s;margin-left:5px;vertical-align:middle}
-.day-done-toggle:hover{border-color:#10b981;background:#f0fdf4;transform:scale(1.1)}
-.day-done-toggle.done{background:#10b981;border-color:#10b981;color:#fff;animation:pop .4s cubic-bezier(.34,1.56,.64,1)}
-.cal-day-hdr.day-done-hdr{background:linear-gradient(180deg,#f0fdf4,#fff)}
-.cal-day-hdr.day-done-hdr .cal-day-name{color:#10b981}
-@keyframes pop{0%{transform:scale(.6)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
-@keyframes celebrate-flash{0%{box-shadow:0 0 0 0 rgba(16,185,129,.6)}100%{box-shadow:0 0 0 18px rgba(16,185,129,0)}}
-.celebrate{animation:celebrate-flash .8s ease-out}
-
-/* CONFETTI */
-.confetti-piece{position:fixed;width:8px;height:14px;pointer-events:none;z-index:9999;border-radius:1px;animation:confetti-fall 1.7s ease-out forwards}
-@keyframes confetti-fall{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(65vh) rotate(720deg);opacity:0}}
-
-/* HOLIDAY VACATION VARIANT (vrije dag vs zelfgekozen vakantie) */
-.vacation-block.holiday-block{background:rgba(14,165,233,.07);border-left-color:#0ea5e9}
-.vacation-block.holiday-block .vacation-hdr{background:rgba(14,165,233,.18);color:#0369a1}
-.vacation-block.holiday-block .vacation-del{color:#0369a1}
-.cal-day-hdr.has-holiday{background:linear-gradient(180deg,#f0f9ff,#fff)}
-.cal-day-hdr.has-holiday .cal-day-name::after{content:' 🎉';font-size:10px}
-
-/* QUICK TIMER BUTTON for internal work */
-.quick-timer-btn{display:flex;align-items:center;gap:5px;padding:6px 10px;background:linear-gradient(135deg,#06b6d4,#2563eb);color:#fff;border-radius:8px;font-size:11px;font-weight:700;width:100%;justify-content:center;margin-top:6px;transition:.15s;box-shadow:0 2px 4px rgba(6,182,212,.25)}
-.quick-timer-btn:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(6,182,212,.35)}
-.quick-timer-btn.running{background:linear-gradient(135deg,#ef4444,#dc2626)}
-.quick-timer-display{font-variant-numeric:tabular-nums;font-weight:800}
+.task-cal.locked{opacity:.6;filter:grayscale(30%)}
+.task-cal.locked .task-cal-inner::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(135deg,transparent,transparent 5px,rgba(0,0,0,.07) 5px,rgba(0,0,0,.07) 6px);border-radius:5px;pointer-events:none}
+.task-cal.locked .task-cal-name{text-decoration:line-through;text-decoration-color:rgba(0,0,0,.35)}
+.day-col-cal.day-locked{background:rgba(241,245,249,.6)}
 .task-cal-inner{position:absolute;inset:0;border-radius:5px;overflow:hidden;padding:4px 6px}
 .task-cal-name{font-size:11px;font-weight:600;color:#1e293b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.3}
 .task-cal-sub{font-size:10px;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -325,22 +202,6 @@ input,select,textarea{font-family:inherit}
 .form-label{display:block;font-size:11.5px;font-weight:600;color:#374151;margin-bottom:4px}
 .form-input,.form-select,.form-textarea{width:100%;border:1px solid #e2e8f0;border-radius:9px;padding:7px 10px;font-size:12.5px;outline:none;transition:.15s;background:#fff;color:#0f172a}
 .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:#06b6d4;box-shadow:0 0 0 3px rgba(6,182,212,.1)}
-/* Custom dropdown — native select wordt op macOS Safari met system text size gerenderd
-   en negeert CSS font-size. Daarom verbergen we de echte <select> en bouwen we een eigen UI. */
-.cs{position:relative;display:block;width:100%}
-.cs-trigger{width:100%;text-align:left;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:12.5px;padding:7px 10px;border:1px solid #e2e8f0;border-radius:9px;background:#fff;color:#0f172a;font-family:inherit;transition:.15s}
-.cs-trigger:hover{border-color:#cbd5e1}
-.cs.open .cs-trigger,.cs-trigger:focus{border-color:#06b6d4;box-shadow:0 0 0 3px rgba(6,182,212,.1);outline:none}
-.cs-current{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
-.cs-arrow{margin-left:8px;color:#94a3b8;font-size:9px;flex-shrink:0;transition:transform .15s}
-.cs.open .cs-arrow{transform:rotate(180deg);color:#0891b2}
-.cs-popup{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;max-height:240px;overflow-y:auto;background:#fff;border:1px solid #e2e8f0;border-radius:9px;z-index:1500;box-shadow:0 8px 24px rgba(0,0,0,.12);padding:4px 0}
-.cs.open .cs-popup{display:block}
-.cs-option{display:block;width:100%;padding:7px 11px;text-align:left;font-size:12.5px;cursor:pointer;background:none;border:none;color:#0f172a;line-height:1.4;font-family:inherit;transition:background .1s}
-.cs-option:hover{background:#f1f5f9}
-.cs-option.selected{background:#ecfeff;color:#0891b2;font-weight:600}
-/* Native select wordt verborgen — wel in DOM voor change-listeners */
-select.cs-enhanced{position:absolute!important;left:-9999px;opacity:0;pointer-events:none;width:1px;height:1px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
 .form-textarea{resize:vertical;min-height:60px}
@@ -348,9 +209,6 @@ select.cs-enhanced{position:absolute!important;left:-9999px;opacity:0;pointer-ev
 .c-swatch{width:23px;height:23px;border-radius:50%;cursor:pointer;transition:.15s;border:2px solid transparent}
 .c-swatch.selected{transform:scale(1.15);box-shadow:0 0 0 2px #fff,0 0 0 4px #94a3b8}
 .c-swatch:hover{transform:scale(1.1)}
-.suggestion-chip{padding:4px 9px;border-radius:7px;background:#f1f5f9;color:#475569;font-size:11px;font-weight:600;border:1px solid #e2e8f0;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:4px}
-.suggestion-chip:hover{background:#ecfeff;color:#0891b2;border-color:#a5f3fc}
-.suggestion-chip .sug-hrs{opacity:.6;font-size:9.5px;font-weight:500}
 .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f8fafc}
 .toggle-row:last-child{border-bottom:none}
 .toggle-label{font-size:12.5px;font-weight:600;color:#334155}
@@ -408,15 +266,9 @@ select.cs-enhanced{position:absolute!important;left:-9999px;opacity:0;pointer-ev
 
 /* VACATION BLOCKS */
 .vacation-block{position:absolute;inset:0;background:rgba(251,146,60,.09);border-left:3px solid #fb923c;z-index:4;pointer-events:none;border-radius:0}
-.vacation-block.half-am{bottom:auto;height:50%;background:repeating-linear-gradient(45deg,rgba(251,146,60,.13),rgba(251,146,60,.13) 6px,rgba(251,146,60,.05) 6px,rgba(251,146,60,.05) 12px)}
-.vacation-block.half-pm{top:50%;height:50%;background:repeating-linear-gradient(45deg,rgba(251,146,60,.13),rgba(251,146,60,.13) 6px,rgba(251,146,60,.05) 6px,rgba(251,146,60,.05) 12px)}
-.vacation-block.holiday-block.half-am,.vacation-block.holiday-block.half-pm{background:repeating-linear-gradient(45deg,rgba(14,165,233,.13),rgba(14,165,233,.13) 6px,rgba(14,165,233,.05) 6px,rgba(14,165,233,.05) 12px)}
-.vacation-hdr{display:flex;align-items:center;justify-content:space-between;padding:4px 7px;background:rgba(251,146,60,.18);font-size:11px;font-weight:700;color:#c2410c;pointer-events:all;gap:5px}
-.vacation-del{font-size:16px;color:#c2410c;opacity:.55;transition:.15s;line-height:1;padding:0 1px;background:none;border:none;cursor:pointer}
+.vacation-hdr{display:flex;align-items:center;justify-content:space-between;padding:4px 7px;background:rgba(251,146,60,.18);font-size:11px;font-weight:700;color:#c2410c;pointer-events:all}
+.vacation-del{font-size:16px;color:#c2410c;opacity:.55;transition:.15s;line-height:1;padding:0 1px}
 .vacation-del:hover{opacity:1}
-.vacation-half-toggle{font-size:11px;font-weight:700;color:#c2410c;opacity:.65;background:rgba(255,255,255,.45);border:1px solid rgba(194,65,12,.25);border-radius:5px;padding:1px 5px;cursor:pointer;line-height:1.2;transition:.15s}
-.vacation-half-toggle:hover{opacity:1;background:#fff}
-.vacation-actions{display:flex;align-items:center;gap:4px}
 .cal-day-hdr.has-vacation{background:linear-gradient(180deg,#fff7ed,#fff)}
 .cal-day-hdr.has-vacation .cal-day-name::after{content:' 🏖';font-size:10px}
 .intern-badge{display:inline-flex;align-items:center;gap:3px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;border-radius:5px;padding:2px 6px;font-size:10px;font-weight:700}
@@ -477,24 +329,11 @@ select.cs-enhanced{position:absolute!important;left:-9999px;opacity:0;pointer-ev
 .login-btn{width:100%;padding:11px;background:linear-gradient(135deg,#06b6d4,#2563eb);color:#fff;border-radius:9px;font-size:13.5px;font-weight:700;margin-top:14px;transition:.15s;border:none;cursor:pointer}
 .login-btn:hover{opacity:.9}
 .login-err{font-size:11.5px;color:#ef4444;margin-top:7px;min-height:16px;text-align:center}
-/* SYNC BAR — kleine pill in de sidebar, altijd zichtbaar, toont laatste sync-status */
-#sync-bar{margin:6px 9px 4px;padding:5px 9px;font-size:10.5px;font-weight:600;border-radius:8px;display:flex;align-items:center;gap:6px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;transition:.2s;cursor:default;line-height:1.2}
-#sync-bar.sync-ok{background:#dcfce7;color:#166534;border-color:#bbf7d0}
-#sync-bar.sync-pending{background:#fef9c3;color:#854d0e;border-color:#fde68a}
-#sync-bar.sync-err{background:#fee2e2;color:#991b1b;border-color:#fecaca;cursor:pointer}
-#sync-bar.sync-err:hover{background:#fecaca}
-#sync-bar.sync-conflict{background:#fef3c7;color:#92400e;border-color:#fde68a;cursor:pointer}
-#sync-bar .sync-dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
-#sync-bar.sync-pending .sync-dot{animation:syncPulse 1.4s ease-in-out infinite}
-@keyframes syncPulse{0%,100%{opacity:.4}50%{opacity:1}}
+/* SYNC BAR */
+#sync-bar{padding:5px 14px;font-size:11px;font-weight:600;text-align:center;display:none;transition:.3s}
 /* LOGOUT */
 .logout-btn{display:flex;align-items:center;gap:7px;padding:7px 12px;margin:2px 7px;border-radius:9px;font-size:12px;color:#94a3b8;width:calc(100% - 14px);transition:.15s;text-align:left;border:none;background:none;cursor:pointer}
 .logout-btn:hover{background:#fef2f2;color:#ef4444}
-/* PRIVACY MODE — blur alléén € bedragen, niet uren of projectnamen */
-.eur-val{display:inline-block;transition:filter .2s}
-body.privacy-on .eur-val{filter:blur(6px);user-select:none}
-body.privacy-on #btn-privacy{background:#1e293b;color:#fff;border-color:#0f172a}
-#btn-privacy{transition:.15s}
 </style>
 </head>
 <body>
@@ -535,7 +374,6 @@ body.privacy-on #btn-privacy{background:#1e293b;color:#fff;border-color:#0f172a}
         </div>
         <button class="cur-week-btn btn" id="btn-cur">Huidige week</button>
         <div style="flex:1"></div>
-        <button id="btn-privacy" class="week-nav-btn" style="width:auto;padding:0 10px;gap:5px;font-size:11px;font-weight:700;color:#64748b" title="Verberg omzet & uren">👁 Privé</button>
         <button id="btn-lock-week" class="week-nav-btn" style="width:auto;padding:0 10px;gap:5px;font-size:11px;font-weight:700;color:#64748b" title="Week vergrendelen">🔓 Lock</button>
         <div id="gauge-wrap"></div>
       </div>
@@ -581,8 +419,6 @@ body.privacy-on #btn-privacy{background:#1e293b;color:#fff;border-color:#0f172a}
     </div>
     <!-- ANALYSE -->
     <div id="screen-analyse" class="screen"></div>
-    <!-- TO-DO -->
-    <div id="screen-todo" class="screen"></div>
     <!-- SETTINGS -->
     <div id="screen-settings" class="screen">
       <div style="max-width:560px">
@@ -664,34 +500,14 @@ function logout(){
 
 // ── Drive Sync ──────────────────────────────────────────────────────────────
 let driveInterval=null;
-// Persistent sync-state — getoond in de sidebar
-const _sync={lastOk:0,lastTry:0,pending:false,error:null,conflict:null};
-function fmtAgo(ts){
-  if(!ts)return 'nooit';
-  const s=Math.floor((Date.now()-ts)/1000);
-  if(s<5)return 'net';
-  if(s<60)return s+'s geleden';
-  if(s<3600)return Math.floor(s/60)+'m geleden';
-  if(s<86400)return Math.floor(s/3600)+'u geleden';
-  return Math.floor(s/86400)+'d geleden';
-}
-function setSyncStatus(state,msg){
+function showSyncBar(type){
   const bar=document.getElementById('sync-bar');
   if(!bar)return;
-  bar.classList.remove('sync-ok','sync-pending','sync-err','sync-conflict');
-  let txt='';
-  if(state==='ok'){bar.classList.add('sync-ok');txt='✓ Gesynced — '+fmtAgo(_sync.lastOk)}
-  else if(state==='pending'){bar.classList.add('sync-pending');txt='⟳ Opslaan…'}
-  else if(state==='err'){bar.classList.add('sync-err');txt=msg||'⚠ Sync mislukt — klik om opnieuw'}
-  else if(state==='conflict'){bar.classList.add('sync-conflict');txt=msg||'⚠ Drive-conflict — klik'}
-  else{txt='○ Niet gesynced'}
-  bar.innerHTML=`<span class="sync-dot"></span><span>${txt}</span>`;
+  if(type==='ok'){bar.textContent='✓ Gesynchroniseerd';bar.style.background='#dcfce7';bar.style.color='#166534';}
+  else{bar.textContent='⚠ Sync mislukt — lokaal opgeslagen';bar.style.background='#fee2e2';bar.style.color='#991b1b';}
+  bar.style.display='block';
+  setTimeout(()=>{bar.style.display='none'},3000);
 }
-// Auto-refresh sidebar pill elke 15s zodat "X seconden/minuten geleden" up-to-date blijft
-setInterval(()=>{if(_sync.lastOk&&!_sync.pending&&!_sync.error&&!_sync.conflict)setSyncStatus('ok')},15000);
-// Backwards-compat shim — oude code roept showSyncBar(type) aan
-function showSyncBar(type){setSyncStatus(type==='ok'?'ok':'err')}
-
 async function loadFromDrive(){
   if(!GAS_URL)return null;
   try{
@@ -701,129 +517,43 @@ async function loadFromDrive(){
     return j&&j.clients?j:null;
   }catch{return null}
 }
-// Schrijf naar Drive — met retry-with-backoff (max 3 pogingen) en persistente status.
-// Faalt 'ie alle 3 keer? Local blijft sowieso veilig, maar status gaat op 'err' zodat
-// de gebruiker het ziet (en handmatig kan herproberen door op de pill te klikken).
-async function _saveToDriveOnce(d){
-  const url=GAS_URL+'?action=save';
-  const res=await fetch(url,{
-    method:'POST',
-    redirect:'follow',
-    headers:{'Content-Type':'text/plain;charset=utf-8'},
-    body:JSON.stringify(d)
-  });
-  const text=await res.text();
-  const r=JSON.parse(text);
-  if(!(r.ok===true||r.status==='ok'||r.status==='saved'))throw new Error('GAS responded: '+text.slice(0,80));
-  return r;
-}
 async function saveToDrive(d){
   if(!GAS_URL)return;
-  _sync.lastTry=Date.now();
-  _sync.pending=true;_sync.error=null;
-  setSyncStatus('pending');
-  const delays=[0,800,2400]; // 3 pogingen, exponentiële backoff
-  for(let i=0;i<delays.length;i++){
-    if(delays[i])await new Promise(r=>setTimeout(r,delays[i]));
-    try{
-      await _saveToDriveOnce(d);
-      _sync.lastOk=Date.now();_sync.pending=false;_sync.error=null;
-      setSyncStatus('ok');
-      return;
-    }catch(e){
-      console.warn(`Drive sync poging ${i+1}/${delays.length}:`,e.message||e);
-      if(i===delays.length-1){
-        _sync.pending=false;_sync.error=String(e.message||e);
-        setSyncStatus('err');
-      }
-    }
-  }
-}
-// Tel hoeveel items in Drive ontbreken die lokaal wél bestaan — vangnet tegen
-// een Drive-snapshot die per ongeluk de lokale data zou overschrijven.
-function _diffMissing(local,remote){
-  const lt=new Set((local.todos||[]).map(t=>t.id));
-  const rt=new Set((remote.todos||[]).map(t=>t.id));
-  const lk=new Set((local.tasks||[]).map(t=>t.id));
-  const rk=new Set((remote.tasks||[]).map(t=>t.id));
-  const missingTodos=[...lt].filter(id=>!rt.has(id));
-  const missingTasks=[...lk].filter(id=>!rk.has(id));
-  return{missingTodos,missingTasks,totalMissing:missingTodos.length+missingTasks.length};
+  try{
+    // GAS werkt het beste met form-encoded POST of query param
+    const url=GAS_URL+'?action=save';
+    const res=await fetch(url,{
+      method:'POST',
+      redirect:'follow',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(d)
+    });
+    const text=await res.text();
+    const r=JSON.parse(text);
+    // GAS geeft {ok:true,...} terug bij succes
+    if(r.ok===true||r.status==='ok'||r.status==='saved')showSyncBar('ok');else showSyncBar('err');
+  }catch(e){console.warn('Drive sync fout:',e);showSyncBar('err')}
 }
 function startDriveSync(){
   if(!GAS_URL)return;
-  setSyncStatus('pending');
-  // Laad eerst van Drive
+  // Laad eerst van Drive (stil bij fout — geen melding)
   loadFromDrive().then(remote=>{
-    if(!remote){setSyncStatus(_sync.lastOk?'ok':'idle');return}
-    const localTs=S.data?._lastModified||0;
-    const remoteTs=remote?._lastModified||0;
-    const diff=_diffMissing(S.data,remote);
-    const localHasContent=(S.data.todos||[]).length+(S.data.tasks||[]).length>0;
-    // VEILIGHEIDSNET: weiger lokaal te overschrijven als Drive items mist die lokaal wel
-    // bestaan, ook als Drive's timestamp jonger is. Dit voorkomt verlies van vandaag's werk
-    // door een ouder Drive-snapshot dat ten onrechte als 'nieuwer' wordt aangeleverd.
-    if(remoteTs>localTs&&diff.totalMissing>=3&&localHasContent){
-      _sync.conflict={remote,diff,remoteTs,localTs};
-      const lbl=`⚠ Drive mist ${diff.missingTodos.length} todos, ${diff.missingTasks.length} taken — klik`;
-      setSyncStatus('conflict',lbl);
-      // Push local naar Drive zodat Drive weer in lijn komt met local
-      saveToDrive(S.data);
-      return;
+    if(remote){
+      S.data=remote;
+      S.data.tasks=S.data.tasks.map(migrateTask);
+      ensureInternProject();
+      // Tijdelijk sync uitschakelen tijdens initieel render zodat we geen fout tonen
+      const wasAuth=localStorage.getItem('ff_auth');
+      localStorage.removeItem('ff_auth');
+      render();
+      if(wasAuth)localStorage.setItem('ff_auth',wasAuth);
+      showSyncBar('ok');
     }
-    if(remoteTs<=localTs){
-      if(remoteTs<localTs)saveToDrive(S.data);
-      else{_sync.lastOk=Date.now();setSyncStatus('ok')}
-      return;
-    }
-    // Drive is nieuwer en mist geen lokale items → veilig overschrijven
-    S.data=remote;
-    S.data.tasks=S.data.tasks.map(migrateTask);
-    ensureInternProject();
-    const wasAuth=localStorage.getItem('ff_auth');
-    localStorage.removeItem('ff_auth');
-    render();
-    if(wasAuth)localStorage.setItem('ff_auth',wasAuth);
-    _sync.lastOk=Date.now();setSyncStatus('ok');
-  }).catch(()=>{setSyncStatus('err','⚠ Drive niet bereikbaar — klik')});
+  }).catch(()=>{/* stil falen bij laden */});
   if(driveInterval)clearInterval(driveInterval);
+  // Periodieke save elke 30s
   driveInterval=setInterval(()=>{if(localStorage.getItem('ff_auth')==='1')saveToDrive(S.data)},SYNC_INTERVAL_MS);
 }
-// Conflict-modal: laat user kiezen wat te doen als Drive minder data heeft dan lokaal
-function openSyncConflictModal(){
-  if(!_sync.conflict){return}
-  const{remote,diff,remoteTs,localTs}=_sync.conflict;
-  const fmtT=t=>t?new Date(t).toLocaleString('nl-NL'):'onbekend';
-  const{el,close}=openModal(`<div class="modal modal-lg"><div class="modal-hdr"><span class="modal-title">⚠ Drive-conflict gedetecteerd</span><button class="modal-close">×</button></div><div class="modal-body">
-    <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:9px;padding:10px;font-size:12px;color:#92400e;margin-bottom:14px">
-      Drive zou je lokale data hebben overschreven met een snapshot die <strong>${diff.missingTodos.length} todos en ${diff.missingTasks.length} taken mist</strong> die je hier wel hebt. Ik heb dat tegengehouden.
-    </div>
-    <div style="font-size:11.5px;color:#475569;margin-bottom:10px"><strong>Lokaal (deze browser):</strong> ${(S.data.todos||[]).length} todos, ${(S.data.tasks||[]).length} taken · laatst gewijzigd ${fmtT(localTs)}</div>
-    <div style="font-size:11.5px;color:#475569;margin-bottom:14px"><strong>Drive:</strong> ${(remote.todos||[]).length} todos, ${(remote.tasks||[]).length} taken · laatst gewijzigd ${fmtT(remoteTs)}</div>
-    <div style="font-size:11.5px;color:#64748b;margin-bottom:14px">Lokaal is veilig en wordt nu naar Drive gepusht. Wil je toch Drive's versie laden (en je lokale wijzigingen weggooien)?</div>
-    <div style="display:flex;gap:7px;justify-content:flex-end">
-      <button class="btn btn-secondary" id="sc-cancel">Houd lokaal (aanbevolen)</button>
-      <button class="btn btn-danger" id="sc-overwrite">Laad Drive — gooi lokaal weg</button>
-    </div>
-  </div></div>`);
-  el.querySelector('#sc-cancel').addEventListener('click',()=>{_sync.conflict=null;setSyncStatus('ok');close()});
-  el.querySelector('#sc-overwrite').addEventListener('click',()=>{
-    S.data=remote;
-    S.data.tasks=S.data.tasks.map(migrateTask);
-    ensureInternProject();
-    saveData(S.data);
-    _sync.conflict=null;
-    render();
-    close();
-  });
-}
-// Klik op de sync-pill: open conflict-modal bij conflict, anders forceer een save
-document.addEventListener('click',e=>{
-  const bar=e.target.closest('#sync-bar');
-  if(!bar)return;
-  if(_sync.conflict){openSyncConflictModal();return}
-  if(_sync.error&&GAS_URL&&localStorage.getItem('ff_auth')==='1'){saveToDrive(S.data)}
-});
 
 // ═══════════════════════════════════════════════
 //  CONSTANTS
@@ -839,55 +569,10 @@ const PX_PER_HOUR=64, TIME_START=8, TIME_END=19, KEY='ff_v6';
 // ═══════════════════════════════════════════════
 const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36);
 const fmtD=d=>`${d.getDate()} ${MONTHS[d.getMonth()]}`;
-// eur() wraps in span.eur-val zodat privacy-mode alléén euro's blurt (niet uren/projectnamen)
-const _eurFmt=n=>new Intl.NumberFormat('nl-NL',{style:'currency',currency:'EUR',minimumFractionDigits:0}).format(n||0);
-const eur=n=>`<span class="eur-val">${_eurFmt(n)}</span>`;
+const eur=n=>new Intl.NumberFormat('nl-NL',{style:'currency',currency:'EUR',minimumFractionDigits:0}).format(n||0);
 const rgba=(h,a)=>{const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return`rgba(${r},${g},${b},${a})`};
 const fmtTime=m=>{const h=Math.floor(m/60),min=m%60;return`${String(h).padStart(2,'0')}:${String(min).padStart(2,'0')}`};
 const fmtSecs=s=>{const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;return h>0?`${h}:${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`:`${m}:${String(ss).padStart(2,'0')}`};
-// Format hours human-friendly: rounds to whole minutes (kills floating-point junk
-// like 0.9000000000000004) and shows '1u 26m', '34m', or '2u' as appropriate.
-const fmtH=h=>{const tot=Math.round((h||0)*60);if(tot===0)return'0u';const hrs=Math.floor(tot/60),mins=tot%60;if(hrs===0)return`${mins}m`;if(mins===0)return`${hrs}u`;return`${hrs}u ${mins}m`};
-
-// Compute Easter Sunday (Gregorian) for a given year — used for Goede Vrijdag/Paasmaandag/Hemelvaart/Pinksteren
-function easterSunday(year){
-  const a=year%19,b=Math.floor(year/100),c=year%100;
-  const d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25);
-  const g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30;
-  const i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7;
-  const m=Math.floor((a+11*h+22*l)/451);
-  const month=Math.floor((h+l-7*m+114)/31)-1;
-  const day=((h+l-7*m+114)%31)+1;
-  return new Date(year,month,day);
-}
-function addDays(date,n){const d=new Date(date);d.setDate(d.getDate()+n);return d}
-// Nederlandse vrije dagen voor een gegeven jaar
-function getDutchHolidays(year){
-  const easter=easterSunday(year);
-  const holidays=[
-    {date:new Date(year,0,1),name:'Nieuwjaarsdag'},
-    {date:addDays(easter,-2),name:'Goede Vrijdag'},
-    {date:addDays(easter,1),name:'Tweede Paasdag'},
-    {date:new Date(year,3,27),name:'Koningsdag'},
-    {date:addDays(easter,39),name:'Hemelvaartsdag'},
-    {date:addDays(easter,50),name:'Tweede Pinksterdag'},
-    {date:new Date(year,11,25),name:'Eerste Kerstdag'},
-    {date:new Date(year,11,26),name:'Tweede Kerstdag'},
-  ];
-  // Bevrijdingsdag (5 mei) is officieel vrij elk lustrumjaar (jaar deelbaar door 5)
-  if(year%5===0)holidays.push({date:new Date(year,4,5),name:'Bevrijdingsdag'});
-  // Verplaats Koningsdag naar zaterdag als die op zondag valt
-  const kIdx=holidays.findIndex(h=>h.name==='Koningsdag');
-  if(kIdx>=0&&holidays[kIdx].date.getDay()===0)holidays[kIdx].date=addDays(holidays[kIdx].date,-1);
-  return holidays.map(h=>{
-    const d=h.date;
-    const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    const wn=weekNum(d);
-    // Day-of-week: 0=ma, 6=zo
-    const dow=d.getDay()===0?6:d.getDay()-1;
-    return{...h,key,week:wn.week,year:wn.year,day:dow};
-  }).filter(h=>h.day<5); // Alleen weekdagen (ma–vr); weekend hoeft geen blokkade
-}
 
 function weekNum(date){const d=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));const day=d.getUTCDay()||7;d.setUTCDate(d.getUTCDate()+4-day);const y0=new Date(Date.UTC(d.getUTCFullYear(),0,1));return{week:Math.ceil((((d-y0)/86400000)+1)/7),year:d.getUTCFullYear()}}
 function weekDates(week,year){const j4=new Date(year,0,4);const dow=j4.getDay()===0?7:j4.getDay();j4.setDate(j4.getDate()-dow+1+(week-1)*7);return Array.from({length:7},(_,i)=>{const d=new Date(j4);d.setDate(j4.getDate()+i);return d})}
@@ -901,16 +586,12 @@ let fileHandle=null;
 function loadData(){try{const s=localStorage.getItem(KEY);return s?JSON.parse(s):null}catch{return null}}
 let _pendingDriveSave=null;
 function saveData(d){
-  // Stempel elke wijziging met een timestamp — zo weten we welke kant (Drive vs local) verser is
-  d._lastModified=Date.now();
   try{localStorage.setItem(KEY,JSON.stringify(d))}catch{}
   if(fileHandle){writeToFile(d).catch(()=>{})}
   // Debounced Drive save: wacht 500ms na laatste wijziging, dan pas sync
   if(GAS_URL&&localStorage.getItem('ff_auth')==='1'){
     if(_pendingDriveSave)clearTimeout(_pendingDriveSave);
-    // Korte debounce (150ms) zodat snelle wijzigingen worden samengevoegd maar
-    // het risico klein blijft dat een refresh de save afkapt
-    _pendingDriveSave=setTimeout(()=>{saveToDrive(d);_pendingDriveSave=null},150);
+    _pendingDriveSave=setTimeout(()=>{saveToDrive(d);_pendingDriveSave=null},500);
   }
 }
 async function writeToFile(d){
@@ -962,7 +643,6 @@ function makeDemo(week,year){
       {id:'t7',projectId:'p4',name:'Form componenten',hours:4,status:'open',allocatedWeek:week,allocatedYear:year,allocatedDay:1,startTime:780,timerSeconds:0},
     ],
     vacations:[],lockedWeeks:[],
-    todos:[],dailyTodoSnapshots:{},
     settings:{hoursPerWeek:40,calStart:6,calEnd:23},
   };
 }
@@ -1031,18 +711,6 @@ function cappedRev(proj,weekH,allTasks){
 const getWeekTasks=()=>S.data.tasks.filter(t=>t.allocatedWeek===S.viewW&&t.allocatedYear===S.viewY);
 const getCli=id=>S.data.clients.find(c=>c.id===id);
 const getProj=id=>S.data.projects.find(p=>p.id===id);
-// EÉN gedeelde berekening: welke projecten hebben overuren in de bekeken maand?
-// Gebruik in zowel het tab-badge nummer als de tab-content zodat ze NOOIT verschillen.
-function getOverProjectsForView(){
-  const ws=weekDates(S.viewW,S.viewY)[0];
-  const vm=ws.getMonth(),vy=ws.getFullYear(),vcur=vy*12+vm;
-  return S.data.projects.filter(p=>{
-    if(p.isInternal)return false;
-    if(p.startMonth!==undefined&&p.startYear!==undefined&&vcur<p.startYear*12+p.startMonth)return false;
-    if(p.endMonth!==undefined&&p.endYear!==undefined&&vcur>p.endYear*12+p.endMonth)return false;
-    return overInfo(p,S.data.tasks,vm,vy).isOver;
-  });
-}
 
 // migrate old tasks — also derive billingMonth/Year from calendar week
 function migrateTask(t){
@@ -1067,99 +735,13 @@ function ensureInternProject(){
     S.data.projects.push({id:'__intern__',name:'Intern',clientId:null,color:'#94a3b8',isInternal:true,agreedHours:0,agreedBudget:0,hourlyRate:0,tasks:[],isRetainer:false});
   }
   if(!S.data.vacations)S.data.vacations=[];
-  if(!S.data.removedHolidays)S.data.removedHolidays=[];
-  if(!S.data.daysDone)S.data.daysDone=[]; // [{week,year,day}]
   // Migrate old calendar defaults
   if(!S.data.settings)S.data.settings={hoursPerWeek:40,calStart:6,calEnd:23};
   if(S.data.settings.calStart===8||S.data.settings.calStart===undefined)S.data.settings.calStart=6;
   if(S.data.settings.calEnd===19||S.data.settings.calEnd===undefined)S.data.settings.calEnd=23;
-  ensureDutchHolidays();
   saveData(S.data);
 }
-// Voeg Nederlandse vrije dagen toe voor huidig jaar + 1 jaar vooruit + vorig jaar
-function ensureDutchHolidays(){
-  const now=new Date();
-  const years=[now.getFullYear()-1,now.getFullYear(),now.getFullYear()+1];
-  const existingKeys=new Set((S.data.vacations||[]).map(v=>v.holidayKey).filter(Boolean));
-  const removed=new Set(S.data.removedHolidays||[]);
-  years.forEach(y=>{
-    getDutchHolidays(y).forEach(h=>{
-      if(existingKeys.has(h.key)||removed.has(h.key))return;
-      S.data.vacations.push({
-        id:uid(),
-        allocatedWeek:h.week,
-        allocatedYear:h.year,
-        allocatedDay:h.day,
-        label:h.name,
-        isHoliday:true,
-        holidayKey:h.key,
-      });
-    });
-  });
-}
 ensureInternProject();
-
-// ═══════════════════════════════════════════════
-//  DOPAMINE: day-done, confetti, celebrate
-// ═══════════════════════════════════════════════
-function isDayDone(w,y,d){return(S.data.daysDone||[]).some(x=>x.week===w&&x.year===y&&x.day===d)}
-function toggleDayDone(w,y,d,btn){
-  const wasDone=isDayDone(w,y,d);
-  setData(data=>{
-    const arr=data.daysDone||[];
-    return{...data,daysDone:wasDone?arr.filter(x=>!(x.week===w&&x.year===y&&x.day===d)):[...arr,{week:w,year:y,day:d}]};
-  });
-  if(!wasDone){
-    // Dopamine boost!
-    triggerConfetti(btn);
-    playDoneSound();
-    // Check als hele week nu af is — extra grote celebratie!
-    const allDays=[0,1,2,3,4].every(i=>isDayDone(w,y,i));
-    if(allDays)setTimeout(()=>{triggerConfetti(null,80);showWeekCompleteToast()},400);
-  }
-}
-function triggerConfetti(anchorEl,count=24){
-  const colors=['#06b6d4','#10b981','#f59e0b','#ec4899','#8b5cf6','#22d3ee','#fbbf24'];
-  const rect=anchorEl?anchorEl.getBoundingClientRect():{left:window.innerWidth/2,top:window.innerHeight/3,width:0,height:0};
-  const cx=rect.left+rect.width/2,cy=rect.top+rect.height/2;
-  for(let i=0;i<count;i++){
-    const p=document.createElement('div');
-    p.className='confetti-piece';
-    p.style.background=colors[i%colors.length];
-    p.style.left=cx+(Math.random()-.5)*40+'px';
-    p.style.top=cy+'px';
-    p.style.transform=`rotate(${Math.random()*360}deg)`;
-    const dx=(Math.random()-.5)*420,dy=Math.random()*120-30;
-    p.animate(
-      [{transform:`translate(0,0) rotate(0deg)`,opacity:1},
-       {transform:`translate(${dx}px,${dy+window.innerHeight*0.55}px) rotate(${720+Math.random()*360}deg)`,opacity:0}],
-      {duration:1500+Math.random()*500,easing:'cubic-bezier(.2,.7,.3,1)'}
-    );
-    document.body.appendChild(p);
-    setTimeout(()=>p.remove(),2000);
-  }
-  if(anchorEl)anchorEl.classList.add('celebrate'),setTimeout(()=>anchorEl.classList.remove('celebrate'),900);
-}
-function playDoneSound(){
-  try{
-    const ctx=new(window.AudioContext||window.webkitAudioContext)();
-    const o=ctx.createOscillator(),g=ctx.createGain();
-    o.connect(g);g.connect(ctx.destination);
-    o.type='sine';o.frequency.setValueAtTime(660,ctx.currentTime);
-    o.frequency.exponentialRampToValueAtTime(990,ctx.currentTime+.12);
-    g.gain.setValueAtTime(.0001,ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(.18,ctx.currentTime+.02);
-    g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+.25);
-    o.start();o.stop(ctx.currentTime+.27);
-  }catch{}
-}
-function showWeekCompleteToast(){
-  const t=document.createElement('div');
-  t.style.cssText='position:fixed;top:30%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#10b981,#06b6d4);color:#fff;padding:20px 32px;border-radius:14px;font-size:16px;font-weight:800;z-index:9999;box-shadow:0 12px 36px rgba(16,185,129,.4);animation:scaleIn .35s cubic-bezier(.34,1.56,.64,1)';
-  t.innerHTML='🎉 Week compleet! Topweek!';
-  document.body.appendChild(t);
-  setTimeout(()=>{t.style.transition='opacity .4s';t.style.opacity='0';setTimeout(()=>t.remove(),400)},2000);
-}
 
 // ═══════════════════════════════════════════════
 //  TIMER
@@ -1168,43 +750,28 @@ function timerElapsed(){
   if(!S.timerTaskId)return 0;
   return S.timerBase+Math.floor((Date.now()-S.timerStart)/1000);
 }
-// Periodiek opslaan (elke 10s) zodat refresh / sluiten geen tijd verliest
-let _timerSaveInterval=null;
-function persistTimerState(){
-  if(!S.timerTaskId)return;
-  const tid=S.timerTaskId,elapsed=timerElapsed();
-  // direct in localStorage zonder een volle render
-  try{
-    S.data.tasks=S.data.tasks.map(t=>t.id===tid?{...t,timerSeconds:elapsed,timerRunning:true,timerRunningSince:S.timerStart}:t);
-    localStorage.setItem(KEY,JSON.stringify(S.data));
-  }catch{}
-}
 function startTimer(taskId){
   const task=S.data.tasks.find(t=>t.id===taskId);
   if(!task)return;
   if(S.timerTaskId===taskId){
     // pause/stop
     clearInterval(S.timerInterval);
-    clearInterval(_timerSaveInterval);_timerSaveInterval=null;
     const elapsed=timerElapsed();
     S.timerTaskId=null;S.timerStart=null;S.timerBase=0;S.timerInterval=null;
-    setData(d=>({...d,tasks:d.tasks.map(t=>t.id===taskId?{...t,timerSeconds:elapsed,timerRunning:false,timerRunningSince:null}:t)}));
+    setData(d=>({...d,tasks:d.tasks.map(t=>t.id===taskId?{...t,timerSeconds:elapsed}:t)}));
   }else{
     // stop previous
     if(S.timerTaskId){
       const prev=timerElapsed();
       const prevId=S.timerTaskId;
       clearInterval(S.timerInterval);
-      clearInterval(_timerSaveInterval);_timerSaveInterval=null;
-      S.data.tasks=S.data.tasks.map(t=>t.id===prevId?{...t,timerSeconds:prev,timerRunning:false,timerRunningSince:null}:t);
+      S.data.tasks=S.data.tasks.map(t=>t.id===prevId?{...t,timerSeconds:prev}:t);
     }
     S.timerTaskId=taskId;
     S.timerStart=Date.now();
     S.timerBase=task.timerSeconds||0;
     S.timerInterval=setInterval(()=>updateTimerDisplay(),1000);
-    // Mark running in data + persist every 10s
-    setData(d=>({...d,tasks:d.tasks.map(t=>t.id===taskId?{...t,timerRunning:true,timerRunningSince:S.timerStart}:t)}));
-    _timerSaveInterval=setInterval(persistTimerState,10000);
+    render();
   }
 }
 function updateTimerDisplay(){
@@ -1213,94 +780,7 @@ function updateTimerDisplay(){
   // update sidebar badge
   const sb=document.getElementById('timer-sidebar-badge');
   if(sb)sb.textContent=fmtSecs(timerElapsed());
-  // update quick-timer display
-  const qb=document.getElementById('quick-timer-display');
-  if(qb)qb.textContent=fmtSecs(timerElapsed());
 }
-// Herstel een lopende timer na reload
-function resumeRunningTimer(){
-  const running=S.data.tasks.find(t=>t.timerRunning&&t.timerRunningSince);
-  if(!running)return;
-  const elapsedSinceStart=Math.floor((Date.now()-running.timerRunningSince)/1000);
-  S.timerTaskId=running.id;
-  S.timerBase=(running.timerSeconds||0); // timerSeconds was bij start opgeslagen
-  S.timerStart=running.timerRunningSince;
-  // base + extra time elapsed sinds laatste save
-  // Maar timerSeconds was inclusief tijd tot save — om dubbeltelling te voorkomen, gebruik timerRunningSince + base
-  // Actually persistTimerState slaat elapsed op, dus timerSeconds = totale tijd tot laatste save
-  // We willen voortzetten alsof timer onafgebroken liep — herbereken vanaf timerRunningSince
-  S.timerBase=running.timerSeconds||0;
-  // Zorg dat timerStart = nu, en base bevat eerder gepersisteerde tijd + tijd sinds laatste save
-  S.timerStart=Date.now();
-  S.timerInterval=setInterval(()=>updateTimerDisplay(),1000);
-  _timerSaveInterval=setInterval(persistTimerState,10000);
-}
-
-// ═══════════════════════════════════════════════
-//  CUSTOM DROPDOWN — vervangt native <select> zodat macOS Safari niet
-//  zijn system-font opdringt aan de option-tags
-// ═══════════════════════════════════════════════
-function enhanceSelects(root){
-  if(!root)return;
-  root.querySelectorAll('select:not(.cs-enhanced)').forEach(sel=>{
-    sel.classList.add('cs-enhanced');
-    const wrap=document.createElement('div');
-    wrap.className='cs';
-    // Behoud inline flex/width zodat layout in form-rows niet breekt
-    if(sel.style.flex)wrap.style.flex=sel.style.flex;
-    if(sel.style.width)wrap.style.width=sel.style.width;
-    // Trigger
-    const trigger=document.createElement('button');
-    trigger.type='button';
-    trigger.className='cs-trigger';
-    const current=document.createElement('span');
-    current.className='cs-current';
-    current.textContent=sel.options[sel.selectedIndex]?.text||'';
-    const arrow=document.createElement('span');
-    arrow.className='cs-arrow';
-    arrow.textContent='▾';
-    trigger.appendChild(current);trigger.appendChild(arrow);
-    // Popup met opties
-    const popup=document.createElement('div');
-    popup.className='cs-popup';
-    Array.from(sel.options).forEach((opt,idx)=>{
-      const o=document.createElement('button');
-      o.type='button';
-      o.className='cs-option'+(idx===sel.selectedIndex?' selected':'');
-      o.dataset.value=opt.value;
-      o.textContent=opt.text;
-      o.title=opt.text;
-      o.addEventListener('click',e=>{
-        e.stopPropagation();
-        sel.value=opt.value;
-        current.textContent=opt.text;
-        popup.querySelectorAll('.cs-option').forEach(x=>x.classList.remove('selected'));
-        o.classList.add('selected');
-        wrap.classList.remove('open');
-        sel.dispatchEvent(new Event('change',{bubbles:true}));
-      });
-      popup.appendChild(o);
-    });
-    trigger.addEventListener('click',e=>{
-      e.stopPropagation();
-      document.querySelectorAll('.cs.open').forEach(c=>c!==wrap&&c.classList.remove('open'));
-      wrap.classList.toggle('open');
-    });
-    // Plaats wrap voor select, en zet select erin (verborgen, maar in DOM voor change-listeners)
-    sel.parentNode.insertBefore(wrap,sel);
-    wrap.appendChild(trigger);
-    wrap.appendChild(popup);
-    wrap.appendChild(sel);
-  });
-}
-// Sluit dropdowns bij klik buiten
-document.addEventListener('click',()=>{
-  document.querySelectorAll('.cs.open').forEach(c=>c.classList.remove('open'));
-});
-// Sluit ook bij Escape
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape')document.querySelectorAll('.cs.open').forEach(c=>c.classList.remove('open'));
-});
 
 // ═══════════════════════════════════════════════
 //  MODAL SYSTEM
@@ -1313,8 +793,7 @@ function openModal(html){
   div.addEventListener('click',e=>{if(e.target===div)close()});
   div.querySelectorAll('.modal-close').forEach(b=>b.addEventListener('click',close));
   document.getElementById('modals').appendChild(div);
-  enhanceSelects(div); // vervang native selects door custom dropdown
-  setTimeout(()=>div.querySelector('input:not([type=file]):not([type=checkbox]):not([type=range])')?.focus(),60);
+  setTimeout(()=>div.querySelector('input:not([type=file]):not([type=checkbox]):not([type=range]),select')?.focus(),60);
   return{el:div,close};
 }
 
@@ -1345,23 +824,14 @@ function renderCalendar(){
   const today=new Date();
   const weekTasks=getWeekTasks();
 
-  // Day headers (with day-done checkbox for dopamine)
+  // Day headers
   const hdrs=document.getElementById('cal-day-headers');
   hdrs.innerHTML=dates.map((d,i)=>{
     const todayDow=today.getDay()===0?6:today.getDay()-1;
     const isT=isCur&&i===todayDow;
-    const dayVacs=(data.vacations||[]).filter(v=>v.allocatedWeek===viewW&&v.allocatedYear===viewY&&v.allocatedDay===i);
-    const hasVac=dayVacs.length>0;
-    const hasHoliday=dayVacs.some(v=>v.isHoliday);
-    const isDayDone=(data.daysDone||[]).some(x=>x.week===viewW&&x.year===viewY&&x.day===i);
-    const showCheckbox=isLocked||isDayDone||true; // altijd zichtbaar
-    return`<div class="cal-day-hdr${isT?' today':''}${hasVac&&!hasHoliday?' has-vacation':''}${hasHoliday?' has-holiday':''}${isDayDone?' day-done-hdr':''}" style="flex:1;min-width:90px" data-dayhdr="${i}"><div class="cal-day-name">${DAYS[i]}</div><div class="cal-day-date">${fmtD(d)} <button class="day-done-toggle${isDayDone?' done':''}" data-daydone="${i}" title="Markeer dag als afgerond">✓</button></div></div>`;
+    const hasVac=(data.vacations||[]).some(v=>v.allocatedWeek===viewW&&v.allocatedYear===viewY&&v.allocatedDay===i);
+    return`<div class="cal-day-hdr${isT?' today':''}${hasVac?' has-vacation':''}" style="flex:1;min-width:90px"><div class="cal-day-name">${DAYS[i]}</div><div class="cal-day-date">${fmtD(d)}</div></div>`;
   }).join('');
-  hdrs.querySelectorAll('[data-daydone]').forEach(b=>b.addEventListener('click',e=>{
-    e.stopPropagation();
-    const i=parseInt(b.dataset.daydone);
-    toggleDayDone(viewW,viewY,i,b);
-  }));
 
   // Build grid
   const gridEl=document.getElementById('cal-grid');
@@ -1442,12 +912,9 @@ function renderCalendar(){
       }else{
         const vd=e.dataTransfer.getData('vacationDrop');
         if(vd){
-          // Only one vacation per day (halve / hele dag wisselen kan via knop op blok)
+          // Only one vacation per day
           const alreadyHas=(data.vacations||[]).some(v=>v.allocatedWeek===viewW&&v.allocatedYear===viewY&&v.allocatedDay===di);
-          if(!alreadyHas){
-            const isHalf=(vd==='half');
-            setData(d=>({...d,vacations:[...(d.vacations||[]),{id:uid(),allocatedWeek:viewW,allocatedYear:viewY,allocatedDay:di,label:isHalf?'Halve vrije dag':'Vakantie',halfDay:isHalf?'am':null}]}));
-          }
+          if(!alreadyHas)setData(d=>({...d,vacations:[...(d.vacations||[]),{id:uid(),allocatedWeek:viewW,allocatedYear:viewY,allocatedDay:di,label:'Vakantie'}]}));
         }
       }
     });
@@ -1463,50 +930,21 @@ function renderCalendar(){
       openTaskModal(null,di,null,2,mins,clickDate.getMonth(),clickDate.getFullYear());
     });
 
-    // Render task blocks — toon checks bij locked OF day-done
-    const dayDone=(data.daysDone||[]).some(x=>x.week===viewW&&x.year===viewY&&x.day===di);
+    // Render task blocks
     const dayTasks=weekTasks.filter(t=>t.allocatedDay===di);
     dayTasks.forEach(task=>{
       const block=createCalTaskBlock(task,calStart,col);
-      if(isLocked||dayDone){block.classList.add('locked');}
-      if(isLocked){
-        block.classList.add('week-locked');
-        block.draggable=false;
-        block.style.cursor='default';
-        // Verberg de resize-handle volledig zodat slepen/aanpassen onmogelijk is
-        const rh=block.querySelector('.task-resize');
-        if(rh){rh.style.display='none';rh.style.pointerEvents='none';}
-      }
+      if(isLocked){block.draggable=false;block.style.cursor='default';block.classList.add('locked');}
       col.appendChild(block);
     });
 
-    // Render vacation block (full-day overlay) — onderscheid tussen vakantie en vrije dag (feestdag)
+    // Render vacation block (full-day overlay)
     const dayVac=(data.vacations||[]).find(v=>v.allocatedWeek===viewW&&v.allocatedYear===viewY&&v.allocatedDay===di);
     if(dayVac){
-      const isHol=!!dayVac.isHoliday;
-      const half=dayVac.halfDay; // null/undefined | 'am' | 'pm'
       const vb=document.createElement('div');
-      vb.className='vacation-block'+(isHol?' holiday-block':'')+(half==='am'?' half-am':'')+(half==='pm'?' half-pm':'');
-      const icon=isHol?'🎉':(half?'🌗':'🏖');
-      const baseLabel=dayVac.label||'Vakantie';
-      const halfSuffix=half==='am'?' (ochtend)':half==='pm'?' (middag)':'';
-      const halfBtn=isHol?'':`<button class="vacation-half-toggle" title="Hele dag → ochtend → middag">${half?(half==='am'?'AM':'PM'):'½'}</button>`;
-      vb.innerHTML=`<div class="vacation-hdr">${icon} ${baseLabel}${halfSuffix}<div class="vacation-actions">${halfBtn}<button class="vacation-del" title="Verwijder">×</button></div></div>`;
-      vb.querySelector('.vacation-del').addEventListener('click',e=>{
-        e.stopPropagation();
-        setData(d=>({
-          ...d,
-          vacations:(d.vacations||[]).filter(v=>v.id!==dayVac.id),
-          // Onthoud verwijderde feestdagen zodat ze niet automatisch terugkomen
-          removedHolidays:isHol&&dayVac.holidayKey?[...(d.removedHolidays||[]),dayVac.holidayKey]:(d.removedHolidays||[]),
-        }));
-      });
-      vb.querySelector('.vacation-half-toggle')?.addEventListener('click',e=>{
-        e.stopPropagation();
-        // Cycle: null/full → am → pm → null
-        const next=!half?'am':half==='am'?'pm':null;
-        setData(d=>({...d,vacations:(d.vacations||[]).map(v=>v.id===dayVac.id?{...v,halfDay:next,label:next?'Halve vrije dag':'Vakantie'}:v)}));
-      });
+      vb.className='vacation-block';
+      vb.innerHTML=`<div class="vacation-hdr">🏖 ${dayVac.label||'Vakantie'}<button class="vacation-del" title="Verwijder vakantie">×</button></div>`;
+      vb.querySelector('.vacation-del').addEventListener('click',e=>{e.stopPropagation();setData(d=>({...d,vacations:(d.vacations||[]).filter(v=>v.id!==dayVac.id)}))});
       col.appendChild(vb);
     }
 
@@ -1564,7 +1002,6 @@ function createCalTaskBlock(task,calStart){
   // Drag task
   block.draggable=true;
   block.addEventListener('dragstart',e=>{
-    if(block.classList.contains('week-locked')){e.preventDefault();return;}
     e.dataTransfer.setData('taskId',task.id);
     e.dataTransfer.effectAllowed='move';
     block.classList.add('dragging');
@@ -1585,7 +1022,6 @@ function createCalTaskBlock(task,calStart){
 
   // Resize
   block.querySelector(`[data-resize="${task.id}"]`).addEventListener('mousedown',e=>{
-    if(block.classList.contains('week-locked'))return; // week vergrendeld → geen resize
     e.preventDefault();e.stopPropagation();
     const startY=e.clientY,startH=height;
     const onMove=ev=>{
@@ -1620,12 +1056,11 @@ function renderWeek(){
   // Exclude intern from billable hours shown in gauge (still count for capacity fill)
   const totalH=weekTasks.reduce((s,t)=>s+(t.hours||0),0);
   const maxH=data.settings.hoursPerWeek||40;
-  // Vacation days reduce available capacity (halve dagen tellen voor 0.5)
+  // Vacation days reduce available capacity
   const weekVacs=(data.vacations||[]).filter(v=>v.allocatedWeek===viewW&&v.allocatedYear===viewY);
-  const weekVacEq=weekVacs.reduce((s,v)=>s+(v.halfDay?0.5:1),0);
   const hoursPerDay=maxH/5;
-  const availH=Math.max(0,maxH-weekVacEq*hoursPerDay);
-  const vacLabel=weekVacs.length>0?` <span style="font-size:10px;color:#c2410c">(${weekVacEq===Math.floor(weekVacEq)?weekVacEq:weekVacEq.toFixed(1)}d vakantie)</span>`:'';
+  const availH=Math.max(0,maxH-weekVacs.length*hoursPerDay);
+  const vacLabel=weekVacs.length>0?` <span style="font-size:10px;color:#c2410c">(${weekVacs.length}d vakantie)</span>`:'';
 
   // Lock state (also computed in renderCalendar for scope reasons)
   const isLocked=(data.lockedWeeks||[]).some(l=>l.week===viewW&&l.year===viewY);
@@ -1637,8 +1072,6 @@ function renderWeek(){
     lockBtn.style.borderColor=isLocked?'#fed7aa':'';
     lockBtn.title=isLocked?'Week ontgrendelen':'Week vergrendelen';
   }
-  document.getElementById('btn-prev').innerHTML='&#8249;';
-  document.getElementById('btn-next').innerHTML='&#8250;';
   document.getElementById('week-label').textContent=`Week ${viewW} · ${fmtD(dates[0])} – ${fmtD(dates[6])} ${viewY}`;
   document.getElementById('gauge-wrap').innerHTML=gaugeHtml(totalH,availH)+vacLabel+(isLocked?` <span style="font-size:10px;color:#c2410c;font-weight:700">🔒 vergrendeld</span>`:'');
   document.getElementById('btn-cur').style.display=isCur?'none':'';
@@ -1648,20 +1081,18 @@ function renderWeek(){
 
   // Tabs
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===S.activeTab));
-  // Gebruik de gedeelde helper — badge & tab-content kunnen nu niet meer afwijken
-  const overProjs=getOverProjectsForView();
-  const overCount=overProjs.length;
-  const _vm=weekDates(viewW,viewY)[0].getMonth();
+  const _now=new Date();
+  const _nm=_now.getMonth(),_ny=_now.getFullYear(),_ncur=_ny*12+_nm;
+  const overCount=data.projects.filter(p=>{
+    if(p.isInternal)return false;
+    // Zelfde datum-range filter als renderTabOveruren
+    if(p.startMonth!==undefined&&p.startYear!==undefined&&_ncur<p.startYear*12+p.startMonth)return false;
+    if(p.endMonth!==undefined&&p.endYear!==undefined&&_ncur>p.endYear*12+p.endMonth)return false;
+    return overInfo(p,data.tasks,_nm,_ny).isOver;
+  }).length;
   const tabOB=document.getElementById('tab-over-btn');
   tabOB.querySelector('.tab-badge')?.remove();
-  tabOB.querySelector('.tab-over-dot')?.remove();
-  if(overCount>0){
-    const sp=document.createElement('span');
-    sp.className='tab-badge';
-    sp.title=`${overCount} project${overCount>1?'en':''} met overuren in ${MONTH_NL[_vm]}`;
-    sp.textContent=overCount;
-    tabOB.appendChild(sp);
-  }
+  if(overCount>0){const sp=document.createElement('span');sp.className='tab-badge';sp.textContent=overCount;tabOB.appendChild(sp)}
   document.getElementById('tab-omzet').style.display=S.activeTab==='omzet'?'':'none';
   document.getElementById('tab-overuren').style.display=S.activeTab==='overuren'?'':'none';
   if(S.activeTab==='omzet')renderTabOmzet(weekTasks);
@@ -1683,21 +1114,13 @@ function renderInplan(){
   inplanEl.style.display=inplanOpen?'':'none';
   if(!inplanOpen)return;
   inplanEl.innerHTML='<p style="font-size:10px;color:#94a3b8;margin-bottom:5px">Sleep naar de kalender →</p>';
-  // Vacation drag rows — hele dag + halve dag
+  // Vacation drag row
   const vacRow=document.createElement('div');
   vacRow.className='vacation-drag-row';
   vacRow.draggable=true;
-  vacRow.innerHTML=`<span style="font-size:16px">🏖</span><div style="flex:1"><div style="font-size:11px;font-weight:600;color:#c2410c">Hele vrije dag</div><div style="font-size:10px;color:#94a3b8">Sleep naar een dag</div></div>`;
-  vacRow.addEventListener('dragstart',e=>{e.dataTransfer.setData('vacationDrop','full');e.dataTransfer.effectAllowed='copy'});
+  vacRow.innerHTML=`<span style="font-size:16px">🏖</span><div style="flex:1"><div style="font-size:11px;font-weight:600;color:#c2410c">Vakantie / Vrije dag</div><div style="font-size:10px;color:#94a3b8">Sleep naar een dag om te blokkeren</div></div>`;
+  vacRow.addEventListener('dragstart',e=>{e.dataTransfer.setData('vacationDrop','1');e.dataTransfer.effectAllowed='copy'});
   inplanEl.appendChild(vacRow);
-  const halfRow=document.createElement('div');
-  halfRow.className='vacation-drag-row';
-  halfRow.draggable=true;
-  halfRow.style.borderColor='#fde68a';
-  halfRow.style.background='#fffbeb';
-  halfRow.innerHTML=`<span style="font-size:16px">🌗</span><div style="flex:1"><div style="font-size:11px;font-weight:600;color:#92400e">Halve vrije dag</div><div style="font-size:10px;color:#94a3b8">Klik op ½ om ochtend/middag te wisselen</div></div>`;
-  halfRow.addEventListener('dragstart',e=>{e.dataTransfer.setData('vacationDrop','half');e.dataTransfer.effectAllowed='copy'});
-  inplanEl.appendChild(halfRow);
 
   // For retainers: use the month of the viewed week; for fixed: all-time
   const viewMonth=weekStart.getMonth(),viewYear=weekStart.getFullYear();
@@ -1722,64 +1145,22 @@ function renderInplan(){
     row.className='inplan-row'+(info.isOver?' over':'');
     row.draggable=true;
     const retainerSub=proj.isRetainer?` · <span style="color:#0891b2;font-size:9px">${MONTHS[viewMonth]}</span>`:'';
-    row.innerHTML=`<span style="color:#cbd5e1;font-size:10px">⠿</span><div class="proj-dot" style="background:${proj.color}"></div><div style="flex:1;min-width:0"><div class="inplan-name">${proj.name}${proj.isRetainer?'<span class="retainer-badge">retainer</span>':''}</div><div class="inplan-sub">${cli?.name||'—'} · ${eur(effRate(proj))}/u${retainerSub}</div></div><div class="inplan-right">${info.isOver?`<div class="inplan-over">+${fmtH(info.over)}</div>`:`<div class="inplan-free">${fmtH(rem)} vrij</div>`}</div>`;
+    row.innerHTML=`<span style="color:#cbd5e1;font-size:10px">⠿</span><div class="proj-dot" style="background:${proj.color}"></div><div style="flex:1;min-width:0"><div class="inplan-name">${proj.name}${proj.isRetainer?'<span class="retainer-badge">retainer</span>':''}</div><div class="inplan-sub">${cli?.name||'—'} · ${eur(effRate(proj))}/u${retainerSub}</div></div><div class="inplan-right">${info.isOver?`<div class="inplan-over">+${info.over}u</div>`:`<div class="inplan-free">${rem}u vrij</div>`}</div>`;
     row.addEventListener('dragstart',e=>{e.dataTransfer.setData('projectDrop',JSON.stringify({projectId:proj.id,defaultHours:defH,billingMonth:viewMonth,billingYear:viewYear}));e.dataTransfer.effectAllowed='copy'});
     inplanEl.appendChild(row);
   });
 
-  // Intern project row + Quick Timer (timer starten vóór je sleept)
+  // Intern project row
   if(internProj){
     const internH=data.tasks.filter(t=>t.projectId==='__intern__'&&t.allocatedWeek===S.viewW&&t.allocatedYear===S.viewY).reduce((s,t)=>s+(t.hours||0),0);
     const iRow=document.createElement('div');
     iRow.className='inplan-row';
     iRow.draggable=true;
-    iRow.style.cssText='border-color:#e2e8f0;background:#f8fafc;border-style:dashed;flex-wrap:wrap';
-    const isRunningIntern=S.timerTaskId&&S.data.tasks.find(t=>t.id===S.timerTaskId&&t.projectId==='__intern__');
-    iRow.innerHTML=`<span style="color:#cbd5e1;font-size:10px">⠿</span><div class="proj-dot" style="background:#94a3b8"></div><div style="flex:1;min-width:0"><div class="inplan-name">Intern <span class="intern-badge">🏠 intern</span></div><div class="inplan-sub">Belasting, admin, overig</div></div><div class="inplan-right"><div class="inplan-free">${internH}u deze week</div></div>
-    <button class="quick-timer-btn${isRunningIntern?' running':''}" id="quick-timer-btn">${isRunningIntern?`⏸ Stop <span class="quick-timer-display" id="quick-timer-display">${fmtSecs(timerElapsed())}</span>`:'⏱ Quick start (intern)'}</button>`;
-    iRow.addEventListener('dragstart',e=>{
-      // Voorkom drag wanneer op de quick-timer button gestart wordt
-      if(e.target.closest('.quick-timer-btn')){e.preventDefault();return}
-      e.dataTransfer.setData('projectDrop',JSON.stringify({projectId:'__intern__',defaultHours:1,billingMonth:viewMonth,billingYear:viewYear}));
-      e.dataTransfer.effectAllowed='copy';
-    });
-    iRow.querySelector('#quick-timer-btn').addEventListener('click',e=>{
-      e.stopPropagation();
-      quickStartInternTimer();
-    });
+    iRow.style.cssText='border-color:#e2e8f0;background:#f8fafc;border-style:dashed';
+    iRow.innerHTML=`<span style="color:#cbd5e1;font-size:10px">⠿</span><div class="proj-dot" style="background:#94a3b8"></div><div style="flex:1;min-width:0"><div class="inplan-name">Intern <span class="intern-badge">🏠 intern</span></div><div class="inplan-sub">Belasting, admin, overig</div></div><div class="inplan-right"><div class="inplan-free">${internH}u deze week</div></div>`;
+    iRow.addEventListener('dragstart',e=>{e.dataTransfer.setData('projectDrop',JSON.stringify({projectId:'__intern__',defaultHours:1,billingMonth:viewMonth,billingYear:viewYear}));e.dataTransfer.effectAllowed='copy'});
     inplanEl.appendChild(iRow);
   }
-}
-
-// Quick start: maak direct een interne taak op vandaag en start de timer
-function quickStartInternTimer(){
-  // Als er al een intern-timer loopt: stop hem
-  if(S.timerTaskId){
-    const cur=S.data.tasks.find(t=>t.id===S.timerTaskId);
-    if(cur&&cur.projectId==='__intern__'){startTimer(S.timerTaskId);return}
-  }
-  // Vraag om een naam
-  const name=prompt('Waar werk je aan? (interne taak)','Admin');
-  if(!name||!name.trim())return;
-  // Bepaal dag binnen huidige week (vandaag als die in viewweek valt, anders maandag)
-  const today=new Date();
-  const todayWN=weekNum(today);
-  let day=0;
-  if(todayWN.week===S.viewW&&todayWN.year===S.viewY){
-    day=today.getDay()===0?6:today.getDay()-1;
-  }
-  const startTime=today.getHours()*60+today.getMinutes();
-  const id=uid();
-  const newTask={
-    id,projectId:'__intern__',name:name.trim(),hours:0.5,
-    allocatedWeek:S.viewW,allocatedYear:S.viewY,allocatedDay:day,
-    startTime,timerSeconds:0,
-    billingMonth:weekDates(S.viewW,S.viewY)[day].getMonth(),
-    billingYear:weekDates(S.viewW,S.viewY)[day].getFullYear(),
-  };
-  setData(d=>({...d,tasks:[...d.tasks,newTask],projects:d.projects.map(p=>p.id==='__intern__'?{...p,tasks:[...(p.tasks||[]),id]}:p)}));
-  // Start timer voor deze nieuwe taak
-  startTimer(id);
 }
 
 function renderTabOmzet(weekTasks){
@@ -1812,7 +1193,7 @@ function renderTabOmzet(weekTasks){
       const maxH2=proj.isRetainer?getRetainerCap(proj,viewMonth,viewYear).hours:(proj.agreedHours||0);
       const pct=Math.min((info.total/(maxH2||1))*100,100);
       const bc=info.isOver?'#ef4444':proj.color;
-      h+=`<div class="proj-sum"${info.isOver?' style="border-color:#fecaca"':''}><div class="proj-sum-head" style="border-left-color:${proj.color};background:${rgba(proj.color,.05)}"><div style="flex:1;min-width:0"><div class="ps-name">${proj.name}${info.isOver?' ⚠️':''}</div><div class="ps-cli">${cli?.name||'—'}${proj.isRetainer?'<span class="retainer-badge" style="margin-left:4px">retainer</span>':''}</div><div class="ps-prog"><div class="ps-prog-fill" style="width:${pct}%;background:${bc}"></div></div><div class="ps-hours">${fmtH(info.total)}/${fmtH(maxH2||0)}</div></div><div class="ps-right"><div class="ps-h">${fmtH(weekH)}</div><div class="ps-rev">${eur(weekRev)}</div><div class="ps-rate">${eur(effRate(proj))}/u</div></div></div>${tasks.map(t=>`<div class="t-row-s"><span class="trn">${t.name}</span><span class="trh">${fmtH(t.hours)}</span></div>`).join('')}</div>`;
+      h+=`<div class="proj-sum"${info.isOver?' style="border-color:#fecaca"':''}><div class="proj-sum-head" style="border-left-color:${proj.color};background:${rgba(proj.color,.05)}"><div style="flex:1;min-width:0"><div class="ps-name">${proj.name}${info.isOver?' ⚠️':''}</div><div class="ps-cli">${cli?.name||'—'}${proj.isRetainer?'<span class="retainer-badge" style="margin-left:4px">retainer</span>':''}</div><div class="ps-prog"><div class="ps-prog-fill" style="width:${pct}%;background:${bc}"></div></div><div class="ps-hours">${info.total}/${maxH2||0}u</div></div><div class="ps-right"><div class="ps-h">${weekH}u</div><div class="ps-rev">${eur(weekRev)}</div><div class="ps-rate">${eur(effRate(proj))}/u</div></div></div>${tasks.map(t=>`<div class="t-row-s"><span class="trn">${t.name}</span><span class="trh">${t.hours}u</span></div>`).join('')}</div>`;
     });
     if(Object.keys(byCli).length){
       h+=`<div class="sec-title" style="margin-top:9px">Per klant</div>`;
@@ -1829,16 +1210,22 @@ function renderTabOveruren(){
   const{data}=S;
   const _ws=weekDates(S.viewW,S.viewY)[0];
   const viewMonth=_ws.getMonth(),viewYear=_ws.getFullYear();
-  // Gebruik dezelfde helper als de badge — gegarandeerde consistency
-  const overProjs=getOverProjectsForView().map(p=>({proj:p,cli:getCli(p.clientId),info:overInfo(p,data.tasks,viewMonth,viewYear)}));
+  const cur=viewYear*12+viewMonth;
+  const overProjs=data.projects.filter(p=>{
+    if(p.isInternal)return false;
+    // Skip project als het buiten zijn looptijd valt
+    if(p.startMonth!==undefined&&p.startYear!==undefined&&cur<p.startYear*12+p.startMonth)return false;
+    if(p.endMonth!==undefined&&p.endYear!==undefined&&cur>p.endYear*12+p.endMonth)return false;
+    return true;
+  }).map(p=>({proj:p,cli:getCli(p.clientId),info:overInfo(p,data.tasks,viewMonth,viewYear)})).filter(x=>x.info.isOver);
   if(!overProjs.length){document.getElementById('tab-overuren').innerHTML=`<div class="empty-state" style="padding:24px 0"><div style="font-size:34px;margin-bottom:7px">✅</div><p>Geen overuren!</p><small>Alle projecten binnen budget.</small></div>`;return}
   const totLoss=overProjs.reduce((s,x)=>s+x.info.loss,0);
   const totOver=overProjs.reduce((s,x)=>s+x.info.over,0);
-  let h=`<div class="loss-box"><h4>Totaal verlies <span style="font-size:10px;font-weight:400;color:#94a3b8">${MONTH_NL[viewMonth]} ${viewYear}</span></h4><div class="loss-grid"><div class="loss-card"><div class="loss-v">${fmtH(totOver)}</div><div class="loss-l">onbetaald</div></div><div class="loss-card"><div class="loss-v" style="font-size:13px">${eur(totLoss)}</div><div class="loss-l">misgelopen</div></div></div></div><div class="sec-title">Per project</div>`;
+  let h=`<div class="loss-box"><h4>Totaal verlies <span style="font-size:10px;font-weight:400;color:#94a3b8">${MONTH_NL[viewMonth]} ${viewYear}</span></h4><div class="loss-grid"><div class="loss-card"><div class="loss-v">${totOver}u</div><div class="loss-l">onbetaald</div></div><div class="loss-card"><div class="loss-v" style="font-size:13px">${eur(totLoss)}</div><div class="loss-l">misgelopen</div></div></div></div><div class="sec-title">Per project</div>`;
   overProjs.forEach(({proj,cli,info})=>{
     const cap=info.cap||proj.agreedHours||0;
     const pct=Math.min((info.total/(cap||1))*100,100);
-    h+=`<div class="over-proj"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><div><div style="font-size:11.5px;font-weight:700">${proj.name}</div><div style="font-size:10px;color:#94a3b8">${cli?.name||'—'}</div></div><div style="font-size:12.5px;font-weight:800;color:#ef4444">−${eur(info.loss)}</div></div><div class="over-prog"><div class="over-prog-fill" style="width:${pct}%"></div></div><div style="font-size:10px;color:#94a3b8;display:flex;justify-content:space-between"><span>${fmtH(info.total)} / ${fmtH(cap)}</span><span>+${fmtH(info.over)}</span></div></div>`;
+    h+=`<div class="over-proj"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><div><div style="font-size:11.5px;font-weight:700">${proj.name}</div><div style="font-size:10px;color:#94a3b8">${cli?.name||'—'}</div></div><div style="font-size:12.5px;font-weight:800;color:#ef4444">−${eur(info.loss)}</div></div><div class="over-prog"><div class="over-prog-fill" style="width:${pct}%"></div></div><div style="font-size:10px;color:#94a3b8;display:flex;justify-content:space-between"><span>${info.total}u / ${cap}u</span><span>+${info.over}u</span></div></div>`;
   });
   document.getElementById('tab-overuren').innerHTML=h;
 }
@@ -1912,7 +1299,7 @@ function renderProjects(){
       :data.tasks.filter(t=>t.projectId===proj.id);
     const retainerSub=proj.isRetainer?`<br><span style="font-size:10.5px;color:${capObj.hasOverride?'#0891b2':'#16a34a'}">${capObj.hours}u/mnd${capObj.hasOverride?' 📅':''} · ${eur(capObj.budget)}/mnd</span>`:'';
     const dateRangeSub=(proj.startMonth!==undefined||proj.endMonth!==undefined)?`<br><span style="font-size:10px;color:#94a3b8">📅 ${proj.startMonth!==undefined?MONTHS[proj.startMonth]+' '+proj.startYear:'...'} → ${proj.endMonth!==undefined?MONTHS[proj.endMonth]+' '+proj.endYear:'doorlopend'}</span>`:'';
-    return`<div class="card"${info.isOver?' style="border-color:#fecaca"':''}><div class="proj-card-hdr"><div class="proj-dot-lg" style="background:${proj.color}"></div><div class="proj-card-title">${proj.name}</div>${proj.isRetainer?`<span class="retainer-tag">🔁 retainer</span>`:''} ${info.isOver?'<span>⚠️</span>':''}</div><div style="font-size:11.5px;color:#64748b;margin-bottom:8px">${cli?.name||'—'}${effRate(proj)>0?` · ${eur(effRate(proj))}/u`:''}${retainerSub}${dateRangeSub}</div><div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${bc}"></div></div><div class="prog-meta"><span>${fmtH(info.total)} / ${fmtH(maxH)} ${proj.isRetainer?MONTH_NL[projM]:'gepland'}</span>${info.isOver?`<span style="color:#ef4444;font-weight:700">+${fmtH(info.over)} over</span>`:`<span>${fmtH(Math.max(0,maxH-info.total))} vrij</span>`}</div>${tasks.length?`<div class="task-list-card">${tasks.slice(0,4).map(t=>`<div class="task-item-card"><span class="ti-name">${t.name}</span><span class="ti-hrs">${t.hours||0}u${t.timerSeconds>0?` <span style="font-size:9.5px;color:#0891b2">(${fmtSecs(t.timerSeconds)} getrackt)</span>`:''}</span><button class="btn-icon" data-act="edit-task" data-id="${t.id}">✎</button><button class="btn-icon" data-act="del-task" data-id="${t.id}" style="font-size:11px">✕</button></div>`).join('')}${tasks.length>4?`<div style="padding:4px 9px;font-size:10.5px;color:#94a3b8">+${tasks.length-4} meer</div>`:''}</div>`:''}<button class="add-task-btn-card" data-act="add-task" data-proj="${proj.id}"><span style="font-size:13px">+</span> Taak toevoegen</button><div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap">${proj.isRetainer?`<button class="btn btn-secondary btn-sm" data-act="override-month" data-id="${proj.id}" style="color:#0891b2;border-color:#a5f3fc">📅 Maand aanpassen${Object.keys(proj.monthlyOverrides||{}).length>0?` <span style="background:#0891b2;color:#fff;border-radius:9px;padding:0 5px;font-size:9px">${Object.keys(proj.monthlyOverrides||{}).length}</span>`:''}</button>`:''}<button class="btn btn-secondary btn-sm" data-act="edit-proj" data-id="${proj.id}">✎ Bewerken</button><button class="btn btn-danger btn-sm" data-act="del-proj" data-id="${proj.id}">✕</button></div></div>`;
+    return`<div class="card"${info.isOver?' style="border-color:#fecaca"':''}><div class="proj-card-hdr"><div class="proj-dot-lg" style="background:${proj.color}"></div><div class="proj-card-title">${proj.name}</div>${proj.isRetainer?`<span class="retainer-tag">🔁 retainer</span>`:''} ${info.isOver?'<span>⚠️</span>':''}</div><div style="font-size:11.5px;color:#64748b;margin-bottom:8px">${cli?.name||'—'}${effRate(proj)>0?` · ${eur(effRate(proj))}/u`:''}${retainerSub}${dateRangeSub}</div><div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${bc}"></div></div><div class="prog-meta"><span>${info.total} / ${maxH}u ${proj.isRetainer?MONTH_NL[projM]:'gepland'}</span>${info.isOver?`<span style="color:#ef4444;font-weight:700">+${info.over}u over</span>`:`<span>${Math.max(0,maxH-info.total)}u vrij</span>`}</div>${tasks.length?`<div class="task-list-card">${tasks.slice(0,4).map(t=>`<div class="task-item-card"><span class="ti-name">${t.name}</span><span class="ti-hrs">${t.hours||0}u${t.timerSeconds>0?` <span style="font-size:9.5px;color:#0891b2">(${fmtSecs(t.timerSeconds)} getrackt)</span>`:''}</span><button class="btn-icon" data-act="edit-task" data-id="${t.id}">✎</button><button class="btn-icon" data-act="del-task" data-id="${t.id}" style="font-size:11px">✕</button></div>`).join('')}${tasks.length>4?`<div style="padding:4px 9px;font-size:10.5px;color:#94a3b8">+${tasks.length-4} meer</div>`:''}</div>`:''}<button class="add-task-btn-card" data-act="add-task" data-proj="${proj.id}"><span style="font-size:13px">+</span> Taak toevoegen</button><div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap">${proj.isRetainer?`<button class="btn btn-secondary btn-sm" data-act="override-month" data-id="${proj.id}" style="color:#0891b2;border-color:#a5f3fc">📅 Maand aanpassen${Object.keys(proj.monthlyOverrides||{}).length>0?` <span style="background:#0891b2;color:#fff;border-radius:9px;padding:0 5px;font-size:9px">${Object.keys(proj.monthlyOverrides||{}).length}</span>`:''}</button>`:''}<button class="btn btn-secondary btn-sm" data-act="edit-proj" data-id="${proj.id}">✎ Bewerken</button><button class="btn btn-danger btn-sm" data-act="del-proj" data-id="${proj.id}">✕</button></div></div>`;
   }).join('');
   el.querySelectorAll('[data-act="override-month"]').forEach(b=>b.addEventListener('click',()=>openRetainerOverrideModal(b.dataset.id)));
   el.querySelectorAll('[data-act="edit-proj"]').forEach(b=>b.addEventListener('click',()=>openProjModal(b.dataset.id)));
@@ -1958,7 +1345,7 @@ function renderSidebar(){
   const max=data.settings.hoursPerWeek||40;
   const pct=Math.round(h/max*100);
   const over=data.projects.filter(p=>overInfo(p,data.tasks).isOver).length;
-  const navItems=[{id:'week',icon:'📅',label:'Week View'},{id:'todo',icon:'✅',label:'To-do'},{id:'clients',icon:'👥',label:'Klanten'},{id:'projects',icon:'📁',label:'Projecten'},{id:'analyse',icon:'📊',label:'Analyse'},{id:'settings',icon:'⚙️',label:'Instellingen'}];
+  const navItems=[{id:'week',icon:'📅',label:'Week View'},{id:'clients',icon:'👥',label:'Klanten'},{id:'projects',icon:'📁',label:'Projecten'},{id:'analyse',icon:'📊',label:'Analyse'},{id:'settings',icon:'⚙️',label:'Instellingen'}];
   const pc=pct>100?'#ef4444':pct>85?'#f59e0b':'#0891b2';
   const timerRunning=!!S.timerTaskId;
   const timerTask=timerRunning?S.data.tasks.find(t=>t.id===S.timerTaskId):null;
@@ -1989,38 +1376,6 @@ function getMonthTasks(month,year){
   });
 }
 
-// Kopieer alle taken van een maand naar de volgende — handig om snel een vooruitplanning te maken
-function copyMonthForward(srcM,srcY){
-  const srcTasks=S.data.tasks.filter(t=>t.billingMonth===srcM&&t.billingYear===srcY&&t.projectId!=='__intern__');
-  if(!srcTasks.length){alert('Geen taken om te kopiëren in deze maand.');return;}
-  const dstM=srcM===11?0:srcM+1;
-  const dstY=srcM===11?srcY+1:srcY;
-  const dim=new Date(dstY,dstM+1,0).getDate();
-  const newTasks=srcTasks.map(t=>{
-    const srcDate=weekDates(t.allocatedWeek,t.allocatedYear)[t.allocatedDay||0];
-    const dayOfMonth=Math.min(srcDate.getDate(),dim);
-    const targetDate=new Date(dstY,dstM,dayOfMonth);
-    const wn=weekNum(targetDate);
-    const dow=targetDate.getDay()===0?6:targetDate.getDay()-1;
-    return{
-      ...t,
-      id:uid(),
-      allocatedWeek:wn.week,
-      allocatedYear:wn.year,
-      allocatedDay:dow,
-      billingMonth:dstM,
-      billingYear:dstY,
-      timerSeconds:0,
-      timerRunning:false,
-      timerRunningSince:null,
-    };
-  });
-  setData(d=>({...d,tasks:[...d.tasks,...newTasks],projects:d.projects.map(p=>{
-    const ids=newTasks.filter(t=>t.projectId===p.id).map(t=>t.id);
-    return ids.length?{...p,tasks:[...(p.tasks||[]),...ids]}:p;
-  })}));
-}
-
 function calcMonthProjStats(monthTasks,allTasks,projects,month,year){
   const stats=[];
   projects.forEach(proj=>{
@@ -2029,15 +1384,12 @@ function calcMonthProjStats(monthTasks,allTasks,projects,month,year){
     const monthH=mTasks.reduce((s,t)=>s+(t.hours||0),0);
     if(!monthH)return;
     // For retainers: use monthly cap with override support
-    let agreedH,rate,monthRev,billedFullRetainer=false;
+    let agreedH,rate,monthRev;
     if(proj.isRetainer&&month!==undefined&&year!==undefined){
       const capObj=getRetainerCap(proj,month,year);
       agreedH=capObj.hours;
       rate=agreedH>0&&capObj.budget>0?capObj.budget/agreedH:projHourlyRate(proj);
-      // BELANGRIJK: retainers worden ALTIJD volledig gefactureerd (verkochte uren = afgesproken uren)
-      // Ook als monthH < agreedH → effectief uurtarief gaat OMHOOG omdat budget hetzelfde blijft.
-      monthRev=capObj.budget||(agreedH*rate);
-      billedFullRetainer=true;
+      monthRev=Math.min(monthH,agreedH)*rate;
     }else{
       agreedH=proj.agreedHours||0;
       rate=projHourlyRate(proj);
@@ -2045,19 +1397,11 @@ function calcMonthProjStats(monthTasks,allTasks,projects,month,year){
       monthRev=scopeH>0?(monthH/scopeH)*Math.min(scopeH,agreedH)*rate:0;
     }
     const scopeH=proj.isRetainer?monthH:projTotalH(allTasks,proj.id);
-    // Effectief tarief: budget / daadwerkelijk gewerkte uren
     const effRateMonth=monthH>0?monthRev/monthH:0;
     const overH=Math.max(0,(proj.isRetainer?monthH:scopeH)-agreedH);
-    // Voor retainers: als monthH < agreedH = "underrun" → bonus (effectief tarief omhoog)
-    const underH=proj.isRetainer?Math.max(0,agreedH-monthH):0;
     const rateDrop=Math.max(0,rate-effRateMonth);
-    const rateGain=Math.max(0,effRateMonth-rate); // tarief gaat omhoog bij onderbenutting
     const missedRev=overH>0?rateDrop*monthH:0;
-    // Bonus omzet: extra verdiend doordat je verkocht maar niet gewerkt hebt (voor retainers)
-    const bonusRev=billedFullRetainer&&underH>0?underH*rate:0;
-    // Dagen gewerkt: uren ÷ 8u per dag (afgerond op 0.1)
-    const daysWorked=Math.round((monthH/8)*10)/10;
-    stats.push({proj,cli:getCli(proj.clientId),monthH,daysWorked,totalH:proj.isRetainer?monthH:scopeH,agreedH,rate,monthRev,effRateMonth,rateDrop,rateGain,missedRev,bonusRev,overH,underH,billedFullRetainer,mTasks});
+    stats.push({proj,cli:getCli(proj.clientId),monthH,totalH:proj.isRetainer?monthH:scopeH,agreedH,rate,monthRev,effRateMonth,rateDrop,missedRev,overH,mTasks});
   });
   return stats;
 }
@@ -2076,20 +1420,6 @@ function renderAnalyse(){
   const totalMonthRev=projStats.reduce((s,x)=>s+x.monthRev,0);
   const totalOverH=projStats.reduce((s,x)=>s+x.overH,0);
   const totalMissed=projStats.reduce((s,x)=>s+x.missedRev,0);
-  const totalBonus=projStats.reduce((s,x)=>s+(x.bonusRev||0),0);
-
-  // Vakantie- en vrije dagen in deze maand tellen (halve dagen = 0.5)
-  const vacsThisMonth=(data.vacations||[]).filter(v=>{
-    const d=weekDates(v.allocatedWeek,v.allocatedYear)[v.allocatedDay||0];
-    return d&&d.getMonth()===analyseMonth&&d.getFullYear()===analyseYear;
-  });
-  const halfFactor=v=>v.halfDay?0.5:1;
-  const holidayDays=vacsThisMonth.filter(v=>v.isHoliday).reduce((s,v)=>s+halfFactor(v),0);
-  const vacationDays=vacsThisMonth.filter(v=>!v.isHoliday).reduce((s,v)=>s+halfFactor(v),0);
-  const totalOffDays=holidayDays+vacationDays;
-  const fmtDays=n=>n===Math.floor(n)?n:n.toFixed(1);
-  // Totaal dagen gewerkt deze maand
-  const totalDaysWorked=Math.round((billableMonthH/8)*10)/10;
 
   // Year overview (all 12 months)
   const yearData=Array.from({length:12},(_,mi)=>{
@@ -2114,66 +1444,24 @@ function renderAnalyse(){
       <div class="an-card" style="border-color:#a5f3fc;background:linear-gradient(135deg,#ecfeff,#e0f2fe)">
         <div class="an-card-v" style="color:#0891b2">${billableMonthH}<span style="font-size:11px;font-weight:400">u</span></div>
         <div class="an-card-l">Billable uren</div>
-        <div class="an-card-sub">${totalDaysWorked} dagen${internMonthH>0?` · +${internMonthH}u intern 🏠`:''}</div>
+        <div class="an-card-sub">${internMonthH>0?`+ ${internMonthH}u intern 🏠`:`${MONTH_NL[analyseMonth]} ${analyseYear}`}</div>
       </div>
       <div class="an-card" style="border-color:#bbf7d0;background:linear-gradient(135deg,#f0fdf4,#dcfce7)">
         <div class="an-card-v" style="color:#16a34a;font-size:16px">${eur(totalMonthRev)}</div>
-        <div class="an-card-l">Omzet (gefactureerd)</div>
-        <div class="an-card-sub">${billableMonthH>0?eur(Math.round(totalMonthRev/billableMonthH))+'/u effectief':'—'}</div>
+        <div class="an-card-l">Omzet (gecapped)</div>
+        <div class="an-card-sub">${totalMonthH>0?eur(Math.round(totalMonthRev/totalMonthH))+'/u gem.':'—'}</div>
       </div>
       <div class="an-card" style="border-color:${totalOverH>0?'#fecaca':'#bbf7d0'};background:${totalOverH>0?'linear-gradient(135deg,#fff5f5,#fee2e2)':'#fff'}">
         <div class="an-card-v" style="color:${totalOverH>0?'#ef4444':'#10b981'}">${Math.round(totalOverH*10)/10}<span style="font-size:11px;font-weight:400">u</span></div>
         <div class="an-card-l">Overuren (totaal)</div>
         <div class="an-card-sub">${totalOverH>0?'⚠️ boven budget':'✅ binnen budget'}</div>
       </div>
-      <div class="an-card" style="border-color:${totalBonus>0?'#bbf7d0':totalMissed>0?'#fecaca':'#e2e8f0'};background:${totalBonus>0?'linear-gradient(135deg,#f0fdf4,#dcfce7)':totalMissed>0?'linear-gradient(135deg,#fff5f5,#fee2e2)':'#fff'}">
-        <div class="an-card-v" style="color:${totalBonus>0?'#16a34a':totalMissed>0?'#ef4444':'#94a3b8'};font-size:16px">${totalBonus>0?'+'+eur(totalBonus):totalMissed>0?eur(totalMissed):'—'}</div>
-        <div class="an-card-l">${totalBonus>0?'Bonus omzet':totalMissed>0?'Misgelopen omzet':'Bonus/verlies'}</div>
-        <div class="an-card-sub">${totalBonus>0?'verkocht > gewerkt 🎉':totalMissed>0?'door overuren':'op schema'}</div>
-      </div>
-      <div class="an-card" style="border-color:${totalOffDays>0?'#fed7aa':'#e2e8f0'};background:${totalOffDays>0?'linear-gradient(135deg,#fff7ed,#ffedd5)':'#fff'}">
-        <div class="an-card-v" style="color:${totalOffDays>0?'#c2410c':'#94a3b8'}">${fmtDays(totalOffDays)}<span style="font-size:11px;font-weight:400">d</span></div>
-        <div class="an-card-l">Vrije dagen</div>
-        <div class="an-card-sub">${holidayDays>0?fmtDays(holidayDays)+'× vrij':''}${holidayDays>0&&vacationDays>0?' · ':''}${vacationDays>0?fmtDays(vacationDays)+'× vakantie':''}${totalOffDays===0?'volle maand werken':''}</div>
+      <div class="an-card" style="border-color:${totalMissed>0?'#fecaca':'#bbf7d0'};background:${totalMissed>0?'linear-gradient(135deg,#fff5f5,#fee2e2)':'#fff'}">
+        <div class="an-card-v" style="color:${totalMissed>0?'#ef4444':'#10b981'};font-size:16px">${eur(totalMissed)}</div>
+        <div class="an-card-l">Misgelopen omzet</div>
+        <div class="an-card-sub">${totalMissed>0?'door overuren':'geen verlies'}</div>
       </div>
     </div>`;
-
-  // 📅 Plan-vooruit nudge — altijd evalueren, ook als deze maand leeg is.
-  // Alleen tonen bij huidige of toekomstige maanden (geen gezeur over verleden).
-  (() => {
-    const _today=new Date();
-    const _viewIdx=analyseYear*12+analyseMonth;
-    const _todayIdx=_today.getFullYear()*12+_today.getMonth();
-    if(_viewIdx<_todayIdx)return; // verleden — niet zeuren
-    const _nm=analyseMonth===11?0:analyseMonth+1;
-    const _ny=analyseMonth===11?analyseYear+1:analyseYear;
-    const _nt=getMonthTasks(_nm,_ny).filter(t=>getProj(t.projectId)&&!getProj(t.projectId).isInternal);
-    const _nh=_nt.reduce((s,t)=>s+(t.hours||0),0);
-    // Threshold: 30% van huidige maand, met minimum van 8u. Als huidige maand leeg is → minimum 8u.
-    const minThreshold=Math.max(8,billableMonthH*0.3);
-    if(_nh>=minThreshold)return; // genoeg gepland, geen nudge
-    const hasCurrent=billableMonthH>0;
-    const title=hasCurrent
-      ?`Plan ${MONTH_NL[_nm]} alvast in`
-      :`Plan vooruit voor reëel advies`;
-    const body=hasCurrent
-      ?`${MONTH_NL[_nm]} ${_ny} heeft pas <strong>${_nh}u</strong> gepland (deze maand: <strong>${billableMonthH}u</strong>). Vooruit plannen geeft een reëler capaciteitsadvies en voorkomt verrassingen.`
-      :`${MONTH_NL[analyseMonth]} ${analyseYear} en ${MONTH_NL[_nm]} ${_ny} zijn nog (bijna) leeg. Plan je werk in zodat het capaciteitsadvies klopt en je nieuwe klanten kunt aannemen met vertrouwen.`;
-    const copyBtn=hasCurrent
-      ?`<button class="btn btn-secondary btn-sm" data-act="copy-month-forward" style="font-size:11px;border-color:#93c5fd;color:#1e40af">📋 Kopieer ${MONTH_NL[analyseMonth]} → ${MONTH_NL[_nm]}</button>`
-      :'';
-    h+=`<div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #93c5fd;border-radius:12px;padding:13px 15px;margin-bottom:18px;display:flex;gap:11px;align-items:flex-start">
-      <span style="font-size:22px;flex-shrink:0">📅</span>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:12.5px;font-weight:800;color:#1e3a8a;margin-bottom:3px">${title}</div>
-        <div style="font-size:11.5px;color:#1e40af;line-height:1.5;margin-bottom:9px">${body}</div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
-          <button class="btn btn-primary btn-sm" data-act="goto-next-month" style="font-size:11px">→ Ga naar ${MONTH_NL[_nm]}</button>
-          ${copyBtn}
-        </div>
-      </div>
-    </div>`;
-  })();
 
   if(!projStats.length){
     h+=`<div class="an-empty"><div style="font-size:36px;margin-bottom:8px">📭</div><p style="font-size:14px;font-weight:600;color:#64748b">Geen taken in ${MONTH_NL[analyseMonth]} ${analyseYear}</p><p style="font-size:12px;margin-top:4px">Plan taken in de weekweergave om analyse te zien.</p></div>`;
@@ -2205,11 +1493,8 @@ function renderAnalyse(){
       ang=end;
       return `<path d="${d}" fill="${c.color}" stroke="white" stroke-width="2.5"/>`;
     }).join('');
-    const svgLegend=cliSlices.map(c=>{
-      const d=Math.round((c.hours/8)*10)/10;
-      return`<div style="display:flex;align-items:center;gap:7px;margin-bottom:5px"><div style="width:10px;height:10px;border-radius:50%;background:${c.color};flex-shrink:0"></div><div style="font-size:11px;color:#374151;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.cli.name}</div><div style="font-size:11px;font-weight:700;color:#374151;text-align:right"><div>${c.hours}u</div><div style="font-size:9.5px;font-weight:600;color:#94a3b8">${d}d</div></div></div>`;
-    }).join('');
-    h+=`<p class="an-sec" style="margin-top:4px">Uren & dagen per klant — ${MONTH_NL[analyseMonth]}</p>
+    const svgLegend=cliSlices.map(c=>`<div style="display:flex;align-items:center;gap:7px;margin-bottom:5px"><div style="width:10px;height:10px;border-radius:50%;background:${c.color};flex-shrink:0"></div><div style="font-size:11px;color:#374151;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.cli.name}</div><div style="font-size:11px;font-weight:700;color:#374151">${c.hours}u</div></div>`).join('');
+    h+=`<p class="an-sec" style="margin-top:4px">Uren per klant — ${MONTH_NL[analyseMonth]}</p>
     <div class="chart-wrap" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:16px">
       <svg width="150" height="150" viewBox="0 0 200 200" style="flex-shrink:0">
         ${svgPaths}
@@ -2219,45 +1504,32 @@ function renderAnalyse(){
       <div style="flex:1;min-width:110px">${svgLegend}</div>
     </div>`;
 
-    // Capaciteitsadvies — leest nu de slider uit Instellingen i.p.v. hardcoded 40u
-    // Overhead = niet-factureerbare uren (admin, boekhouding, acquisitie). Default 20%.
-    const weeklyCap=data.settings?.hoursPerWeek||40;
-    const OVERHEAD_PCT=0.20;
-    const CAP_WEEK=Math.round(weeklyCap*(1-OVERHEAD_PCT)); // bv. 40u → 32u, 24u → 19u, 50u → 40u
-    const overheadH=weeklyCap-CAP_WEEK;
-    // Bereken effectieve werkdagen in deze maand (na aftrek vrije dagen + NL feestdagen)
-    const workingDaysInMonth=(()=>{
-      let n=0;const dim=new Date(analyseYear,analyseMonth+1,0).getDate();
-      for(let d=1;d<=dim;d++){const dow=new Date(analyseYear,analyseMonth,d).getDay();if(dow!==0&&dow!==6)n++}
-      return n;
-    })();
-    const effectiveWorkDays=Math.max(1,workingDaysInMonth-totalOffDays);
-    const dailyCap=CAP_WEEK/5; // factureerbare uren per werkdag
-    const monthCapH=effectiveWorkDays*dailyCap;
-    const freeMonthH=Math.round(monthCapH-totalCliH);
-    const freeWeekH=Math.round(freeMonthH/(effectiveWorkDays/5||1));
-    const pctBusy=monthCapH>0?Math.min(Math.round((totalCliH/monthCapH)*100),100):0;
+    // Capaciteitsadvies (gebaseerd op maandgemiddelde, max 40u/week)
+    const CAP_WEEK=32; // 40u/week min 8u overhead (acquisitie, boekhouding, belasting)
+    const weeksInMonth=4;
+    const avgWeekH=totalCliH/weeksInMonth;
+    const freeWeekH=Math.round(CAP_WEEK-avgWeekH);
+    const pctBusy=Math.min(Math.round((avgWeekH/CAP_WEEK)*100),100);
     let advIcon,advBg,advClr,advTitle,advMsg;
-    const offDaysNote=totalOffDays>0?` (na aftrek van ${fmtDays(totalOffDays)} vrije ${totalOffDays===1?'dag':'dagen'})`:'';
     if(freeWeekH<0){
       advIcon='🔴';advBg='#fee2e2';advClr='#991b1b';
-      advTitle=`Je werkt ${Math.abs(freeWeekH)}u/week boven capaciteit${offDaysNote}`;
+      advTitle=`Je werkt ${Math.abs(freeWeekH)}u/week boven capaciteit`;
       advMsg='Neem voorlopig geen nieuwe klanten aan. Kijk of je bestaande projecten kunt afschalen of taken kunt delegeren.';
     }else if(freeWeekH<4){
       advIcon='🟠';advBg='#fff7ed';advClr='#9a3412';
-      advTitle=`Je zit bijna vol — nog ~${freeWeekH}u/week vrij${offDaysNote}`;
+      advTitle=`Je zit bijna vol — nog ~${freeWeekH}u/week vrij`;
       advMsg='Neem geen nieuwe klanten aan. Bewaar deze buffer voor onverwachte taken.';
     }else if(freeWeekH<8){
       advIcon='🟡';advBg='#fffbeb';advClr='#92400e';
-      advTitle=`Kleine buffer — ~${freeWeekH}u/week vrij${offDaysNote}`;
+      advTitle=`Kleine buffer — ~${freeWeekH}u/week vrij`;
       advMsg='Ruimte voor een heel klein nevenproject (max ~4u/week), maar wees selectief. Geen grote nieuwe klanten.';
     }else if(freeWeekH<16){
       advIcon='🟢';advBg='#f0fdf4';advClr='#166534';
-      advTitle=`Ruimte voor 1 nieuw project — ~${freeWeekH}u/week vrij${offDaysNote}`;
+      advTitle=`Ruimte voor 1 nieuw project — ~${freeWeekH}u/week vrij`;
       advMsg='Je kunt 1 nieuwe klant aannemen van gemiddeld 1–2 dagen per week. Houd rekening met opstartwerk.';
     }else{
       advIcon='🟢';advBg='#f0fdf4';advClr='#166534';
-      advTitle=`Veel ruimte — ~${freeWeekH}u/week vrij${offDaysNote}`;
+      advTitle=`Veel ruimte — ~${freeWeekH}u/week vrij`;
       advMsg='Je kunt meerdere nieuwe klanten aannemen of een groot project oppakken. Goed moment om te groeien.';
     }
     h+=`<div style="background:${advBg};border:1px solid ${advClr}22;border-radius:12px;padding:13px 15px;margin-bottom:18px">
@@ -2270,58 +1542,54 @@ function renderAnalyse(){
         <span style="font-size:10px;color:${advClr};font-weight:600;white-space:nowrap">${pctBusy}% bezet</span>
       </div>
       <div style="font-size:11px;color:${advClr};opacity:.85;line-height:1.5">${advMsg}</div>
-      <div style="font-size:10px;color:${advClr};opacity:.7;margin-top:4px">📅 ${effectiveWorkDays} effectieve werkdagen × ${dailyCap.toFixed(1)}u = ${Math.round(monthCapH)}u beschikbaar <span style="opacity:.7">(${weeklyCap}u/week − ${overheadH}u overhead)</span></div>
     </div>`;
 
     // Per project detail cards
     h+=`<p class="an-sec">Per project</p>`;
-    projStats.forEach(({proj,cli,monthH,daysWorked,totalH,agreedH,rate,monthRev,effRateMonth,rateDrop,rateGain,missedRev,bonusRev,overH,underH,billedFullRetainer})=>{
+    projStats.forEach(({proj,cli,monthH,totalH,agreedH,rate,monthRev,effRateMonth,rateDrop,missedRev,overH})=>{
       const isOver=overH>0;
-      const isUnder=underH>0;
       const rateDropPct=rate>0?Math.round((rateDrop/rate)*100):0;
-      const rateGainPct=rate>0?Math.round((rateGain/rate)*100):0;
-      h+=`<div class="proj-an-card${isOver?' over':''}${isUnder&&!isOver?' under':''}" style="${isUnder&&!isOver?'border-color:#bbf7d0;background:#fafff7':''}">
+      h+=`<div class="proj-an-card${isOver?' over':''}">
         <div class="proj-an-hdr">
           <div class="proj-dot-lg" style="background:${proj.color}"></div>
           <div style="flex:1;min-width:0">
-            <div class="proj-an-title">${proj.name}${isOver?' ⚠️':isUnder?' ✨':''}</div>
+            <div class="proj-an-title">${proj.name}${isOver?' ⚠️':''}</div>
             <div class="proj-an-cli">${cli?.name||'—'}${proj.isRetainer?' · <span style="color:#16a34a">retainer</span>':''}</div>
           </div>
           <div style="text-align:right;flex-shrink:0">
             <div style="font-size:13px;font-weight:800;color:#16a34a">${eur(monthRev)}</div>
-            <div style="font-size:10px;color:#94a3b8">${monthH}u · ${daysWorked}d deze maand</div>
+            <div style="font-size:10px;color:#94a3b8">${monthH}u deze maand</div>
           </div>
         </div>
         <div class="proj-an-grid">
           <div class="proj-an-cell">
             <div class="proj-an-cell-v" style="color:#0891b2">${agreedH}u</div>
-            <div class="proj-an-cell-l">${proj.isRetainer?'verkocht/mnd':'afgesproken'}</div>
+            <div class="proj-an-cell-l">afgesproken</div>
           </div>
           <div class="proj-an-cell">
-            <div class="proj-an-cell-v" style="color:#374151">${monthH}u</div>
-            <div class="proj-an-cell-l">gewerkt (${daysWorked}d)</div>
+            <div class="proj-an-cell-v" style="color:#374151">${totalH}u</div>
+            <div class="proj-an-cell-l">totaal gewerkt</div>
           </div>
-          <div class="proj-an-cell${isOver?' red':isUnder?' green':' green'}">
-            <div class="proj-an-cell-v" style="color:${isOver?'#ef4444':'#10b981'}">${isOver?'+'+overH+'u':isUnder?'−'+underH+'u':'✓'}</div>
-            <div class="proj-an-cell-l">${isOver?'overuren':isUnder?'onder verkocht':'op schema'}</div>
+          <div class="proj-an-cell${isOver?' red':' green'}">
+            <div class="proj-an-cell-v" style="color:${isOver?'#ef4444':'#10b981'}">${isOver?'+'+overH+'u':'✓'}</div>
+            <div class="proj-an-cell-l">${isOver?'overuren':'op schema'}</div>
           </div>
         </div>
         <div class="proj-an-grid">
-          <div class="proj-an-cell${rateDrop>0?' red':rateGain>0?' green':' green'}">
-            <div class="proj-an-cell-v" style="color:${rateDrop>0?'#ef4444':rateGain>0?'#16a34a':'#10b981'};font-size:12px">${eur(Math.round(effRateMonth))}/u${rateGain>0?' ↑':rateDrop>0?' ↓':''}</div>
+          <div class="proj-an-cell${rateDrop>0?' red':' green'}">
+            <div class="proj-an-cell-v" style="color:${rateDrop>0?'#ef4444':'#10b981'};font-size:12px">${eur(Math.round(effRateMonth))}/u</div>
             <div class="proj-an-cell-l">effectief tarief</div>
           </div>
           <div class="proj-an-cell">
             <div class="proj-an-cell-v" style="color:#64748b;font-size:12px">${rate>0?eur(rate)+'/u':'—'}</div>
             <div class="proj-an-cell-l">afgesproken tarief</div>
           </div>
-          <div class="proj-an-cell${missedRev>0?' red':bonusRev>0?' green':' green'}">
-            <div class="proj-an-cell-v" style="color:${missedRev>0?'#ef4444':bonusRev>0?'#16a34a':'#10b981'};font-size:12px">${bonusRev>0?'+'+eur(Math.round(bonusRev)):missedRev>0?eur(Math.round(missedRev)):'—'}</div>
-            <div class="proj-an-cell-l">${bonusRev>0?'bonus':missedRev>0?'misgelopen':'verschil'}</div>
+          <div class="proj-an-cell${missedRev>0?' red':' green'}">
+            <div class="proj-an-cell-v" style="color:${missedRev>0?'#ef4444':'#10b981'};font-size:12px">${eur(Math.round(missedRev))}</div>
+            <div class="proj-an-cell-l">misgelopen</div>
           </div>
         </div>
         ${isOver&&rateDrop>0?`<div class="rate-insight"><span>💡</span><span>Door ${overH} onbetaalde overuren daalde je tarief van <strong>${eur(rate)}/u</strong> naar <strong>${eur(Math.round(effRateMonth))}/u</strong> (−${rateDropPct}%). Je liep <strong>${eur(Math.round(missedRev))}</strong> mis.</span></div>`:''}
-        ${isUnder&&billedFullRetainer?`<div class="rate-insight" style="background:#f0fdf4;border-color:#bbf7d0;color:#166534"><span>✨</span><span>Je werkte ${underH}u minder dan verkocht maar factureert tóch het volledige retainer. Effectief tarief steeg van <strong>${eur(rate)}/u</strong> naar <strong>${eur(Math.round(effRateMonth))}/u</strong> (+${rateGainPct}%). Bonus: <strong>${eur(Math.round(bonusRev))}</strong>.</span></div>`:''}
       </div>`;
     });
   }
@@ -2360,689 +1628,22 @@ function renderAnalyse(){
   el.innerHTML=h;
   el.querySelector('#an-month')?.addEventListener('change',e=>setState({analyseMonth:parseInt(e.target.value)}));
   el.querySelector('#an-year')?.addEventListener('change',e=>setState({analyseYear:parseInt(e.target.value)}));
-  el.querySelector('[data-act="goto-next-month"]')?.addEventListener('click',()=>{
-    const nm=analyseMonth===11?0:analyseMonth+1;
-    const ny=analyseMonth===11?analyseYear+1:analyseYear;
-    setState({analyseMonth:nm,analyseYear:ny});
-  });
-  el.querySelector('[data-act="copy-month-forward"]')?.addEventListener('click',()=>{
-    const nm=analyseMonth===11?0:analyseMonth+1;
-    const ny=analyseMonth===11?analyseYear+1:analyseYear;
-    if(confirm(`Alle taken van ${MONTH_NL[analyseMonth]} ${analyseYear} kopiëren naar ${MONTH_NL[nm]} ${ny}?\n\nJe kunt ze daarna verschuiven in de kalender.`)){
-      copyMonthForward(analyseMonth,analyseYear);
-      setState({analyseMonth:nm,analyseYear:ny});
-    }
-  });
 }
-
-// ═══════════════════════════════════════════════
-//  TO-DO TAB
-// ═══════════════════════════════════════════════
-// Keyword-lookup tijdsschatting (in minuten). Volgorde = prioriteit: eerste match wint.
-// Inclusief NL+EN variaties die in Nina's wereld voorkomen.
-// `key` = stabiele bucket-naam waar de leersamples onder vallen — verander deze niet,
-// anders verlies je je leergeschiedenis. `mins` is de baseline-schatting.
-const TODO_KEYWORDS=[
-  // — Productie-werk (specifiek eerst, zodat 'video editten' onder editten valt) —
-  {key:'editten',        re:/\b(editten|editen|edit|montage|monteren|monteer|video.?edit)\b/i,                                                                                                                          mins:120},
-  {key:'transcribe',     re:/\b(transcriberen|transcript|transcriptie|ondertitelen|ondertiteling|subtitles?)\b/i,                                                                                                       mins:60},
-  {key:'grading',        re:/\b(kleurcorrectie|kleurcorrigeren|kleur.?correctie|color.?grading|grading)\b/i,                                                                                                            mins:45},
-  {key:'thumbnail',      re:/\b(thumbnails?|miniaturen?|miniatuur|cover.?(maken|ontwerpen)|omslag|kaft)\b/i,                                                                                                            mins:30},
-  {key:'script',         re:/\b(scripten|scripts?|script\s+(schrijven|opzetten|maken)|draaiboek)\b/i,                                                                                                                   mins:90},
-  {key:'blog',           re:/\b(blog|blogpost|blogartikel|artikel|long.?form|long.?read)\b/i,                                                                                                                            mins:180},
-  {key:'nieuwsbrief',    re:/\b(nieuwsbrief|newsletter|mailing)\b/i,                                                                                                                                                     mins:90},
-  {key:'podcast',        re:/\b(podcast|aflevering|episode)\b/i,                                                                                                                                                         mins:90},
-
-  // — Klant & sales (specifiek vóór social/admin) —
-  {key:'onboarding',     re:/\b(onboarding|klant.?onboarding|kickoff|kick.?off|welkomstpakket|klant\s+inschrijven|account\s+aanmaken|nieuwe\s+klant\s+(opzetten|aanmaken|verwelkomen)|klantmap\s+aanmaken)\b/i,         mins:90},
-  {key:'briefing',       re:/\b(briefing(en|s)?|debrief(en)?|brief\s+(schrijven|opstellen|maken|lezen|doornemen)|creatieve\s+briefing|klantbriefing)\b/i,                                                                mins:45},
-  {key:'offerte',        re:/\b(offerte(s)?|offerte\s+(maken|sturen|versturen|opstellen|opmaken|aanmaken)|prijsopgave|quote(s)?|voorstel\s+(sturen|maken)|proposal)\b/i,                                                  mins:45},
-  {key:'contract',       re:/\b(contract(en)?|contract\s+(opstellen|maken|tekenen|sturen|versturen)|overeenkomst|samenwerkingsovereenkomst|nda|geheimhouding|servicelevel|sla)\b/i,                                       mins:60},
-  {key:'producten',      re:/\b(product(en)?\s+(uploaden|toevoegen|invoeren|aanmaken|verwerken|fotograferen|inplannen)|productpagina(s)?|productbeschrijving(en)?|productinfo|productfoto(s)?|webshop|shopify|woocommerce|e.?commerce)\b/i, mins:30},
-
-  // — Social media management (vóór 'video' en 'social' zodat 'instagram ads' bij ads valt) —
-  {key:'ads',            re:/\b(ads|advertenties?|advertentie|adverteren|meta.?ads|facebook.?ads|insta.?ads|instagram.?ads|google.?ads|sea|tiktok.?ads|linkedin.?ads|betaalde\s+(campagne|posts?))\b/i,                  mins:90},
-  {key:'campagne',       re:/\b(campagne(s)?|campagne\s+(opzetten|maken|bouwen|lanceren)|launch(en)?|lancering|product.?launch)\b/i,                                                                                     mins:180},
-  {key:'contentkalender',re:/\b(contentkalender|content.?kalender|contentplanning|content.?planning|redactiekalender|content\s+(plannen|inplannen)|maandplanning|weekplanning\s+content)\b/i,                            mins:60},
-  {key:'community',      re:/\b(community.?management|comments?\s+(beantwoorden|reageren|verwerken)|dm.?s?\s+(beantwoorden|sturen|verwerken)|reageren\s+op\s+(comments?|dms?|berichten)|engagement)\b/i,                mins:30},
-  {key:'analytics',      re:/\b(analytics|statistieken|insights|rapport(age)?s?|kpi.?s?|cijfers\s+(bekijken|analyseren|doornemen|checken)|metrics)\b/i,                                                                  mins:45},
-  {key:'video',          re:/\b(video|vlog(gen)?|youtube|reels?|tiktok|shorts?|igtv)\b/i,                                                                                                                                mins:90},
-  {key:'social',         re:/\b(social.?media|social|posten|posting|plaatsen|posts?|caption(s)?|stories|story|instagram|insta|linkedin|facebook|twitter|x\.com|threads|pinterest|content\s+(maken|plaatsen|posten))\b/i, mins:30},
-
-  // — Communicatie —
-  {key:'mail',           re:/\b(mail(en|tje|s)?|email(s)?|inbox|mailbox|mailtje\s+sturen|mails?\s+(beantwoorden|verwerken)|reageren\s+op\s+mail)\b/i,                                                                    mins:30},
-  {key:'call',           re:/\b(bellen|belletje|call|videocall|video.?call|gesprek|meeting|overleg|stand.?up|zoom|teams.?meeting|kennismaking(sgesprek)?|intake)\b/i,                                                    mins:45},
-  {key:'briefje',        re:/\b(briefje|notitie|memo)\b/i,                                                                                                                                                                mins:15},
-
-  // — Administratie (specifiek eerst, dan admin als fallback) —
-  {key:'factuur',        re:/\b(factuur|factureren|facturen|factuurtje|factuur\s+(aanmaken|maken|sturen|versturen|opmaken|opstellen))\b/i,                                                                              mins:30},
-  {key:'kosten',         re:/\b(kosten\s+(inboeken|boeken|verwerken|bijwerken)|bonnen|bonnetjes|bonnetje|kostenbon|declaratie(s)?|uitgaven\s+(inboeken|verwerken))\b/i,                                                  mins:30},
-  {key:'belasting',      re:/\b(belasting(en|aangifte|dienst)?|btw|btw.?aangifte|aangifte|vooraangifte|omzetbelasting|inkomstenbelasting|jaarrekening|jaarcijfers|kor.?regeling)\b/i,                                    mins:90},
-  {key:'admin',          re:/\b(administratie\s+doen|administratie|administreren|admin|boekhouding|boekhouden|urenadministratie|crm\s+bijwerken|portaal\s+bijwerken)\b/i,                                                mins:45},
-
-  // — Overig kantoorwerk —
-  {key:'plannen',        re:/\b(plannen|planning|inplannen|agenda\s+(bijwerken|plannen|maken)|week.?planning|dag.?planning)\b/i,                                                                                         mins:30},
-  {key:'research',       re:/\b(onderzoek(en)?|research|uitzoeken|opzoeken|verkennen|inlezen)\b/i,                                                                                                                       mins:60},
-  {key:'brainstorm',     re:/\b(brainstorm(en)?|ideeen|outline|opzet\b|conceptfase|concepten\s+bedenken|conceptueel)\b/i,                                                                                                mins:45},
-  {key:'design',         re:/\b(designen?|design|ontwerpen?|mockup|wireframe|visuals?\s+maken|layout|huisstijl)\b/i,                                                                                                     mins:120},
-  {key:'review',         re:/\b(reviewen?|nakijken|checken|controleren|feedback\s+(geven|verwerken)|terugkoppelen|tegenlezen|proeflezen)\b/i,                                                                            mins:30},
-  {key:'presentatie',    re:/\b(presentatie|deck|slides|pitchdeck|keynote)\b/i,                                                                                                                                          mins:120},
-  {key:'opruimen',       re:/\b(opruimen|sorteren|organiseren|mappen\s+(opruimen|ordenen|sorteren)|files?\s+(opruimen|sorteren))\b/i,                                                                                    mins:30},
-  {key:'download',       re:/\b(downloaden|uploaden|exporteren|importeren|backup\s+maken)\b/i,                                                                                                                           mins:10},
-];
-// Pas baseline aan met leerhistorie als we ≥3 samples hebben voor deze bucket.
-// Weging: 70% leerwaarde + 30% baseline → adapteert maar niet wild op outliers.
-function applyLearning(bucket,baselineMin){
-  if(!bucket)return{minutes:baselineMin,learned:false};
-  const L=(S.data.todoLearning||{})[bucket];
-  if(!L||!L.samples||L.samples<3)return{minutes:baselineMin,learned:false};
-  const learnedAvg=L.totalActualMin/L.samples;
-  // Bescherm tegen extreme uitschieters
-  const clamped=Math.max(5,Math.min(learnedAvg,baselineMin*4));
-  const blended=Math.round(clamped*0.7+baselineMin*0.3);
-  return{minutes:blended,learned:true,learnedAvg:Math.round(learnedAvg),samples:L.samples};
-}
-function estimateInfo(text){
-  if(!text)return{minutes:30,bucket:null,learned:false};
-  for(const{key,re,mins}of TODO_KEYWORDS){
-    if(re.test(text)){
-      const L=applyLearning(key,mins);
-      return{minutes:L.minutes,bucket:key,learned:L.learned,baseline:mins,learnedAvg:L.learnedAvg,samples:L.samples};
-    }
-  }
-  // Heuristiek op woordlengte voor onbekende taken
-  const words=text.trim().split(/\s+/).length;
-  const base=words<=3?15:words<=6?30:45;
-  return{minutes:base,bucket:null,learned:false};
-}
-function estimateMinutes(text){return estimateInfo(text).minutes}
-function fmtMin(m){
-  if(!m||m<=0)return '0m';
-  if(m<60)return `${m}m`;
-  const h=Math.floor(m/60),rest=m%60;
-  return rest===0?`~${h}u`:`~${h}u${String(rest).padStart(2,'0')}`;
-}
-// Score voor top-3 focus selectie. Hoger = belangrijker.
-function focusScore(t){
-  let s=0;
-  if(t.focus)s+=1000; // door gebruiker als focus gemarkeerd: altijd bovenaan
-  // Ouderdom: hoe langer op de lijst, hoe meer urgentie (anti-uitstel)
-  const ageDays=t.createdAt?Math.max(0,(Date.now()-t.createdAt)/86400000):0;
-  s+=Math.min(ageDays*15,150);
-  // Snelle taken krijgen kleine boost (quick wins)
-  const est=t.estimateMin||30;
-  if(est<=30)s+=10;
-  else if(est>=180)s-=15;
-  return s;
-}
-function todayKey(d=new Date()){
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
-function todayLabel(d=new Date()){
-  const days=['Zondag','Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag'];
-  const months=['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
-  return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
-}
-// Parse YYYY-MM-DD naar Date (lokale tijd, niet UTC)
-function parseDayKey(k){
-  if(!k)return new Date();
-  const [y,m,d]=k.split('-').map(Number);
-  return new Date(y,m-1,d);
-}
-// Verschuif dag-key met N dagen
-function shiftDay(key,delta){
-  const d=parseDayKey(key);
-  d.setDate(d.getDate()+delta);
-  return todayKey(d);
-}
-// Relatief label voor dagnav: "Vandaag", "Morgen", "Gisteren", anders volle datum
-function relativeDayLabel(key){
-  const today=todayKey();
-  if(key===today)return 'Vandaag';
-  if(key===shiftDay(today,1))return 'Morgen';
-  if(key===shiftDay(today,-1))return 'Gisteren';
-  if(key===shiftDay(today,2))return 'Overmorgen';
-  return todayLabel(parseDayKey(key));
-}
-// Schuif klaar-getikte taken van vorige dagen naar het dagarchief.
-// Idempotent — veilig om bij elke render te draaien.
-function rollOverTodos(){
-  const todos=S.data.todos||[];
-  const snaps={...(S.data.dailyTodoSnapshots||{})};
-  const todayStart=new Date();todayStart.setHours(0,0,0,0);
-  const keep=[];
-  let changed=false;
-  todos.forEach(t=>{
-    if(t.done&&t.completedAt&&t.completedAt<todayStart.getTime()){
-      const k=todayKey(new Date(t.completedAt));
-      if(!snaps[k])snaps[k]=[];
-      snaps[k].push({text:t.text,estimateMin:t.estimateMin,focus:!!t.focus,completedAt:t.completedAt});
-      changed=true;
-    }else{keep.push(t)}
-  });
-  if(changed){
-    S.data.todos=keep;
-    S.data.dailyTodoSnapshots=snaps;
-    saveData(S.data);
-  }
-}
-// State helpers
-const S_TODO={addOpen:false,bulkOpen:false,histOpen:false,viewDate:todayKey()};
-// Aparte timer-state voor to-do's (los van de project-task timer in S.timerTaskId).
-// Maar één to-do timer tegelijk: starten van een nieuwe stopt de vorige.
-S.todoTimerId=null;S.todoTimerStart=null;S.todoTimerBase=0;S.todoTimerInterval=null;
-function todoTimerElapsed(){
-  if(!S.todoTimerId||!S.todoTimerStart)return 0;
-  return S.todoTimerBase+Math.floor((Date.now()-S.todoTimerStart)/1000);
-}
-function stopTodoTimer(persist=true){
-  if(!S.todoTimerId)return;
-  const id=S.todoTimerId;
-  const total=todoTimerElapsed();
-  if(S.todoTimerInterval){clearInterval(S.todoTimerInterval);S.todoTimerInterval=null}
-  S.todoTimerId=null;S.todoTimerStart=null;S.todoTimerBase=0;
-  if(persist){
-    setData(d=>({...d,todos:(d.todos||[]).map(t=>t.id===id?{...t,actualSeconds:total}:t)}));
-  }
-}
-function startTodoTimer(id){
-  // Als al deze taak loopt: stop (toggle gedrag)
-  if(S.todoTimerId===id){stopTodoTimer(true);return}
-  // Andere todo-timer of project-task-timer loopt: stop die eerst
-  if(S.todoTimerId)stopTodoTimer(true);
-  if(typeof S.timerTaskId!=='undefined'&&S.timerTaskId&&typeof startTimer==='function'){
-    try{startTimer(S.timerTaskId)}catch{} // toggle stopt de project-task timer
-  }
-  const t=(S.data.todos||[]).find(x=>x.id===id);
-  if(!t)return;
-  S.todoTimerId=id;
-  S.todoTimerStart=Date.now();
-  S.todoTimerBase=t.actualSeconds||0;
-  S.todoTimerInterval=setInterval(()=>{
-    // Update inline badge zonder volledige re-render (smoother)
-    const badge=document.querySelector(`.todo-row[data-id="${id}"] .todo-timer-elapsed`);
-    if(badge)badge.textContent=fmtSecs(todoTimerElapsed());
-  },1000);
-  render();
-}
-function addTodo(text,opts={}){
-  const txt=(text||'').trim();
-  if(!txt)return;
-  const info=estimateInfo(txt);
-  const todo={
-    id:uid(),text:txt,
-    estimateMin:opts.estimateMin||info.minutes,
-    bucket:info.bucket,
-    estimateLocked:!!opts.estimateLocked,
-    focus:!!opts.focus,done:false,completedAt:null,
-    actualSeconds:0,
-    scheduledDate:opts.scheduledDate||S_TODO.viewDate||todayKey(),
-    createdAt:Date.now(),
-  };
-  setData(d=>({...d,todos:[...(d.todos||[]),todo]}));
-}
-function updateTodo(id,patch){
-  setData(d=>({...d,todos:(d.todos||[]).map(t=>t.id===id?{...t,...patch}:t)}));
-}
-function deleteTodo(id){
-  if(S.todoTimerId===id)stopTodoTimer(false);
-  setData(d=>({...d,todos:(d.todos||[]).filter(t=>t.id!==id)}));
-}
-// Bij afvinken: als we tijd hebben gemeten EN een bucket hebben, voeg toe aan
-// data.todoLearning[bucket]. Bij ontvinken: doe niets met learning.
-function recordLearningSample(todo){
-  if(!todo.bucket)return;
-  const actualMin=Math.round((todo.actualSeconds||0)/60);
-  if(actualMin<1)return; // minder dan 1 minuut = waarschijnlijk per ongeluk gestart
-  setData(d=>{
-    const L={...(d.todoLearning||{})};
-    const prev=L[todo.bucket]||{samples:0,totalActualMin:0,totalEstMin:0,lastUpdated:0};
-    L[todo.bucket]={
-      samples:prev.samples+1,
-      totalActualMin:prev.totalActualMin+actualMin,
-      totalEstMin:prev.totalEstMin+(todo.estimateMin||0),
-      lastUpdated:Date.now(),
-    };
-    return{...d,todoLearning:L};
-  });
-}
-// Modal: bij afvinken van een to-do — koppel aan een al geplande task in de week view.
-// Default-tab: bestaande taak kiezen + werkelijke uren overschrijven. Optioneel: nieuwe
-// task aanmaken als er nog niets gepland stond.
-function openLogTodoModal(todo){
-  const allTasks=S.data.tasks||[];
-  const allProjects=S.data.projects||[];
-  const sd=parseDayKey(todo.scheduledDate||todayKey());
-  const wn=weekNum(sd);
-  // Dag-index in week: 0=Ma, 6=Zo. JS getDay: 0=Zo, 1=Ma…
-  const dayIdx=sd.getDay()===0?6:sd.getDay()-1;
-  // Uren-bron: werkelijke timer-tijd, anders schatting; afgerond op 0.25u
-  const actualH=(todo.actualSeconds||0)/3600;
-  const estH=(todo.estimateMin||0)/60;
-  const rawH=actualH>0?actualH:estH;
-  const defaultHours=Math.max(0.25,Math.round(rawH*4)/4);
-  // Kandidaat-tasks: deze week + 1 week ervoor/erna, gesorteerd op nabijheid bij scheduledDate
-  const wnDist=(w,y)=>Math.abs((y-wn.year)*53+(w-wn.week));
-  const candidates=allTasks
-    .filter(t=>wnDist(t.allocatedWeek||0,t.allocatedYear||0)<=1)
-    .sort((a,b)=>{
-      const score=t=>{
-        const wd=wnDist(t.allocatedWeek||0,t.allocatedYear||0);
-        const dd=(t.allocatedWeek===wn.week&&t.allocatedYear===wn.year)?Math.abs((t.allocatedDay||0)-dayIdx):7;
-        return wd*100+dd*10+((t.startTime||0)/1440);
-      };
-      return score(a)-score(b);
-    });
-  const dayShort=['Ma','Di','Wo','Do','Vr','Za','Zo'];
-  const cardHtml=task=>{
-    const p=getProj(task.projectId);
-    const c=p?getCli(p.clientId):null;
-    const tDates=weekDates(task.allocatedWeek||wn.week,task.allocatedYear||wn.year);
-    const tDay=tDates[task.allocatedDay||0];
-    const sameDay=task.allocatedWeek===wn.week&&task.allocatedYear===wn.year&&task.allocatedDay===dayIdx;
-    const searchStr=((p?.name||'')+' '+(task.name||'')+' '+(c?.name||'')).toLowerCase();
-    const trackBadge=task.timerSeconds?` · ⏱ ${fmtSecs(task.timerSeconds)}`:'';
-    return`<label class="ltm-cand-row${sameDay?' ltm-cand-row-hl':''}" data-id="${task.id}" data-search="${escapeHtml(searchStr)}">
-      <input type="radio" name="ltm-task" value="${task.id}"/>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:12px;font-weight:600;color:#0f172a;display:flex;align-items:center;gap:6px;line-height:1.3"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${p?.color||'#94a3b8'};flex-shrink:0"></span><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(task.name||'(geen naam)')}</span><span style="font-size:11px;color:#475569;font-weight:600;flex-shrink:0">${task.hours||0}u</span></div>
-        <div style="font-size:10.5px;color:#64748b;margin-top:2px">${p?escapeHtml(p.name):'—'}${c?` · ${escapeHtml(c.name)}`:''} · ${dayShort[task.allocatedDay||0]} ${tDay.getDate()}/${tDay.getMonth()+1}${trackBadge}</div>
-      </div>
-    </label>`;
-  };
-  const listHtml=candidates.length?candidates.map(cardHtml).join(''):'<div class="ltm-empty">Geen geplande taken in deze week. Maak hieronder een nieuwe.</div>';
-  // Voor "nieuwe taak"-tab
-  const projOpts=allProjects.map(p=>{const c=getCli(p.clientId);return`<option value="${p.id}">${escapeHtml(p.name)}${c?` (${escapeHtml(c.name)})`:p.isInternal?' (intern)':''}</option>`}).join('');
-  const weekDayLabels=['Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag','Zondag'];
-  const dates=weekDates(wn.week,wn.year);
-  const dayOpts=weekDayLabels.map((l,i)=>{const d=dates[i];return`<option value="${i}"${i===dayIdx?' selected':''}>${l} ${d.getDate()}/${d.getMonth()+1}</option>`}).join('');
-  // Vind eerste vrije slot op scheduledDate (voor de "nieuwe taak"-tab)
-  const sameDayTasks=allTasks.filter(t=>t.allocatedWeek===wn.week&&t.allocatedYear===wn.year&&t.allocatedDay===dayIdx).sort((a,b)=>(a.startTime||0)-(b.startTime||0));
-  let startMins=9*60;
-  if(sameDayTasks.length){
-    let cursor=startMins;
-    for(const ex of sameDayTasks){
-      const exStart=ex.startTime||0;
-      const exEnd=exStart+Math.round((ex.hours||0)*60);
-      if(cursor+defaultHours*60<=exStart)break;
-      cursor=Math.max(cursor,exEnd);
-    }
-    startMins=cursor;
-  }
-  const startStr=`${String(Math.floor(startMins/60)).padStart(2,'0')}:${String(startMins%60).padStart(2,'0')}`;
-  const timeSrcText=actualH>0?`Werkelijke timer-tijd: ${fmtSecs(todo.actualSeconds||0)} (≈ ${defaultHours}u)`:estH>0?`Op basis van schatting: ${fmtMin(todo.estimateMin||0)} (≈ ${defaultHours}u)`:'Nog geen tijd gemeten — vul handmatig in';
-  // Default-tab kiezen: als er kandidaten zijn, "bestaande"; anders meteen "nieuwe"
-  const startTab=candidates.length?'existing':'new';
-
-  const{el,close}=openModal(`<div class="modal modal-lg"><div class="modal-hdr"><span class="modal-title">⏱ Koppel afgevinkte to-do</span><button class="modal-close">×</button></div><div class="modal-body">
-    <div style="background:#ecfeff;border:1px solid #a5f3fc;border-radius:9px;padding:9px 11px;font-size:12px;color:#0e7490;margin-bottom:12px">
-      Je vinkte <strong>${escapeHtml(todo.text)}</strong> af.
-      <div style="font-size:10.5px;color:#0891b2;margin-top:3px">${timeSrcText}</div>
-    </div>
-    <div class="ltm-tabs">
-      <button type="button" class="ltm-tab${startTab==='existing'?' ltm-tab-active':''}" data-tab="existing">📌 Koppel aan geplande taak</button>
-      <button type="button" class="ltm-tab${startTab==='new'?' ltm-tab-active':''}" data-tab="new">＋ Maak nieuwe taak</button>
-    </div>
-
-    <div class="ltm-pane" id="ltm-pane-existing"${startTab==='existing'?'':' style="display:none"'}>
-      ${candidates.length?'<input type="text" class="form-input" id="ltm-search" placeholder="🔍 Zoek op project of taaknaam…" style="margin-bottom:9px"/>':''}
-      <div class="ltm-list" id="ltm-list">${listHtml}</div>
-      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;padding:10px;margin-top:11px">
-        <div style="font-size:11px;font-weight:700;color:#475569;margin-bottom:6px;letter-spacing:.3px">⚙ Werkelijke uren <span style="color:#94a3b8;font-weight:500">— overschrijft het geplande aantal op de taak</span></div>
-        <div style="display:flex;gap:9px;align-items:center">
-          <input class="form-input" id="ltm-hours" type="number" min="0.25" step="0.25" value="${defaultHours}" style="flex:1"/>
-          <span style="font-size:11px;color:#94a3b8">uur</span>
-        </div>
-        ${(todo.actualSeconds||0)>0?`<div style="font-size:10.5px;color:#64748b;margin-top:5px">Timer-tijd uit deze to-do (${fmtSecs(todo.actualSeconds||0)}) wordt opgeteld bij eventuele al getrackte tijd op de taak.</div>`:''}
-      </div>
-      <div style="display:flex;gap:7px;justify-content:flex-end;align-items:center;margin-top:12px">
-        <button class="btn btn-secondary" data-act="ltm-skip">Niet loggen</button>
-        <button class="btn btn-primary" id="ltm-link" disabled>📌 Koppel & update</button>
-      </div>
-    </div>
-
-    <div class="ltm-pane" id="ltm-pane-new"${startTab==='new'?'':' style="display:none"'}>
-      <div class="form-group"><label class="form-label">Project *</label><select class="form-select" id="ltn-proj">${projOpts||'<option value="">— Geen projecten —</option>'}</select></div>
-      <div class="form-group"><label class="form-label">Taaknaam *</label><input class="form-input" id="ltn-name" value="${escapeHtml(todo.text)}"></div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Dag</label><select class="form-select" id="ltn-day">${dayOpts}</select></div>
-        <div class="form-group"><label class="form-label">Starttijd</label><input class="form-input" id="ltn-time" type="time" value="${startStr}"></div>
-      </div>
-      <div class="form-group"><label class="form-label">Uren</label><input class="form-input" id="ltn-hours" type="number" min="0.25" step="0.25" value="${defaultHours}"></div>
-      <div style="display:flex;gap:7px;justify-content:flex-end;align-items:center;margin-top:12px">
-        <button class="btn btn-secondary" data-act="ltm-skip">Niet loggen</button>
-        <button class="btn btn-primary" id="ltn-save">📅 Maak nieuwe taak</button>
-      </div>
-    </div>
-  </div></div>`);
-
-  // Tab-wissel
-  const tabs=el.querySelectorAll('.ltm-tab');
-  tabs.forEach(t=>t.addEventListener('click',()=>{
-    tabs.forEach(x=>x.classList.toggle('ltm-tab-active',x===t));
-    el.querySelector('#ltm-pane-existing').style.display=t.dataset.tab==='existing'?'':'none';
-    el.querySelector('#ltm-pane-new').style.display=t.dataset.tab==='new'?'':'none';
-  }));
-
-  // Skip-knoppen (beide tabs)
-  el.querySelectorAll('[data-act="ltm-skip"]').forEach(b=>b.addEventListener('click',close));
-
-  // Zoekfilter
-  const search=el.querySelector('#ltm-search');
-  if(search){
-    search.addEventListener('input',()=>{
-      const q=search.value.trim().toLowerCase();
-      el.querySelectorAll('.ltm-cand-row').forEach(r=>{
-        const txt=(r.dataset.search||'');
-        r.style.display=!q||txt.includes(q)?'':'none';
-      });
-    });
-  }
-
-  // Selectie → enable koppel-knop + visuele highlight
-  const linkBtn=el.querySelector('#ltm-link');
-  el.querySelectorAll('input[name="ltm-task"]').forEach(r=>r.addEventListener('change',()=>{
-    el.querySelectorAll('.ltm-cand-row').forEach(row=>row.classList.toggle('selected',row.querySelector('input[name="ltm-task"]')?.checked));
-    linkBtn.disabled=!el.querySelector('input[name="ltm-task"]:checked');
-  }));
-
-  // Koppel aan bestaande taak: overschrijf hours, tel timer-tijd op
-  linkBtn.addEventListener('click',()=>{
-    const sel=el.querySelector('input[name="ltm-task"]:checked');
-    if(!sel)return;
-    const tid=sel.value;
-    const newHours=parseFloat(el.querySelector('#ltm-hours').value)||0;
-    if(newHours<=0)return;
-    const todoSec=Math.round(todo.actualSeconds||0);
-    setData(d=>({...d,tasks:d.tasks.map(t=>{
-      if(t.id!==tid)return t;
-      return{...t,
-        hours:newHours,
-        timerSeconds:(t.timerSeconds||0)+todoSec,
-        linkedTodoIds:[...(t.linkedTodoIds||[]),todo.id],
-      };
-    })}));
-    close();
-  });
-
-  // Nieuwe taak aanmaken (fallback)
-  el.querySelector('#ltn-save').addEventListener('click',()=>{
-    const name=el.querySelector('#ltn-name').value.trim();
-    const projId=el.querySelector('#ltn-proj').value;
-    if(!name||!projId)return;
-    const di=parseInt(el.querySelector('#ltn-day').value);
-    const hours=parseFloat(el.querySelector('#ltn-hours').value)||0;
-    if(hours<=0)return;
-    const timeStr=el.querySelector('#ltn-time').value||'09:00';
-    const [hh,mm]=timeStr.split(':').map(Number);
-    const startTime=hh*60+mm;
-    const dDate=weekDates(wn.week,wn.year)[di];
-    const id=uid();
-    setData(d=>({...d,tasks:[...d.tasks,{
-      id,projectId:projId,name,hours,
-      allocatedWeek:wn.week,allocatedYear:wn.year,allocatedDay:di,
-      startTime,timerSeconds:Math.round(todo.actualSeconds||0),
-      billingMonth:dDate.getMonth(),billingYear:dDate.getFullYear(),
-      fromTodoId:todo.id,
-    }],projects:d.projects.map(p=>p.id===projId?{...p,tasks:[...(p.tasks||[]),id]}:p)}));
-    close();
-  });
-}
-function toggleTodoDone(id){
-  const t=(S.data.todos||[]).find(x=>x.id===id);
-  if(!t)return;
-  // Als timer nog loopt voor deze taak: stop & persisteer eerst
-  if(S.todoTimerId===id)stopTodoTimer(true);
-  const becomingDone=!t.done;
-  // Refresh todo na timer-stop (actualSeconds kan net gewijzigd zijn)
-  const fresh=(S.data.todos||[]).find(x=>x.id===id)||t;
-  if(becomingDone)recordLearningSample(fresh);
-  updateTodo(id,{done:becomingDone,completedAt:becomingDone?Date.now():null});
-  // Bij afvinken: open modal om als bestede tijd te loggen onder klant/project.
-  // Iets vertraagd zodat de check-animatie/re-render eerst rondt.
-  if(becomingDone){
-    const fresh2=(S.data.todos||[]).find(x=>x.id===id)||fresh;
-    setTimeout(()=>openLogTodoModal(fresh2),150);
-  }
-}
-function bulkImportTodos(raw){
-  const lines=(raw||'').split(/\r?\n/).map(l=>l.replace(/^\s*[-*•·□☐✓✔✗✕\[\]x□\d]+[.)]?\s*/i,'').replace(/^\s*\[[ x]\]\s*/i,'').trim()).filter(Boolean);
-  if(!lines.length)return 0;
-  const scheduledDate=S_TODO.viewDate||todayKey();
-  const news=lines.map(text=>{
-    const info=estimateInfo(text);
-    return{id:uid(),text,estimateMin:info.minutes,bucket:info.bucket,estimateLocked:false,
-      focus:false,done:false,completedAt:null,actualSeconds:0,
-      scheduledDate,createdAt:Date.now()};
-  });
-  setData(d=>({...d,todos:[...(d.todos||[]),...news]}));
-  return news.length;
-}
-
-function renderTodo(){
-  rollOverTodos();
-  const el=document.getElementById('screen-todo');
-  if(!el)return;
-  const viewDate=S_TODO.viewDate||todayKey();
-  const today=todayKey();
-  const isToday=viewDate===today;
-  const isPast=viewDate<today;
-  const isFuture=viewDate>today;
-  // Filter op scheduledDate; oude todos zonder scheduledDate vallen op vandaag
-  const allTodos=(S.data.todos||[]).slice();
-  const todos=allTodos.filter(t=>(t.scheduledDate||today)===viewDate);
-  const open=todos.filter(t=>!t.done);
-  const doneToday=todos.filter(t=>t.done);
-  const total=open.length+doneToday.length;
-  // Tellingen voor andere dagen — handig voor de "Andere dagen" hint
-  const upcomingCounts={};
-  allTodos.forEach(t=>{
-    if(t.done)return;
-    const k=t.scheduledDate||today;
-    if(k!==viewDate)upcomingCounts[k]=(upcomingCounts[k]||0)+1;
-  });
-  const otherDays=Object.entries(upcomingCounts).sort((a,b)=>a[0].localeCompare(b[0]));
-  const donePct=total?Math.round(doneToday.length/total*100):0;
-  // Top-3 focus: gesorteerd op focusScore
-  const ranked=[...open].sort((a,b)=>focusScore(b)-focusScore(a));
-  const topIds=new Set(ranked.slice(0,3).map(t=>t.id));
-  const focusList=open.filter(t=>topIds.has(t.id)).sort((a,b)=>focusScore(b)-focusScore(a));
-  const restList=open.filter(t=>!topIds.has(t.id));
-  const totalOpenMin=open.reduce((s,t)=>s+(t.estimateMin||0),0);
-
-  const renderRow=t=>{
-    const running=S.todoTimerId===t.id;
-    const elapsed=running?todoTimerElapsed():(t.actualSeconds||0);
-    const estMin=t.estimateMin||0;
-    const actMin=Math.round(elapsed/60);
-    // Leer-indicator: heeft deze taak een bekende bucket waarvan we ≥3 samples hebben?
-    const L=t.bucket?(S.data.todoLearning||{})[t.bucket]:null;
-    const isLearned=L&&L.samples>=3;
-    // Vergelijking schatting vs werkelijk (alleen bij done of timer-data)
-    let actualBadge='';
-    if((t.done||elapsed>0)&&elapsed>0&&estMin>0){
-      const ratio=actMin/estMin;
-      const overCls=ratio>1.5?' way-over':ratio>1.1?' over':'';
-      actualBadge=`<span class="todo-actual${overCls}" title="Werkelijke tijd">✓ ${fmtMin(actMin).replace('~','')}</span>`;
-    }else if(t.done&&elapsed===0){
-      actualBadge='';
-    }
-    const timerBtn=t.done?'':`<button class="todo-timer-btn${running?' running':''}" data-act="timer" title="${running?'Stop timer':'Start timer'}">${running?'⏸':'▶'} <span class="todo-timer-elapsed">${fmtSecs(elapsed)}</span></button>`;
-    return`<div class="todo-row${t.focus?' focused':''}${t.done?' done':''}" data-id="${t.id}">
-      <div class="todo-check" data-act="toggle"></div>
-      <div class="todo-body">
-        <input class="todo-text" value="${escapeHtml(t.text)}" data-act="edit-text" />
-        <span class="todo-tag-focus${t.focus?'':' inactive'}" data-act="toggle-focus" title="Markeer als focus">focus</span>
-      </div>
-      ${actualBadge}
-      ${timerBtn}
-      <span class="todo-time${isLearned?' learned':''}" data-act="edit-time" title="${isLearned?`Aangepast op basis van ${L.samples} eerdere taken — klik om handmatig aan te passen`:'Klik om aan te passen'}">${fmtMin(estMin)}</span>
-      <button class="todo-move-btn" data-act="move" title="Verplaats naar andere dag">📅</button>
-      <span class="todo-del" data-act="del" title="Verwijder">✕</span>
-    </div>`;
-  };
-
-  // Leerblok: alleen tonen als er buckets zijn met ≥3 samples
-  const learnBuckets=Object.entries(S.data.todoLearning||{}).filter(([k,L])=>L.samples>=3);
-  const learnHtml=learnBuckets.length?`<div class="todo-learn-box">
-    <div class="todo-learn-box-hdr">🧠 Wat ik geleerd heb van jouw timer-data</div>
-    <div style="font-size:11px;color:#0e7490">Voor deze taaktypes pas ik de schatting nu automatisch aan op basis van hoe lang je er werkelijk over doet. ${learnBuckets.length} ${learnBuckets.length===1?'bucket':'buckets'} actief — verzamel meer data om accurater te worden.</div>
-    <div class="todo-learn-grid">${learnBuckets.map(([k,L])=>{
-      const avg=Math.round(L.totalActualMin/L.samples);
-      const avgEst=Math.round(L.totalEstMin/L.samples);
-      const diff=avg-avgEst;
-      const arrow=diff>5?'↑':diff<-5?'↓':'≈';
-      return`<div class="todo-learn-item" title="${L.samples} samples"><span class="lk">${arrow} ${k}</span><span class="lv">${fmtMin(avg).replace('~','')} <span style="color:#cbd5e1">(was ${fmtMin(avgEst).replace('~','')})</span></span></div>`;
-    }).join('')}</div>
-  </div>`:'';
-  const histKeys=Object.keys(S.data.dailyTodoSnapshots||{}).sort().reverse().slice(0,14);
-  const historyHtml=histKeys.length?`<div class="todo-history">
-    <span class="todo-hist-toggle" data-act="toggle-hist">${S_TODO.histOpen?'▾':'▸'} Geschiedenis (${histKeys.length} ${histKeys.length===1?'dag':'dagen'})</span>
-    <div class="todo-hist-body${S_TODO.histOpen?' open':''}">
-      ${histKeys.map(k=>{
-        const items=S.data.dailyTodoSnapshots[k]||[];
-        const d=new Date(k+'T12:00:00');
-        return `<div class="todo-hist-day"><div class="todo-hist-day-hdr">${todayLabel(d)} · ${items.length} ${items.length===1?'taak':'taken'} af</div>
-          ${items.map(it=>`<div class="todo-hist-item">${escapeHtml(it.text)} <span style="color:#cbd5e1;margin-left:auto">${fmtMin(it.estimateMin||0)}</span></div>`).join('')}
-        </div>`;
-      }).join('')}
-    </div>
-  </div>`:'';
-
-  const dayLabel=relativeDayLabel(viewDate);
-  const fullLabel=todayLabel(parseDayKey(viewDate));
-  const dayTag=isFuture?`<span class="todo-future-tag">${dayLabel}</span>`:isPast?`<span class="todo-past-tag">${dayLabel}</span>`:'';
-  const focusSecLabel=isFuture?`Hoofdfocus — ${dayLabel.toLowerCase()}`:isPast?'Hoofdfocus':'Hoofdfocus — vandaag';
-  const doneSecLabel=isToday?'Klaar vandaag':isFuture?'Al afgevinkt':'Was klaar';
-  const emptyText=isFuture?`Nog geen plannen voor ${dayLabel.toLowerCase()}`:isPast?'Geen taken voor deze dag':'Nog geen taken voor vandaag';
-  el.innerHTML=`<div class="todo-wrap">
-    <div class="screen-hdr"><div><h1>✅ To-do</h1><p>Top 3 focus eerst · automatische tijdsschatting · per dag gearchiveerd</p></div></div>
-    <div class="todo-daynav">
-      <button data-act="day-prev" title="Vorige dag">◀</button>
-      <div class="day-label">${fullLabel}${dayTag}</div>
-      <button data-act="day-next" title="Volgende dag">▶</button>
-      ${!isToday?`<button class="today-pill" data-act="day-today">Vandaag</button>`:''}
-      <input type="date" id="todo-date-picker" value="${viewDate}" />
-    </div>
-    <div class="todo-prog-text">${doneToday.length} van ${total} ${total===1?'taak':'taken'} ${isPast?'was af':'klaar'}${open.length?` · nog ~${fmtMin(totalOpenMin).replace('~','')} ${isFuture?'gepland':'te gaan'}`:''}</div>
-    <div class="todo-prog-bar"><div class="todo-prog-fill" style="width:${donePct}%"></div></div>
-    ${otherDays.length?`<div style="font-size:11px;color:#94a3b8;margin-bottom:14px">Andere dagen met taken: ${otherDays.map(([k,n])=>`<a data-act="day-jump" data-day="${k}" style="color:#0891b2;cursor:pointer;margin-right:8px">${relativeDayLabel(k)} (${n})</a>`).join('')}</div>`:''}
-    ${total===0?`<div class="todo-empty"><div class="ei">📝</div><p>${emptyText}</p><small>Voeg er hieronder een toe, of plak een lijst.</small></div>`:''}
-    ${focusList.length?`<div class="todo-sec-hdr">${focusSecLabel} <span class="sec-count">${focusList.length}</span></div>${focusList.map(renderRow).join('')}`:''}
-    ${restList.length?`<div class="todo-sec-hdr">Overig <span class="sec-count">${restList.length}</span></div>${restList.map(renderRow).join('')}`:''}
-    ${doneToday.length?`<div class="todo-sec-hdr">${doneSecLabel} <span class="sec-count">${doneToday.length}</span></div>${doneToday.map(renderRow).join('')}`:''}
-    ${learnHtml}
-    ${S_TODO.addOpen
-      ?`<form class="todo-add-form" id="todo-add-form"><input id="todo-add-input" placeholder="Wat moet er gedaan worden?" autofocus /><button type="submit">Voeg toe</button><button type="button" data-act="cancel-add" style="background:#fff;color:#64748b;border:1px solid #e2e8f0">✕</button></form>`
-      :`<button class="todo-add-btn" data-act="open-add">+ voeg taak toe</button>`}
-    <div class="todo-bulk">
-      <div class="todo-bulk-hdr" data-act="toggle-bulk">📋 Plak je lijst hier <span style="font-weight:400;color:#94a3b8;font-size:11px">${S_TODO.bulkOpen?'▾':'▸'}</span></div>
-      <div class="todo-bulk-body${S_TODO.bulkOpen?' open':''}">
-        <textarea id="todo-bulk-text" placeholder="Eén taak per regel. Bullets, checkboxes en nummers worden er automatisch afgehaald."></textarea>
-        <div class="todo-bulk-actions">
-          <button class="primary" data-act="bulk-add">Voeg toe & schat tijd</button>
-          <button data-act="toggle-bulk">Annuleren</button>
-        </div>
-      </div>
-    </div>
-    ${historyHtml}
-  </div>`;
-
-  // Listeners
-  el.querySelectorAll('.todo-row').forEach(row=>{
-    const id=row.dataset.id;
-    row.querySelector('[data-act="toggle"]').addEventListener('click',()=>toggleTodoDone(id));
-    row.querySelector('[data-act="toggle-focus"]').addEventListener('click',()=>{
-      const t=(S.data.todos||[]).find(x=>x.id===id);if(t)updateTodo(id,{focus:!t.focus});
-    });
-    row.querySelector('[data-act="del"]').addEventListener('click',()=>deleteTodo(id));
-    const timerBtn=row.querySelector('[data-act="timer"]');
-    if(timerBtn)timerBtn.addEventListener('click',e=>{e.stopPropagation();startTodoTimer(id)});
-    const moveBtn=row.querySelector('[data-act="move"]');
-    if(moveBtn)moveBtn.addEventListener('click',e=>{
-      e.stopPropagation();
-      const t=(S.data.todos||[]).find(x=>x.id===id);if(!t)return;
-      const cur=t.scheduledDate||todayKey();
-      const ans=prompt('Verplaats naar welke datum? (YYYY-MM-DD, of "vandaag" / "morgen" / "+3" voor 3 dagen vooruit):',cur);
-      if(ans===null)return;
-      const a=String(ans).trim().toLowerCase();
-      let target=null;
-      if(a==='vandaag'||a==='today')target=todayKey();
-      else if(a==='morgen'||a==='tomorrow')target=shiftDay(todayKey(),1);
-      else if(a==='gisteren'||a==='yesterday')target=shiftDay(todayKey(),-1);
-      else if(/^[+-]?\d+$/.test(a))target=shiftDay(todayKey(),parseInt(a,10));
-      else if(/^\d{4}-\d{2}-\d{2}$/.test(a))target=a;
-      if(!target){alert('Onbekend datumformaat. Gebruik YYYY-MM-DD, "morgen", of "+2".');return}
-      updateTodo(id,{scheduledDate:target});
-    });
-    const textInput=row.querySelector('[data-act="edit-text"]');
-    textInput.addEventListener('blur',()=>{
-      const t=(S.data.todos||[]).find(x=>x.id===id);if(!t)return;
-      const v=textInput.value.trim();
-      if(!v){deleteTodo(id);return}
-      if(v===t.text)return;
-      const patch={text:v};
-      if(!t.estimateLocked)patch.estimateMin=estimateMinutes(v);
-      updateTodo(id,patch);
-    });
-    textInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();textInput.blur()}});
-    row.querySelector('[data-act="edit-time"]').addEventListener('click',()=>{
-      const t=(S.data.todos||[]).find(x=>x.id===id);if(!t)return;
-      const cur=t.estimateMin||0;
-      const ans=prompt('Tijdsschatting in minuten (bijv. 30 voor 30 min, 90 voor 1u30):',String(cur));
-      if(ans===null)return;
-      const v=parseInt(String(ans).replace(/\D/g,''),10);
-      if(isNaN(v)||v<0)return;
-      updateTodo(id,{estimateMin:v,estimateLocked:true});
-    });
-  });
-  const addBtn=el.querySelector('[data-act="open-add"]');
-  if(addBtn)addBtn.addEventListener('click',()=>{S_TODO.addOpen=true;renderTodo()});
-  const addForm=el.querySelector('#todo-add-form');
-  if(addForm){
-    addForm.addEventListener('submit',e=>{e.preventDefault();const inp=document.getElementById('todo-add-input');if(inp&&inp.value.trim()){addTodo(inp.value);S_TODO.addOpen=false}});
-    addForm.querySelector('[data-act="cancel-add"]').addEventListener('click',()=>{S_TODO.addOpen=false;renderTodo()});
-  }
-  el.querySelectorAll('[data-act="toggle-bulk"]').forEach(b=>b.addEventListener('click',()=>{S_TODO.bulkOpen=!S_TODO.bulkOpen;renderTodo()}));
-  const bulkAdd=el.querySelector('[data-act="bulk-add"]');
-  if(bulkAdd)bulkAdd.addEventListener('click',()=>{
-    const ta=document.getElementById('todo-bulk-text');if(!ta)return;
-    const n=bulkImportTodos(ta.value);
-    if(n>0){ta.value='';S_TODO.bulkOpen=false}
-  });
-  const histTog=el.querySelector('[data-act="toggle-hist"]');
-  if(histTog)histTog.addEventListener('click',()=>{S_TODO.histOpen=!S_TODO.histOpen;renderTodo()});
-  // Dag-navigator
-  const prevBtn=el.querySelector('[data-act="day-prev"]');
-  const nextBtn=el.querySelector('[data-act="day-next"]');
-  const todayBtn=el.querySelector('[data-act="day-today"]');
-  const picker=el.querySelector('#todo-date-picker');
-  if(prevBtn)prevBtn.addEventListener('click',()=>{S_TODO.viewDate=shiftDay(S_TODO.viewDate||todayKey(),-1);renderTodo()});
-  if(nextBtn)nextBtn.addEventListener('click',()=>{S_TODO.viewDate=shiftDay(S_TODO.viewDate||todayKey(),1);renderTodo()});
-  if(todayBtn)todayBtn.addEventListener('click',()=>{S_TODO.viewDate=todayKey();renderTodo()});
-  if(picker)picker.addEventListener('change',e=>{if(e.target.value){S_TODO.viewDate=e.target.value;renderTodo()}});
-  el.querySelectorAll('[data-act="day-jump"]').forEach(a=>a.addEventListener('click',()=>{S_TODO.viewDate=a.dataset.day;renderTodo()}));
-}
-// Klein utility — escape voor user-tekst in HTML attributen
-function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 
 // ═══════════════════════════════════════════════
 //  MAIN RENDER
 // ═══════════════════════════════════════════════
 function render(){
   renderSidebar();
-  ['week','todo','clients','projects','analyse','settings'].forEach(s=>{
+  ['week','clients','projects','analyse','settings'].forEach(s=>{
     const el=document.getElementById(`screen-${s}`);
     if(el)el.classList.toggle('active',S.screen===s);
   });
   if(S.screen==='week')renderWeek();
-  if(S.screen==='todo')renderTodo();
   if(S.screen==='clients')renderClients();
   if(S.screen==='projects')renderProjects();
   if(S.screen==='analyse')renderAnalyse();
   if(S.screen==='settings')renderSettings();
-  // Vervang alle native selects door custom dropdown (Safari-fix)
-  enhanceSelects(document.body);
 }
 
 // ═══════════════════════════════════════════════
@@ -3066,7 +1667,6 @@ function openRetainerOverrideModal(projId){
       <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:9px 12px;font-size:12px;color:#166534;margin-bottom:14px">
         Standaard: <strong>${p.retainerHoursPerMonth||p.agreedHours||0}u/mnd</strong> · <strong>${eur(p.retainerBudgetPerMonth||p.agreedBudget||0)}/mnd</strong>. Stel hieronder een afwijkende waarde in voor één specifieke maand.
       </div>
-      <div id="ro-range-warn" style="display:none;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px 12px;font-size:12px;color:#92400e;margin-bottom:14px"></div>
       <div class="form-row">
         <div class="form-group"><label class="form-label">Maand</label><select class="form-select" id="ro-month">${monthOpts}</select></div>
         <div class="form-group"><label class="form-label">Jaar</label><select class="form-select" id="ro-year">${yearOpts}</select></div>
@@ -3099,34 +1699,6 @@ function openRetainerOverrideModal(projId){
   };
   refreshList();
 
-  // Check of geselecteerde maand binnen looptijd valt — toon waarschuwing + verleng-knop
-  const checkRange=()=>{
-    const proj=getProj2();
-    const m=parseInt(el.querySelector('#ro-month').value);
-    const y=parseInt(el.querySelector('#ro-year').value);
-    const cur=y*12+m;
-    const warnEl=el.querySelector('#ro-range-warn');
-    let outOfRange=null;// 'before' | 'after'
-    if(proj.startMonth!==undefined&&proj.startYear!==undefined&&cur<proj.startYear*12+proj.startMonth)outOfRange='before';
-    if(proj.endMonth!==undefined&&proj.endYear!==undefined&&cur>proj.endYear*12+proj.endMonth)outOfRange='after';
-    if(!outOfRange){warnEl.style.display='none';return false;}
-    const rangeText=`${proj.startMonth!==undefined?MONTH_NL[proj.startMonth]+' '+proj.startYear:'…'} → ${proj.endMonth!==undefined?MONTH_NL[proj.endMonth]+' '+proj.endYear:'doorlopend'}`;
-    const selText=`${MONTH_NL[m]} ${y}`;
-    const action=outOfRange==='after'?`Verleng eindmaand t/m ${selText}`:`Vervroeg startmaand naar ${selText}`;
-    warnEl.style.display='';
-    warnEl.innerHTML=`<div style="display:flex;align-items:flex-start;gap:8px"><span style="font-size:14px">⚠️</span><div style="flex:1"><div style="font-weight:700;margin-bottom:3px">${selText} valt buiten de looptijd</div><div style="font-size:11px;opacity:.85;margin-bottom:7px">Project loopt: <strong>${rangeText}</strong>. Sla je nu op, dan verschijnt deze maand niet in het overzicht.</div><button class="btn btn-primary btn-sm" id="ro-extend" style="font-size:11px">📅 ${action}</button></div></div>`;
-    warnEl.querySelector('#ro-extend').addEventListener('click',()=>{
-      setData(d=>({...d,projects:d.projects.map(pp=>{
-        if(pp.id!==projId)return pp;
-        if(outOfRange==='after')return{...pp,endMonth:m,endYear:y};
-        return{...pp,startMonth:m,startYear:y};
-      })}));
-      // herbereken na update
-      checkRange();
-    });
-    return true;
-  };
-
   // When month/year changes, prefill inputs from existing override or default
   const syncInputs=()=>{
     const m=parseInt(el.querySelector('#ro-month').value);
@@ -3136,10 +1708,7 @@ function openRetainerOverrideModal(projId){
     const cap=getRetainerCap(getProj2(),m,y);
     el.querySelector('#ro-hours').value=existing?existing.hours:cap.hours;
     el.querySelector('#ro-budget').value=existing?existing.budget:cap.budget;
-    checkRange();
   };
-  // Initial check
-  checkRange();
   el.querySelector('#ro-month').addEventListener('change',syncInputs);
   el.querySelector('#ro-year').addEventListener('change',syncInputs);
   el.querySelector('#ro-cancel').addEventListener('click',close);
@@ -3178,44 +1747,7 @@ function openTaskModal(task,dayIdx=0,prefProjId,prefHours,prefTime,prefBillingMo
   const yearRange=[curY-1,curY,curY+1];
   const billingMonthOpts=MONTHS.map((m,i)=>`<option value="${i}"${i===defBM?' selected':''}>${m.charAt(0).toUpperCase()+m.slice(1)}</option>`).join('');
   const billingYearOpts=yearRange.map(y=>`<option value="${y}"${y===defBY?' selected':''}>${y}</option>`).join('');
-  const{el,close}=openModal(`<div class="modal"><div class="modal-hdr"><span class="modal-title">${isEdit?'Taak bewerken':'Taak toevoegen'}</span><button class="modal-close">×</button></div><div class="modal-body"><div class="form-group"><label class="form-label">Project *</label><select class="form-select" id="mt-proj">${projOpts||'<option value="">— Voeg eerst een project toe —</option>'}</select></div><div class="form-group" id="mt-suggestions-wrap" style="display:none"><label class="form-label">💡 Vaak gebruikt <span style="font-weight:400;color:#94a3b8">— klik om in te vullen</span></label><div id="mt-suggestions" style="display:flex;flex-wrap:wrap;gap:4px;max-height:84px;overflow-y:auto"></div></div><div class="form-group"><label class="form-label">Taaknaam *</label><input class="form-input" id="mt-name" placeholder="bijv. Homepage ontwerpen" value="${task?.name||''}"></div><div class="form-row"><div class="form-group"><label class="form-label">Starttijd</label><input class="form-input" id="mt-time" type="time" value="${timeVal}"></div><div class="form-group"><label class="form-label">Duur (uren)</label><input class="form-input" id="mt-hours" type="number" min="0.25" step="0.25" value="${task?.hours||prefHours||2}"></div></div><div class="form-group"><label class="form-label">Facturatiemaand <span style="font-weight:400;color:#94a3b8">— telt mee in welk maandbudget</span></label><div style="display:flex;gap:7px"><select class="form-select" id="mt-bm" style="flex:2">${billingMonthOpts}</select><select class="form-select" id="mt-by" style="flex:1">${billingYearOpts}</select></div></div>${isEdit&&(task.timerSeconds||0)>0?`<div style="background:#f0fdfe;border:1px solid #a5f3fc;border-radius:9px;padding:8px;font-size:11.5px;color:#0891b2;margin-bottom:10px">⏱ Getrackte tijd: <strong>${fmtSecs(task.timerSeconds)}</strong> <button onclick="resetTimer('${task.id}')" style="font-size:10.5px;color:#94a3b8;margin-left:8px;text-decoration:underline">reset</button></div>`:''}<div style="display:flex;gap:7px;justify-content:flex-end">${isEdit?'<button class="btn btn-danger" id="mt-del">✕</button>':''}<button class="btn btn-secondary" id="mt-cancel">Annuleren</button><button class="btn btn-primary" id="mt-save">Opslaan</button></div></div></div>`);
-
-  // Suggesties op basis van eerdere taken in hetzelfde project
-  const escapeAttr=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
-  const refreshSuggestions=projId=>{
-    const wrap=el.querySelector('#mt-suggestions-wrap');
-    const list=el.querySelector('#mt-suggestions');
-    if(!projId){wrap.style.display='none';return;}
-    // Verzamel unieke taaknamen voor dit project, gerangschikt op recentheid + frequentie
-    const tasks=S.data.tasks.filter(t=>t.projectId===projId&&t.name&&(!isEdit||t.id!==task.id));
-    const grouped={};
-    tasks.forEach(t=>{
-      const k=t.name.trim();
-      if(!k)return;
-      if(!grouped[k])grouped[k]={name:k,count:0,lastHours:t.hours||2,recencyKey:0};
-      grouped[k].count++;
-      grouped[k].lastHours=t.hours||grouped[k].lastHours;
-      // Recency op basis van billingYear*12+billingMonth + allocatedDay/100
-      const rec=(t.billingYear||0)*12+(t.billingMonth||0)+(t.allocatedDay||0)/100;
-      if(rec>grouped[k].recencyKey)grouped[k].recencyKey=rec;
-    });
-    const suggestions=Object.values(grouped).sort((a,b)=>b.recencyKey-a.recencyKey||b.count-a.count).slice(0,12);
-    if(!suggestions.length){wrap.style.display='none';return;}
-    wrap.style.display='';
-    list.innerHTML=suggestions.map(s=>`<button type="button" class="suggestion-chip" data-name="${escapeAttr(s.name)}" data-hours="${s.lastHours}">${escapeAttr(s.name)} <span class="sug-hrs">${s.lastHours}u${s.count>1?' ·×'+s.count:''}</span></button>`).join('');
-    list.querySelectorAll('.suggestion-chip').forEach(b=>b.addEventListener('click',()=>{
-      el.querySelector('#mt-name').value=b.dataset.name;
-      el.querySelector('#mt-hours').value=b.dataset.hours;
-      // Visuele bevestiging
-      b.style.background='#dcfce7';b.style.borderColor='#86efac';b.style.color='#166534';
-      setTimeout(()=>{b.style.background='';b.style.borderColor='';b.style.color='';},600);
-    }));
-  };
-  el.querySelector('#mt-proj').addEventListener('change',e=>refreshSuggestions(e.target.value));
-  // Bij nieuwe taak zonder pre-selectie: gebruik de huidige waarde van de select (eerste project)
-  // zodat ook bij klik-op-kalender direct suggesties verschijnen.
-  refreshSuggestions(task?task.projectId:(prefProjId||el.querySelector('#mt-proj').value));
-
+  const{el,close}=openModal(`<div class="modal"><div class="modal-hdr"><span class="modal-title">${isEdit?'Taak bewerken':'Taak toevoegen'}</span><button class="modal-close">×</button></div><div class="modal-body"><div class="form-group"><label class="form-label">Project *</label><select class="form-select" id="mt-proj">${projOpts||'<option value="">— Voeg eerst een project toe —</option>'}</select></div><div class="form-group"><label class="form-label">Taaknaam *</label><input class="form-input" id="mt-name" placeholder="bijv. Homepage ontwerpen" value="${task?.name||''}"></div><div class="form-row"><div class="form-group"><label class="form-label">Starttijd</label><input class="form-input" id="mt-time" type="time" value="${timeVal}"></div><div class="form-group"><label class="form-label">Duur (uren)</label><input class="form-input" id="mt-hours" type="number" min="0.25" step="0.25" value="${task?.hours||prefHours||2}"></div></div><div class="form-group"><label class="form-label">Facturatiemaand <span style="font-weight:400;color:#94a3b8">— telt mee in welk maandbudget</span></label><div style="display:flex;gap:7px"><select class="form-select" id="mt-bm" style="flex:2">${billingMonthOpts}</select><select class="form-select" id="mt-by" style="flex:1">${billingYearOpts}</select></div></div>${isEdit&&(task.timerSeconds||0)>0?`<div style="background:#f0fdfe;border:1px solid #a5f3fc;border-radius:9px;padding:8px;font-size:11.5px;color:#0891b2;margin-bottom:10px">⏱ Getrackte tijd: <strong>${fmtSecs(task.timerSeconds)}</strong> <button onclick="resetTimer('${task.id}')" style="font-size:10.5px;color:#94a3b8;margin-left:8px;text-decoration:underline">reset</button></div>`:''}<div style="display:flex;gap:7px;justify-content:flex-end">${isEdit?'<button class="btn btn-danger" id="mt-del">✕</button>':''}<button class="btn btn-secondary" id="mt-cancel">Annuleren</button><button class="btn btn-primary" id="mt-save">Opslaan</button></div></div></div>`);
   el.querySelector('#mt-cancel').addEventListener('click',close);
   el.querySelector('#mt-del')?.addEventListener('click',()=>{if(S.timerTaskId===task.id){clearInterval(S.timerInterval);S.timerTaskId=null}setData(d=>({...d,tasks:d.tasks.filter(t=>t.id!==task.id),projects:d.projects.map(p=>({...p,tasks:(p.tasks||[]).filter(tid=>tid!==task.id)}))}));close()});
   el.querySelector('#mt-save').addEventListener('click',()=>{
@@ -3241,12 +1773,8 @@ window.resetTimer=function(taskId){setData(d=>({...d,tasks:d.tasks.map(t=>t.id==
 // ═══════════════════════════════════════════════
 function openCliModal(id){
   const ex=id?S.data.clients.find(c=>c.id===id):null;
-  // Standaardkleur: bestaande klant.defaultColor, anders eerste vrije kleur
-  let pickedDefaultColor=ex?.defaultColor||COLORS.find(c=>!S.data.clients.map(cc=>cc.defaultColor).filter(Boolean).includes(c))||COLORS[0];
-  const colorSwatchesHtml=COLORS.map(c=>`<div class="c-swatch${c===pickedDefaultColor?' selected':''}" style="background:${c}" data-color="${c}"></div>`).join('');
-  const{el,close}=openModal(`<div class="modal"><div class="modal-hdr"><span class="modal-title">${ex?'Klant bewerken':'Klant toevoegen'}</span><button class="modal-close">×</button></div><div class="modal-body"><div class="form-group"><label class="form-label">Naam *</label><input class="form-input" id="mc-name" value="${ex?.name||''}" placeholder="bijv. TechCorp BV"></div><div class="form-group"><label class="form-label">E-mail</label><input class="form-input" id="mc-email" type="email" value="${ex?.email||''}" placeholder="contact@bedrijf.nl"></div><div class="form-group"><label class="form-label">Standaard projectkleur <span style="font-weight:400;color:#94a3b8">— nieuwe projecten van deze klant krijgen deze kleur</span></label><div class="color-grid" id="mc-colors">${colorSwatchesHtml}</div></div><div class="form-group"><label class="form-label">Logo (optioneel)</label><div class="logo-upload-area" id="mc-logo-area">${ex?.logo?`<img src="${ex.logo}" style="width:48px;height:48px;border-radius:8px;object-fit:cover"><br><span style="font-size:10px;color:#94a3b8;margin-top:4px;display:block">Klik om te wijzigen</span>`:'<div style="font-size:20px;margin-bottom:4px">🖼</div>Upload logo<br><span style="font-size:10.5px">(PNG, JPG)</span>'}<input type="file" id="mc-logo" accept="image/*" style="display:none"></div></div><div style="display:flex;gap:7px;justify-content:flex-end"><button class="btn btn-secondary" id="mc-cancel">Annuleren</button><button class="btn btn-primary" id="mc-save">Opslaan</button></div></div></div>`);
+  const{el,close}=openModal(`<div class="modal"><div class="modal-hdr"><span class="modal-title">${ex?'Klant bewerken':'Klant toevoegen'}</span><button class="modal-close">×</button></div><div class="modal-body"><div class="form-group"><label class="form-label">Naam *</label><input class="form-input" id="mc-name" value="${ex?.name||''}" placeholder="bijv. TechCorp BV"></div><div class="form-group"><label class="form-label">E-mail</label><input class="form-input" id="mc-email" type="email" value="${ex?.email||''}" placeholder="contact@bedrijf.nl"></div><div class="form-group"><label class="form-label">Logo (optioneel)</label><div class="logo-upload-area" id="mc-logo-area">${ex?.logo?`<img src="${ex.logo}" style="width:48px;height:48px;border-radius:8px;object-fit:cover"><br><span style="font-size:10px;color:#94a3b8;margin-top:4px;display:block">Klik om te wijzigen</span>`:'<div style="font-size:20px;margin-bottom:4px">🖼</div>Upload logo<br><span style="font-size:10.5px">(PNG, JPG)</span>'}<input type="file" id="mc-logo" accept="image/*" style="display:none"></div></div><div style="display:flex;gap:7px;justify-content:flex-end"><button class="btn btn-secondary" id="mc-cancel">Annuleren</button><button class="btn btn-primary" id="mc-save">Opslaan</button></div></div></div>`);
   let logoB64=ex?.logo||'';
-  el.querySelectorAll('#mc-colors .c-swatch').forEach(s=>s.addEventListener('click',()=>{el.querySelectorAll('#mc-colors .c-swatch').forEach(x=>x.classList.remove('selected'));s.classList.add('selected');pickedDefaultColor=s.dataset.color}));
   el.querySelector('#mc-logo-area').addEventListener('click',()=>el.querySelector('#mc-logo').click());
   el.querySelector('#mc-logo').addEventListener('change',e=>{
     const f=e.target.files[0];if(!f)return;
@@ -3257,11 +1785,8 @@ function openCliModal(id){
     const name=el.querySelector('#mc-name').value.trim();
     const email=el.querySelector('#mc-email').value.trim();
     if(!name)return;
-    if(ex){
-      // Bij wijzigen van defaultColor: ook lopende projecten (zonder eigen overschrijving) updaten? Nee — projecten hebben hun eigen color. Laat bestaande projecten met rust.
-      setData(d=>({...d,clients:d.clients.map(c=>c.id===id?{...c,name,email,logo:logoB64,defaultColor:pickedDefaultColor}:c)}));
-    }
-    else{setData(d=>({...d,clients:[...d.clients,{id:uid(),name,email,logo:logoB64,defaultColor:pickedDefaultColor,projects:[]}]}))}
+    if(ex){setData(d=>({...d,clients:d.clients.map(c=>c.id===id?{...c,name,email,logo:logoB64}:c)}))}
+    else{setData(d=>({...d,clients:[...d.clients,{id:uid(),name,email,logo:logoB64,projects:[]}]}))}
     close();
   });
 }
@@ -3272,12 +1797,8 @@ function openCliModal(id){
 function openProjModal(id){
   const ex=id?S.data.projects.find(p=>p.id===id):null;
   if(!S.data.clients.length){openModal(`<div class="modal modal-sm"><div class="modal-hdr"><span class="modal-title">Geen klanten</span><button class="modal-close">×</button></div><div class="modal-body"><p style="font-size:13px;color:#64748b;margin-bottom:12px">Voeg eerst een klant toe.</p><div style="text-align:right"><button class="btn btn-primary modal-close">OK</button></div></div></div>`);return}
-  // Bij NIEUW project: pak de standaardkleur van de geselecteerde klant. Bij bewerken: huidige kleur.
-  const initialCli=ex?S.data.clients.find(c=>c.id===ex.clientId):S.data.clients[0];
-  let pickedColor=ex?.color||initialCli?.defaultColor||COLORS.find(c=>!S.data.projects.map(p=>p.color).includes(c))||COLORS[0];
-  // Track of de gebruiker handmatig een kleur heeft gekozen — zo ja, dan niet meer automatisch overschrijven bij wisselen klant
-  let userPickedColor=!!ex;
-  const cliOpts=S.data.clients.map(c=>`<option value="${c.id}"${ex?.clientId===c.id||(!ex&&c.id===initialCli?.id)?' selected':''}>${c.name}</option>`).join('');
+  let pickedColor=ex?.color||COLORS.find(c=>!S.data.projects.map(p=>p.color).includes(c))||COLORS[0];
+  const cliOpts=S.data.clients.map(c=>`<option value="${c.id}"${ex?.clientId===c.id?' selected':''}>${c.name}</option>`).join('');
   const isRetainer=ex?.isRetainer||false;
   const autoRate=ex&&effRate(ex)>0?Math.round(effRate(ex)):'';
   const curY2=new Date().getFullYear();
@@ -3310,15 +1831,7 @@ function openProjModal(id){
       }
     }
   });
-  el.querySelectorAll('.c-swatch').forEach(s=>s.addEventListener('click',()=>{el.querySelectorAll('.c-swatch').forEach(x=>x.classList.remove('selected'));s.classList.add('selected');pickedColor=s.dataset.color;userPickedColor=true}));
-  // Bij wisselen van klant in een NIEUW project: automatisch klant-standaardkleur invullen (tenzij gebruiker al handmatig koos)
-  el.querySelector('#mp-cli').addEventListener('change',e=>{
-    if(userPickedColor)return;
-    const cli=S.data.clients.find(c=>c.id===e.target.value);
-    if(!cli?.defaultColor)return;
-    pickedColor=cli.defaultColor;
-    el.querySelectorAll('.c-swatch').forEach(x=>x.classList.toggle('selected',x.dataset.color===pickedColor));
-  });
+  el.querySelectorAll('.c-swatch').forEach(s=>s.addEventListener('click',()=>{el.querySelectorAll('.c-swatch').forEach(x=>x.classList.remove('selected'));s.classList.add('selected');pickedColor=s.dataset.color}));
   el.querySelector('#mp-cancel').addEventListener('click',close);
   el.querySelector('#mp-save').addEventListener('click',()=>{
     const name=el.querySelector('#mp-name').value.trim();
@@ -3383,41 +1896,13 @@ document.getElementById('btn-lock-week').addEventListener('click',()=>{
   const locked=(S.data.lockedWeeks||[]);
   const idx=locked.findIndex(l=>l.week===viewW&&l.year===viewY);
   if(idx>=0){
-    // ontgrendelen — verwijder ook de checklist (groene vinkjes) van deze week
-    setData(d=>({
-      ...d,
-      lockedWeeks:d.lockedWeeks.filter((_,i)=>i!==idx),
-      daysDone:(d.daysDone||[]).filter(x=>!(x.week===viewW&&x.year===viewY)),
-    }));
+    // ontgrendelen
+    setData(d=>({...d,lockedWeeks:d.lockedWeeks.filter((_,i)=>i!==idx)}));
   }else{
-    // vergrendelen + mark alle 5 weekdagen als done (dopamine!)
-    setData(d=>{
-      const dd=d.daysDone||[];
-      const newDaysDone=[...dd];
-      [0,1,2,3,4].forEach(day=>{
-        if(!newDaysDone.some(x=>x.week===viewW&&x.year===viewY&&x.day===day)){
-          newDaysDone.push({week:viewW,year:viewY,day});
-        }
-      });
-      return{...d,lockedWeeks:[...(d.lockedWeeks||[]),{week:viewW,year:viewY}],daysDone:newDaysDone};
-    });
-    // Vier het!
-    setTimeout(()=>{triggerConfetti(document.getElementById('btn-lock-week'),60);playDoneSound();showWeekCompleteToast()},80);
+    // vergrendelen
+    setData(d=>({...d,lockedWeeks:[...(d.lockedWeeks||[]),{week:viewW,year:viewY}]}));
   }
 });
-// Privacy mode (verberg omzet/uren) — voorkeur persisteren in localStorage
-function applyPrivacyState(){
-  const on=localStorage.getItem('ff_privacy')==='1';
-  document.body.classList.toggle('privacy-on',on);
-  const btn=document.getElementById('btn-privacy');
-  if(btn){btn.innerHTML=on?'🙈 Verborgen':'👁 Privé';btn.title=on?'Toon omzet weer':'Verberg omzet & uren';}
-}
-document.getElementById('btn-privacy').addEventListener('click',()=>{
-  const cur=localStorage.getItem('ff_privacy')==='1';
-  if(cur)localStorage.removeItem('ff_privacy');else localStorage.setItem('ff_privacy','1');
-  applyPrivacyState();
-});
-applyPrivacyState();
 document.getElementById('btn-demo').addEventListener('click',()=>{const n=weekNum(new Date());S.data=makeDemo(n.week,n.year);saveData(S.data);render()});
 document.getElementById('btn-clear').addEventListener('click',()=>{if(confirm('Alle data verwijderen?')){localStorage.removeItem(KEY);const n=weekNum(new Date());S.data=makeDemo(n.week,n.year);saveData(S.data);render()}});
 
@@ -3433,7 +1918,6 @@ document.getElementById('btn-logout').addEventListener('click',logout);
 if(localStorage.getItem('ff_auth')==='1'){
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='flex';
-  resumeRunningTimer(); // herstel lopende timer uit vorige sessie
   render();
   startDriveSync();
 }else{
@@ -3443,37 +1927,9 @@ if(localStorage.getItem('ff_auth')==='1'){
 
 // ── Zorg dat data altijd naar Drive gesaved wordt bij refresh/sluiten ──────
 window.addEventListener('beforeunload',()=>{
-  // Sla lopende timer-status op vóór sluiten
-  if(S.timerTaskId){persistTimerState()}
   if(GAS_URL&&localStorage.getItem('ff_auth')==='1'){
     if(_pendingDriveSave){clearTimeout(_pendingDriveSave);_pendingDriveSave=null;}
-    // sendBeacon is non-blocking en overleeft page-unload — async fetch zou worden afgebroken.
-    // Hierdoor gaat een wijziging vlak voor refresh niet verloren.
-    try{
-      if(navigator.sendBeacon){
-        // Zorg dat de timestamp up-to-date is
-        S.data._lastModified=Date.now();
-        try{localStorage.setItem(KEY,JSON.stringify(S.data))}catch{}
-        const blob=new Blob([JSON.stringify(S.data)],{type:'text/plain;charset=utf-8'});
-        navigator.sendBeacon(GAS_URL+'?action=save',blob);
-      }else{
-        saveToDrive(S.data);
-      }
-    }catch{saveToDrive(S.data)}
-  }
-});
-// Ook bij tab onzichtbaar worden (mobile pwa): doe een save
-document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState==='hidden'&&GAS_URL&&localStorage.getItem('ff_auth')==='1'){
-    if(_pendingDriveSave){clearTimeout(_pendingDriveSave);_pendingDriveSave=null;}
-    try{
-      if(navigator.sendBeacon){
-        S.data._lastModified=Date.now();
-        try{localStorage.setItem(KEY,JSON.stringify(S.data))}catch{}
-        const blob=new Blob([JSON.stringify(S.data)],{type:'text/plain;charset=utf-8'});
-        navigator.sendBeacon(GAS_URL+'?action=save',blob);
-      }
-    }catch{}
+    saveToDrive(S.data);
   }
 });
 </script>
