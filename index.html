@@ -464,6 +464,17 @@ select.cs-enhanced{position:absolute!important;left:-9999px;opacity:0;pointer-ev
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes scaleIn{from{opacity:0;transform:scale(.95) translateY(-6px)}to{opacity:1;transform:scale(1) translateY(0)}}
 
+/* TODO DIFFICULTY */
+.todo-diff-btn{font-size:9px;font-weight:700;letter-spacing:.4px;padding:2px 6px;border-radius:6px;cursor:pointer;border:1px solid;transition:.15s;flex-shrink:0;line-height:1.4}
+.todo-diff-easy{color:#16a34a;background:#f0fdf4;border-color:#bbf7d0}
+.todo-diff-easy:hover{background:#dcfce7}
+.todo-diff-hard{color:#dc2626;background:#fef2f2;border-color:#fecaca}
+.todo-diff-hard:hover{background:#fee2e2}
+.todo-diff-none{color:#94a3b8;background:#f8fafc;border-color:#e2e8f0}
+.todo-diff-none:hover{background:#f1f5f9;color:#64748b}
+.todo-hard-spec{background:linear-gradient(135deg,#fff5f5,#fef2f2);border:1px solid #fecaca;border-radius:9px;padding:9px 11px;margin:5px 0 5px 32px;display:flex;gap:8px;align-items:flex-start}
+.todo-hard-spec textarea{flex:1;border:none;outline:none;background:transparent;font-size:12px;color:#0f172a;font-family:inherit;resize:none;min-height:36px;line-height:1.5}
+.todo-hard-spec textarea::placeholder{color:#fca5a5;font-style:italic}
 /* WEEKVOORNEMENS */
 .wv-wrap{background:linear-gradient(135deg,#fefce8,#fef9c3);border:1px solid #fde68a;border-radius:13px;padding:13px 15px;margin-bottom:18px}
 .wv-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
@@ -1492,7 +1503,9 @@ function renderCalendar(){
           const alreadyHas=(data.vacations||[]).some(v=>v.allocatedWeek===viewW&&v.allocatedYear===viewY&&v.allocatedDay===di);
           if(!alreadyHas){
             const isHalf=(vd==='half');
-            setData(d=>({...d,vacations:[...(d.vacations||[]),{id:uid(),allocatedWeek:viewW,allocatedYear:viewY,allocatedDay:di,label:isHalf?'Halve vrije dag':'Vakantie',halfDay:isHalf?'am':null}]}));
+            // Bepaal am/pm op basis van drop-tijdstip (mins = minuten vanaf 00:00)
+            const halfSide=isHalf?(mins>=12*60?'pm':'am'):null;
+            setData(d=>({...d,vacations:[...(d.vacations||[]),{id:uid(),allocatedWeek:viewW,allocatedYear:viewY,allocatedDay:di,label:isHalf?'Halve vrije dag':'Vakantie',halfDay:halfSide}]}));
           }
         }
       }
@@ -1600,6 +1613,7 @@ function createCalTaskBlock(task,calStart){
       <div class="task-cal-name">${task.name}${billDiffers&&height<=40?' '+billLabel:''}</div>
       ${height>40?`<div class="task-cal-sub">${cli?.name||''}${billDiffers?' '+billLabel:''}</div>`:''}
       ${height>56?`<div class="task-cal-time">${fmtTime(task.startTime||calStart*60)} · ${task.hours}u</div>`:''}
+      ${height>70&&task.notes?`<div style="font-size:9px;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.75" title="${escapeHtml(task.notes)}">📝 ${escapeHtml(task.notes)}</div>`:''}
       ${showTimer?`<div class="task-timer-elapsed" data-timer-id="${task.id}">${fmtSecs(timerSecs)}</div>`:''}
     </div>
     <button class="task-timer-btn${isRunning?' running':''}" data-timer="${task.id}" title="${isRunning?'Stop timer':'Start timer'}">${isRunning?'⏸':'▶'}</button>
@@ -1768,7 +1782,7 @@ function renderInplan(){
     row.className='inplan-row'+(info.isOver?' over':'');
     row.draggable=true;
     const retainerSub=proj.isRetainer?` · <span style="color:#0891b2;font-size:9px">${MONTHS[viewMonth]}</span>`:'';
-    row.innerHTML=`<span style="color:#cbd5e1;font-size:10px">⠿</span><div class="proj-dot" style="background:${proj.color}"></div><div style="flex:1;min-width:0"><div class="inplan-name">${proj.name}${proj.isRetainer?'<span class="retainer-badge">retainer</span>':''}</div><div class="inplan-sub">${cli?.name||'—'} · ${eur(effRate(proj))}/u${retainerSub}</div></div><div class="inplan-right">${info.isOver?`<div class="inplan-over">+${fmtH(info.over)}</div>`:`<div class="inplan-free">${fmtH(rem)} vrij</div>`}</div>`;
+    row.innerHTML=`<span style="color:#cbd5e1;font-size:10px">⠿</span><div class="proj-dot" style="background:${proj.color}"></div><div style="flex:1;min-width:0"><div class="inplan-name" style="font-size:11.5px;font-weight:700;color:#0f172a">${cli?.name||'—'}</div><div class="inplan-sub" style="font-size:10.5px;color:#64748b">${proj.name}${proj.isRetainer?'<span class="retainer-badge" style="margin-left:3px">retainer</span>':''} · ${eur(effRate(proj))}/u${retainerSub}</div></div><div class="inplan-right">${info.isOver?`<div class="inplan-over">+${fmtH(info.over)}</div>`:`<div class="inplan-free">${fmtH(rem)} vrij</div>`}</div>`;
     row.addEventListener('dragstart',e=>{e.dataTransfer.setData('projectDrop',JSON.stringify({projectId:proj.id,defaultHours:defH,billingMonth:viewMonth,billingYear:viewYear}));e.dataTransfer.effectAllowed='copy'});
     inplanEl.appendChild(row);
   });
@@ -2987,6 +3001,14 @@ function renderTodo(){
       actualBadge='';
     }
     const timerBtn=t.done?'':`<button class="todo-timer-btn${running?' running':''}" data-act="timer" title="${running?'Stop timer':'Start timer'}">${running?'⏸':'▶'} <span class="todo-timer-elapsed">${fmtSecs(elapsed)}</span></button>`;
+    // Difficulty button
+    const diff=t.difficulty||'none'; // 'none' | 'easy' | 'hard'
+    const diffLabel=diff==='easy'?'✓ makkelijk':diff==='hard'?'⚡ moeilijk':'moeilijk?';
+    const diffCls=diff==='easy'?'todo-diff-easy':diff==='hard'?'todo-diff-hard':'todo-diff-none';
+    const hardSpecHtml=diff==='hard'&&!t.done?`<div class="todo-hard-spec">
+      <span style="font-size:14px;flex-shrink:0" title="Hyperfocus: specificeer de eerste stap">🎯</span>
+      <textarea data-act="hard-spec" placeholder="Wat is de eerste concrete stap? (bijv. 'open Premiere, laad de clips in')" rows="2">${escapeHtml(t.hardSpec||'')}</textarea>
+    </div>`:'';
     return`<div class="todo-row${t.focus?' focused':''}${t.done?' done':''}" data-id="${t.id}">
       <div class="todo-check" data-act="toggle"></div>
       <div class="todo-body">
@@ -2996,10 +3018,11 @@ function renderTodo(){
       ${t.carriedOver&&!t.done?`<span style="font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:#7c3aed;background:#f3e8ff;border:1px solid #ddd6fe;padding:1px 5px;border-radius:5px;flex-shrink:0" title="Meegenomen van gisteren">↩ gisteren</span>`:''}
       ${actualBadge}
       ${timerBtn}
+      ${!t.done?`<button class="todo-diff-btn ${diffCls}" data-act="toggle-diff" title="Is deze taak makkelijk of moeilijk?">${diffLabel}</button>`:''}
       <span class="todo-time${isLearned?' learned':''}" data-act="edit-time" title="${isLearned?`Aangepast op basis van ${L.samples} eerdere taken — klik om handmatig aan te passen`:'Klik om aan te passen'}">${fmtMin(estMin)}</span>
       <button class="todo-move-btn" data-act="move" title="Verplaats naar andere dag">📅</button>
       <span class="todo-del" data-act="del" title="Verwijder">✕</span>
-    </div>`;
+    </div>${hardSpecHtml}`;
   };
 
   // Leerblok: alleen tonen als er buckets zijn met ≥3 samples
@@ -3084,6 +3107,13 @@ function renderTodo(){
       const t=(S.data.todos||[]).find(x=>x.id===id);if(t)updateTodo(id,{focus:!t.focus});
     });
     row.querySelector('[data-act="del"]').addEventListener('click',()=>deleteTodo(id));
+    // Difficulty toggle: none → hard → easy → none
+    const diffBtn=row.querySelector('[data-act="toggle-diff"]');
+    if(diffBtn)diffBtn.addEventListener('click',()=>{
+      const t2=(S.data.todos||[]).find(x=>x.id===id);if(!t2)return;
+      const next=t2.difficulty==='hard'?'easy':t2.difficulty==='easy'?'none':'hard';
+      updateTodo(id,{difficulty:next});
+    });
     const timerBtn=row.querySelector('[data-act="timer"]');
     if(timerBtn)timerBtn.addEventListener('click',e=>{e.stopPropagation();startTodoTimer(id)});
     const moveBtn=row.querySelector('[data-act="move"]');
@@ -3123,6 +3153,16 @@ function renderTodo(){
       if(isNaN(v)||v<0)return;
       updateTodo(id,{estimateMin:v,estimateLocked:true});
     });
+  });
+  // Hard-spec textareas — autosave on blur, live resize
+  el.querySelectorAll('.todo-hard-spec [data-act="hard-spec"]').forEach(ta=>{
+    // Vind het bijbehorende todo-id via de vorige .todo-row sibling
+    const specDiv=ta.closest('.todo-hard-spec');
+    const row=specDiv?.previousElementSibling;
+    const id=row?.dataset?.id;
+    if(!id)return;
+    ta.addEventListener('blur',e=>updateTodo(id,{hardSpec:e.target.value.trim()}));
+    ta.addEventListener('input',()=>{ta.style.height='auto';ta.style.height=ta.scrollHeight+'px'});
   });
   const addBtn=el.querySelector('[data-act="open-add"]');
   if(addBtn)addBtn.addEventListener('click',()=>{S_TODO.addOpen=true;renderTodo()});
@@ -3414,7 +3454,7 @@ function openTaskModal(task,dayIdx=0,prefProjId,prefHours,prefTime,prefBillingMo
   const yearRange=[curY-1,curY,curY+1];
   const billingMonthOpts=MONTHS.map((m,i)=>`<option value="${i}"${i===defBM?' selected':''}>${m.charAt(0).toUpperCase()+m.slice(1)}</option>`).join('');
   const billingYearOpts=yearRange.map(y=>`<option value="${y}"${y===defBY?' selected':''}>${y}</option>`).join('');
-  const{el,close}=openModal(`<div class="modal"><div class="modal-hdr"><span class="modal-title">${isEdit?'Taak bewerken':'Taak toevoegen'}</span><button class="modal-close">×</button></div><div class="modal-body"><div class="form-group"><label class="form-label">Project *</label><select class="form-select" id="mt-proj">${projOpts||'<option value="">— Voeg eerst een project toe —</option>'}</select></div><div class="form-group" id="mt-suggestions-wrap" style="display:none"><label class="form-label">💡 Vaak gebruikt <span style="font-weight:400;color:#94a3b8">— klik om in te vullen</span></label><div id="mt-suggestions" style="display:flex;flex-wrap:wrap;gap:4px;max-height:84px;overflow-y:auto"></div></div><div class="form-group"><label class="form-label">Taaknaam *</label><input class="form-input" id="mt-name" placeholder="bijv. Homepage ontwerpen" value="${task?.name||''}"></div><div class="form-row"><div class="form-group"><label class="form-label">Starttijd</label><input class="form-input" id="mt-time" type="time" value="${timeVal}"></div><div class="form-group"><label class="form-label">Duur (uren)</label><input class="form-input" id="mt-hours" type="number" min="0.25" step="0.25" value="${task?.hours||prefHours||2}"></div></div><div class="form-group"><label class="form-label">Facturatiemaand <span style="font-weight:400;color:#94a3b8">— telt mee in welk maandbudget</span></label><div style="display:flex;gap:7px"><select class="form-select" id="mt-bm" style="flex:2">${billingMonthOpts}</select><select class="form-select" id="mt-by" style="flex:1">${billingYearOpts}</select></div></div>${isEdit&&(task.timerSeconds||0)>0?`<div style="background:#f0fdfe;border:1px solid #a5f3fc;border-radius:9px;padding:8px;font-size:11.5px;color:#0891b2;margin-bottom:10px">⏱ Getrackte tijd: <strong>${fmtSecs(task.timerSeconds)}</strong> <button onclick="resetTimer('${task.id}')" style="font-size:10.5px;color:#94a3b8;margin-left:8px;text-decoration:underline">reset</button></div>`:''}<div style="display:flex;gap:7px;justify-content:flex-end">${isEdit?'<button class="btn btn-danger" id="mt-del">✕</button>':''}<button class="btn btn-secondary" id="mt-cancel">Annuleren</button><button class="btn btn-primary" id="mt-save">Opslaan</button></div></div></div>`);
+  const{el,close}=openModal(`<div class="modal"><div class="modal-hdr"><span class="modal-title">${isEdit?'Taak bewerken':'Taak toevoegen'}</span><button class="modal-close">×</button></div><div class="modal-body"><div class="form-group"><label class="form-label">Project *</label><select class="form-select" id="mt-proj">${projOpts||'<option value="">— Voeg eerst een project toe —</option>'}</select></div><div class="form-group" id="mt-suggestions-wrap" style="display:none"><label class="form-label">💡 Vaak gebruikt <span style="font-weight:400;color:#94a3b8">— klik om in te vullen</span></label><div id="mt-suggestions" style="display:flex;flex-wrap:wrap;gap:4px;max-height:84px;overflow-y:auto"></div></div><div class="form-group"><label class="form-label">Taaknaam *</label><input class="form-input" id="mt-name" placeholder="bijv. Reels editten voor mei, Factuur sturen TechCorp" value="${task?.name||''}"><div style="font-size:10px;color:#94a3b8;margin-top:3px">Tip: gebruik [werkwoord] + [wat] + [voor wie/wanneer] — bijv. <em>Reels editten Taalthuis week 22</em></div></div><div class="form-group"><label class="form-label">Omschrijving <span style="font-weight:400;color:#94a3b8">(optioneel)</span></label><textarea class="form-textarea" id="mt-notes" placeholder="Context, links, aandachtspunten…" style="min-height:48px">${escapeHtml(task?.notes||'')}</textarea></div><div class="form-row"><div class="form-group"><label class="form-label">Starttijd</label><input class="form-input" id="mt-time" type="time" value="${timeVal}"></div><div class="form-group"><label class="form-label">Duur (uren)</label><input class="form-input" id="mt-hours" type="number" min="0.25" step="0.25" value="${task?.hours||prefHours||2}"></div></div><div class="form-group"><label class="form-label">Facturatiemaand <span style="font-weight:400;color:#94a3b8">— telt mee in welk maandbudget</span></label><div style="display:flex;gap:7px"><select class="form-select" id="mt-bm" style="flex:2">${billingMonthOpts}</select><select class="form-select" id="mt-by" style="flex:1">${billingYearOpts}</select></div></div>${isEdit&&(task.timerSeconds||0)>0?`<div style="background:#f0fdfe;border:1px solid #a5f3fc;border-radius:9px;padding:8px;font-size:11.5px;color:#0891b2;margin-bottom:10px">⏱ Getrackte tijd: <strong>${fmtSecs(task.timerSeconds)}</strong> <button onclick="resetTimer('${task.id}')" style="font-size:10.5px;color:#94a3b8;margin-left:8px;text-decoration:underline">reset</button></div>`:''}<div style="display:flex;gap:7px;justify-content:flex-end">${isEdit?'<button class="btn btn-danger" id="mt-del">✕</button>':''}<button class="btn btn-secondary" id="mt-cancel">Annuleren</button><button class="btn btn-primary" id="mt-save">Opslaan</button></div></div></div>`);
 
   // Suggesties op basis van eerdere taken in hetzelfde project
   const escapeAttr=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
@@ -3464,8 +3504,9 @@ function openTaskModal(task,dayIdx=0,prefProjId,prefHours,prefTime,prefBillingMo
     const startTime=hh*60+mm;
     const billingMonth=parseInt(el.querySelector('#mt-bm').value);
     const billingYear=parseInt(el.querySelector('#mt-by').value);
-    if(isEdit){setData(d=>({...d,tasks:d.tasks.map(t=>t.id===task.id?{...t,name,hours,projectId:projId,startTime,billingMonth,billingYear}:t)}))}
-    else{const id=uid();setData(d=>({...d,tasks:[...d.tasks,{id,projectId:projId,name,hours,allocatedWeek:viewW,allocatedYear:viewY,allocatedDay:dayIdx,startTime,timerSeconds:0,billingMonth,billingYear}],projects:d.projects.map(p=>p.id===projId?{...p,tasks:[...(p.tasks||[]),id]}:p)}))}
+    const notes=el.querySelector('#mt-notes').value.trim();
+    if(isEdit){setData(d=>({...d,tasks:d.tasks.map(t=>t.id===task.id?{...t,name,notes,hours,projectId:projId,startTime,billingMonth,billingYear}:t)}))}
+    else{const id=uid();setData(d=>({...d,tasks:[...d.tasks,{id,projectId:projId,name,notes,hours,allocatedWeek:viewW,allocatedYear:viewY,allocatedDay:dayIdx,startTime,timerSeconds:0,billingMonth,billingYear}],projects:d.projects.map(p=>p.id===projId?{...p,tasks:[...(p.tasks||[]),id]}:p)}))}
     close();
   });
 }
@@ -3526,7 +3567,7 @@ function openProjModal(id){
   const startYOpts=yearRangeP.map(y=>`<option value="${y}"${y===startYInit?' selected':''}>${y}</option>`).join('');
   const endMOpts=`<option value="">— geen eindmaand</option>`+MONTH_NL.map((m,i)=>`<option value="${i}"${i===endMInit?' selected':''}>${m}</option>`).join('');
   const endYOpts=yearRangeP.map(y=>`<option value="${y}"${y===endYInit?' selected':''}>${y}</option>`).join('');
-  const{el,close}=openModal(`<div class="modal modal-lg"><div class="modal-hdr"><span class="modal-title">${ex?'Project bewerken':'Project toevoegen'}</span><button class="modal-close">×</button></div><div class="modal-body"><div class="form-row"><div class="form-group"><label class="form-label">Projectnaam *</label><input class="form-input" id="mp-name" value="${ex?.name||''}" placeholder="bijv. Website Redesign"></div><div class="form-group"><label class="form-label">Klant *</label><select class="form-select" id="mp-cli">${cliOpts}</select></div></div><div style="background:#f8fafc;border-radius:10px;padding:10px;margin-bottom:12px"><div class="toggle-row" style="padding:0 0 8px"><div><div class="toggle-label">🔁 Retainer project</div><div class="toggle-sub">Maandelijks terugkerend budget en uren</div></div><label class="toggle"><input type="checkbox" id="mp-retainer"${isRetainer?' checked':''}><span class="toggle-slider"></span></label></div><div id="mp-retainer-fields" style="${isRetainer?'':'display:none'}"><div class="form-row" style="margin-top:8px"><div class="form-group"><label class="form-label">Uren per maand</label><input class="form-input" id="mp-ret-hours" type="number" min="0" step="1" value="${ex?.retainerHoursPerMonth||''}"></div><div class="form-group"><label class="form-label">Budget per maand (€)</label><input class="form-input" id="mp-ret-budget" type="number" min="0" step="50" value="${ex?.retainerBudgetPerMonth||''}"></div></div></div><div id="mp-fixed-fields" style="${isRetainer?'display:none':''}"><div class="form-row" style="margin-top:8px"><div class="form-group"><label class="form-label">Afgesproken uren</label><input class="form-input" id="mp-hours" type="number" min="0" step="1" value="${ex?.agreedHours||''}"></div><div class="form-group"><label class="form-label">Projectbudget (€)</label><input class="form-input" id="mp-budget" type="number" min="0" step="50" value="${ex?.agreedBudget||''}"></div></div></div></div><div style="background:#f8fafc;border-radius:10px;padding:10px;margin-bottom:12px"><div class="form-row"><div class="form-group"><label class="form-label">📅 Startmaand</label><div style="display:flex;gap:5px"><select class="form-select" id="mp-start-m" style="flex:2">${startMOpts}</select><select class="form-select" id="mp-start-y" style="flex:1">${startYOpts}</select></div></div><div class="form-group"><label class="form-label">📅 Eindmaand <span style="font-weight:400;color:#94a3b8">— optioneel</span></label><div style="display:flex;gap:5px"><select class="form-select" id="mp-end-m" style="flex:2">${endMOpts}</select><select class="form-select" id="mp-end-y" style="flex:1">${endYOpts}</select></div></div></div><details style="margin-top:8px"><summary style="font-size:11.5px;color:#0891b2;cursor:pointer;font-weight:600">🧮 Bereken vanuit dagtarief</summary><div style="background:#f0f9ff;border-radius:8px;padding:10px;margin-top:6px"><div class="form-row"><div class="form-group"><label class="form-label" style="font-size:11px">Dagtarief (€)</label><input class="form-input" id="mp-dayrate" type="number" min="0" step="50" placeholder="bijv. 800"></div><div class="form-group"><label class="form-label" style="font-size:11px">Dagen</label><input class="form-input" id="mp-daycount" type="number" min="1" step="1" placeholder="bijv. 8"></div></div><button type="button" class="btn btn-secondary btn-sm" id="mp-calc-day" style="width:100%;margin-top:2px">→ Bereken en vul in</button></div></details></div><div class="form-group"><label class="form-label">Uurtarief (€/u) <span style="font-weight:400;color:#94a3b8">— voor analyse</span></label><input class="form-input" id="mp-rate" type="number" min="0" step="5" value="${ex?.hourlyRate||''}" placeholder="${autoRate?autoRate+' (automatisch uit budget÷uren)':'bijv. 125'}"><div style="font-size:10.5px;color:#94a3b8;margin-top:3px">Laat leeg om automatisch te berekenen uit budget ÷ uren</div></div><div class="form-group"><label class="form-label">Projectkleur</label><div class="color-grid" id="mp-colors">${COLORS.map(c=>`<div class="c-swatch${c===pickedColor?' selected':''}" style="background:${c}" data-color="${c}"></div>`).join('')}</div></div><div style="display:flex;gap:7px;justify-content:flex-end"><button class="btn btn-secondary" id="mp-cancel">Annuleren</button><button class="btn btn-primary" id="mp-save">Opslaan</button></div></div></div>`);
+  const{el,close}=openModal(`<div class="modal modal-lg"><div class="modal-hdr"><span class="modal-title">${ex?'Project bewerken':'Project toevoegen'}</span><button class="modal-close">×</button></div><div class="modal-body"><div class="form-row"><div class="form-group"><label class="form-label">Projectnaam *</label><input class="form-input" id="mp-name" value="${ex?.name||''}" placeholder="bijv. Social Media Taalthuis, Reels MOJOGEAR"><div style="font-size:10px;color:#94a3b8;margin-top:2px">Tip: [type werk] + [klant] — bijv. <em>Video retainer TechCorp</em> of <em>Brand identity Startup XYZ</em></div></div><div class="form-group"><label class="form-label">Klant *</label><select class="form-select" id="mp-cli">${cliOpts}</select></div></div><div style="background:#f8fafc;border-radius:10px;padding:10px;margin-bottom:12px"><div class="toggle-row" style="padding:0 0 8px"><div><div class="toggle-label">🔁 Retainer project</div><div class="toggle-sub">Maandelijks terugkerend budget en uren</div></div><label class="toggle"><input type="checkbox" id="mp-retainer"${isRetainer?' checked':''}><span class="toggle-slider"></span></label></div><div id="mp-retainer-fields" style="${isRetainer?'':'display:none'}"><div class="form-row" style="margin-top:8px"><div class="form-group"><label class="form-label">Uren per maand</label><input class="form-input" id="mp-ret-hours" type="number" min="0" step="1" value="${ex?.retainerHoursPerMonth||''}"></div><div class="form-group"><label class="form-label">Budget per maand (€)</label><input class="form-input" id="mp-ret-budget" type="number" min="0" step="50" value="${ex?.retainerBudgetPerMonth||''}"></div></div></div><div id="mp-fixed-fields" style="${isRetainer?'display:none':''}"><div class="form-row" style="margin-top:8px"><div class="form-group"><label class="form-label">Afgesproken uren</label><input class="form-input" id="mp-hours" type="number" min="0" step="1" value="${ex?.agreedHours||''}"></div><div class="form-group"><label class="form-label">Projectbudget (€)</label><input class="form-input" id="mp-budget" type="number" min="0" step="50" value="${ex?.agreedBudget||''}"></div></div></div></div><div style="background:#f8fafc;border-radius:10px;padding:10px;margin-bottom:12px"><div class="form-row"><div class="form-group"><label class="form-label">📅 Startmaand</label><div style="display:flex;gap:5px"><select class="form-select" id="mp-start-m" style="flex:2">${startMOpts}</select><select class="form-select" id="mp-start-y" style="flex:1">${startYOpts}</select></div></div><div class="form-group"><label class="form-label">📅 Eindmaand <span style="font-weight:400;color:#94a3b8">— optioneel</span></label><div style="display:flex;gap:5px"><select class="form-select" id="mp-end-m" style="flex:2">${endMOpts}</select><select class="form-select" id="mp-end-y" style="flex:1">${endYOpts}</select></div></div></div><details style="margin-top:8px"><summary style="font-size:11.5px;color:#0891b2;cursor:pointer;font-weight:600">🧮 Bereken vanuit dagtarief</summary><div style="background:#f0f9ff;border-radius:8px;padding:10px;margin-top:6px"><div class="form-row"><div class="form-group"><label class="form-label" style="font-size:11px">Dagtarief (€)</label><input class="form-input" id="mp-dayrate" type="number" min="0" step="50" placeholder="bijv. 800"></div><div class="form-group"><label class="form-label" style="font-size:11px">Dagen</label><input class="form-input" id="mp-daycount" type="number" min="1" step="1" placeholder="bijv. 8"></div></div><button type="button" class="btn btn-secondary btn-sm" id="mp-calc-day" style="width:100%;margin-top:2px">→ Bereken en vul in</button></div></details></div><div class="form-group"><label class="form-label">Uurtarief (€/u) <span style="font-weight:400;color:#94a3b8">— voor analyse</span></label><input class="form-input" id="mp-rate" type="number" min="0" step="5" value="${ex?.hourlyRate||''}" placeholder="${autoRate?autoRate+' (automatisch uit budget÷uren)':'bijv. 125'}"><div style="font-size:10.5px;color:#94a3b8;margin-top:3px">Laat leeg om automatisch te berekenen uit budget ÷ uren</div></div><div class="form-group"><label class="form-label">Projectkleur</label><div class="color-grid" id="mp-colors">${COLORS.map(c=>`<div class="c-swatch${c===pickedColor?' selected':''}" style="background:${c}" data-color="${c}"></div>`).join('')}</div></div><div style="display:flex;gap:7px;justify-content:flex-end"><button class="btn btn-secondary" id="mp-cancel">Annuleren</button><button class="btn btn-primary" id="mp-save">Opslaan</button></div></div></div>`);
 
   el.querySelector('#mp-retainer').addEventListener('change',e=>{
     document.getElementById('mp-retainer-fields').style.display=e.target.checked?'':'none';
