@@ -464,17 +464,6 @@ select.cs-enhanced{position:absolute!important;left:-9999px;opacity:0;pointer-ev
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes scaleIn{from{opacity:0;transform:scale(.95) translateY(-6px)}to{opacity:1;transform:scale(1) translateY(0)}}
 
-/* TODO DIFFICULTY */
-.todo-diff-btn{font-size:9px;font-weight:700;letter-spacing:.4px;padding:2px 6px;border-radius:6px;cursor:pointer;border:1px solid;transition:.15s;flex-shrink:0;line-height:1.4}
-.todo-diff-easy{color:#16a34a;background:#f0fdf4;border-color:#bbf7d0}
-.todo-diff-easy:hover{background:#dcfce7}
-.todo-diff-hard{color:#dc2626;background:#fef2f2;border-color:#fecaca}
-.todo-diff-hard:hover{background:#fee2e2}
-.todo-diff-none{color:#94a3b8;background:#f8fafc;border-color:#e2e8f0}
-.todo-diff-none:hover{background:#f1f5f9;color:#64748b}
-.todo-hard-spec{background:linear-gradient(135deg,#fff5f5,#fef2f2);border:1px solid #fecaca;border-radius:9px;padding:9px 11px;margin:5px 0 5px 32px;display:flex;gap:8px;align-items:flex-start}
-.todo-hard-spec textarea{flex:1;border:none;outline:none;background:transparent;font-size:12px;color:#0f172a;font-family:inherit;resize:none;min-height:36px;line-height:1.5}
-.todo-hard-spec textarea::placeholder{color:#fca5a5;font-style:italic}
 /* WEEKVOORNEMENS */
 .wv-wrap{background:linear-gradient(135deg,#fefce8,#fef9c3);border:1px solid #fde68a;border-radius:13px;padding:13px 15px;margin-bottom:18px}
 .wv-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
@@ -3001,28 +2990,18 @@ function renderTodo(){
       actualBadge='';
     }
     const timerBtn=t.done?'':`<button class="todo-timer-btn${running?' running':''}" data-act="timer" title="${running?'Stop timer':'Start timer'}">${running?'⏸':'▶'} <span class="todo-timer-elapsed">${fmtSecs(elapsed)}</span></button>`;
-    // Difficulty button
-    const diff=t.difficulty||'none'; // 'none' | 'easy' | 'hard'
-    const diffLabel=diff==='easy'?'✓ makkelijk':diff==='hard'?'⚡ moeilijk':'moeilijk?';
-    const diffCls=diff==='easy'?'todo-diff-easy':diff==='hard'?'todo-diff-hard':'todo-diff-none';
-    const hardSpecHtml=diff==='hard'&&!t.done?`<div class="todo-hard-spec">
-      <span style="font-size:14px;flex-shrink:0" title="Hyperfocus: specificeer de eerste stap">🎯</span>
-      <textarea data-act="hard-spec" placeholder="Wat is de eerste concrete stap? (bijv. 'open Premiere, laad de clips in')" rows="2">${escapeHtml(t.hardSpec||'')}</textarea>
-    </div>`:'';
     return`<div class="todo-row${t.focus?' focused':''}${t.done?' done':''}" data-id="${t.id}">
       <div class="todo-check" data-act="toggle"></div>
       <div class="todo-body">
         <input class="todo-text" value="${escapeHtml(t.text)}" data-act="edit-text" />
         <span class="todo-tag-focus${t.focus?'':' inactive'}" data-act="toggle-focus" title="Markeer als focus">focus</span>
       </div>
-      ${t.carriedOver&&!t.done?`<span style="font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:#7c3aed;background:#f3e8ff;border:1px solid #ddd6fe;padding:1px 5px;border-radius:5px;flex-shrink:0" title="Meegenomen van gisteren">↩ gisteren</span>`:''}
       ${actualBadge}
       ${timerBtn}
-      ${!t.done?`<button class="todo-diff-btn ${diffCls}" data-act="toggle-diff" title="Is deze taak makkelijk of moeilijk?">${diffLabel}</button>`:''}
       <span class="todo-time${isLearned?' learned':''}" data-act="edit-time" title="${isLearned?`Aangepast op basis van ${L.samples} eerdere taken — klik om handmatig aan te passen`:'Klik om aan te passen'}">${fmtMin(estMin)}</span>
       <button class="todo-move-btn" data-act="move" title="Verplaats naar andere dag">📅</button>
       <span class="todo-del" data-act="del" title="Verwijder">✕</span>
-    </div>${hardSpecHtml}`;
+    </div>`;
   };
 
   // Leerblok: alleen tonen als er buckets zijn met ≥3 samples
@@ -3107,13 +3086,6 @@ function renderTodo(){
       const t=(S.data.todos||[]).find(x=>x.id===id);if(t)updateTodo(id,{focus:!t.focus});
     });
     row.querySelector('[data-act="del"]').addEventListener('click',()=>deleteTodo(id));
-    // Difficulty toggle: none → hard → easy → none
-    const diffBtn=row.querySelector('[data-act="toggle-diff"]');
-    if(diffBtn)diffBtn.addEventListener('click',()=>{
-      const t2=(S.data.todos||[]).find(x=>x.id===id);if(!t2)return;
-      const next=t2.difficulty==='hard'?'easy':t2.difficulty==='easy'?'none':'hard';
-      updateTodo(id,{difficulty:next});
-    });
     const timerBtn=row.querySelector('[data-act="timer"]');
     if(timerBtn)timerBtn.addEventListener('click',e=>{e.stopPropagation();startTodoTimer(id)});
     const moveBtn=row.querySelector('[data-act="move"]');
@@ -3154,17 +3126,7 @@ function renderTodo(){
       updateTodo(id,{estimateMin:v,estimateLocked:true});
     });
   });
-  // Hard-spec textareas — autosave on blur, live resize
-  el.querySelectorAll('.todo-hard-spec [data-act="hard-spec"]').forEach(ta=>{
-    // Vind het bijbehorende todo-id via de vorige .todo-row sibling
-    const specDiv=ta.closest('.todo-hard-spec');
-    const row=specDiv?.previousElementSibling;
-    const id=row?.dataset?.id;
-    if(!id)return;
-    ta.addEventListener('blur',e=>updateTodo(id,{hardSpec:e.target.value.trim()}));
-    ta.addEventListener('input',()=>{ta.style.height='auto';ta.style.height=ta.scrollHeight+'px'});
-  });
-  const addBtn=el.querySelector('[data-act="open-add"]');
+const addBtn=el.querySelector('[data-act="open-add"]');
   if(addBtn)addBtn.addEventListener('click',()=>{S_TODO.addOpen=true;renderTodo()});
   const addForm=el.querySelector('#todo-add-form');
   if(addForm){
