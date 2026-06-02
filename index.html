@@ -653,6 +653,10 @@ body.privacy-on #btn-privacy{background:#1e293b;color:#fff;border-color:#0f172a}
             <label class="btn btn-secondary btn-sm" style="cursor:pointer">📥 Importeer<input type="file" accept=".json" id="btn-import" style="display:none"></label>
           </div>
           <div class="s-row-setting">
+            <div class="si"><p>Laad van Drive</p><p>Ververs data vanuit Google Drive (bijv. na Claude-sync)</p></div>
+            <button class="btn btn-secondary btn-sm" id="btn-load-drive">☁️ Laad van Drive</button>
+          </div>
+          <div class="s-row-setting">
             <div class="si"><p>Download back-up</p><p>Sla huidige data op als JSON</p></div>
             <button class="btn btn-secondary btn-sm" id="btn-export">⬇ Download</button>
           </div>
@@ -3713,6 +3717,44 @@ document.getElementById('btn-privacy').addEventListener('click',()=>{
 applyPrivacyState();
 document.getElementById('btn-demo').addEventListener('click',()=>{const n=weekNum(new Date());S.data=makeDemo(n.week,n.year);saveData(S.data);render()});
 document.getElementById('btn-clear').addEventListener('click',()=>{if(confirm('Alle data verwijderen?')){localStorage.removeItem(KEY);const n=weekNum(new Date());S.data=makeDemo(n.week,n.year);saveData(S.data);render()}});
+
+document.getElementById('btn-load-drive').addEventListener('click',async()=>{
+  if(!GAS_URL){alert('Geen Drive-URL geconfigureerd.');return}
+  const btn=document.getElementById('btn-load-drive');
+  btn.textContent='⏳ Laden...';btn.disabled=true;
+  try{
+    const remote=await loadFromDrive();
+    if(!remote){alert('Geen data gevonden op Drive.');return}
+    S.data=remote;
+    S.data.tasks=(S.data.tasks||[]).map(migrateTask);
+    ensureInternProject();
+    saveData(S.data);
+    render();
+    btn.textContent='✅ Geladen!';
+    setTimeout(()=>{btn.textContent='☁️ Laad van Drive';btn.disabled=false},2000);
+  }catch(e){
+    alert('Fout bij laden: '+e.message);
+    btn.textContent='☁️ Laad van Drive';btn.disabled=false;
+  }
+});
+
+// Auto-sync van Drive bij tab-focus (bijv. na Claude brain dump verwerking)
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&GAS_URL&&localStorage.getItem('ff_auth')==='1'){
+    loadFromDrive().then(remote=>{
+      if(!remote)return;
+      const localTs=S.data?._lastModified||0;
+      const remoteTs=remote?._lastModified||0;
+      if(remoteTs>localTs){
+        S.data=remote;
+        S.data.tasks=(S.data.tasks||[]).map(migrateTask);
+        ensureInternProject();
+        saveData(S.data);
+        render();
+      }
+    }).catch(()=>{});
+  }
+});
 
 // ═══════════════════════════════════════════════
 //  INIT
