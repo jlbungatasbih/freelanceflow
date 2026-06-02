@@ -3333,6 +3333,7 @@ function renderBrainDump(){
           <span style="background:${bg};color:${col};border:1px solid ${border};border-radius:8px;padding:2px 8px;font-size:10px;font-weight:700;white-space:nowrap;margin-top:2px">${cats[d.cat]||'📌'} ${d.cat}</span>
           <span style="flex:1;font-size:13px;color:#0f172a;line-height:1.5">${d.text}</span>
           <span style="font-size:10px;color:#cbd5e1;white-space:nowrap;margin-top:3px">${d.date||''}</span>
+          ${d.cat==='taak'?`<button data-bd-totodo="${d.id}" style="color:#0891b2;background:#ecfeff;border:1px solid #a5f3fc;border-radius:7px;font-size:10.5px;font-weight:700;padding:2px 8px;cursor:pointer;white-space:nowrap;flex-shrink:0" title="Zet in to-do lijst">→ To-do</button>`:''}
           <button data-bd-del="${d.id}" style="color:#cbd5e1;font-size:14px;padding:0 4px;background:none;border:none;cursor:pointer;line-height:1" title="Verwijderen">×</button>
         </div>`;
       }).join('')}
@@ -3344,6 +3345,20 @@ function renderBrainDump(){
     const now=new Date();
     const date=now.toLocaleDateString('nl-NL',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
     setData(d=>({...d,braindump:[...(d.braindump||[]),{id:Date.now().toString(),text:txt,cat,date}]}));
+  });
+  el.querySelectorAll('[data-bd-totodo]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const id=btn.dataset.bdTotodo;
+      const item=(S.data.braindump||[]).find(x=>x.id===id);
+      if(!item)return;
+      addTodo(item.text);
+      setData(d=>({...d,braindump:(d.braindump||[]).filter(x=>x.id!==id)}));
+      // Visuele bevestiging
+      btn.textContent='✓ Toegevoegd';
+      btn.style.background='#f0fdf4';
+      btn.style.color='#16a34a';
+      btn.style.borderColor='#bbf7d0';
+    });
   });
   el.querySelectorAll('[data-bd-del]').forEach(btn=>{
     btn.addEventListener('click',()=>{
