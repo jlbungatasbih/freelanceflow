@@ -764,7 +764,7 @@ function showSyncBar(type){setSyncStatus(type==='ok'?'ok':'err')}
 async function loadFromDrive(){
   if(!GAS_URL)return null;
   try{
-    const res=await fetch(GAS_URL+'?action=load',{method:'GET',cache:'no-cache',redirect:'follow'});
+    const res=await fetch(GAS_URL+'?action=load',{method:'GET',cache:'no-cache',redirect:'follow',credentials:'omit'});
     const text=await res.text();
     const j=JSON.parse(text);
     return j&&j.clients?j:null;
@@ -778,6 +778,7 @@ async function _saveToDriveOnce(d){
   const res=await fetch(url,{
     method:'POST',
     redirect:'follow',
+    credentials:'omit',
     headers:{'Content-Type':'text/plain;charset=utf-8'},
     body:JSON.stringify(d)
   });
