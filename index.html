@@ -821,6 +821,14 @@ function startDriveSync(){
       return;
     }
     if(remoteTs<=localTs){
+      // Altijd braindump-items van Drive mergen, ook als local nieuwer is
+      const localBdIds=new Set((S.data.braindump||[]).map(i=>i.id));
+      const newBdItems=(remote.braindump||[]).filter(i=>!localBdIds.has(i.id));
+      if(newBdItems.length>0){
+        S.data.braindump=[...(S.data.braindump||[]),...newBdItems];
+        saveData(S.data);
+        render();
+      }
       if(remoteTs<localTs)saveToDrive(S.data);
       else{_sync.lastOk=Date.now();setSyncStatus('ok')}
       return;
