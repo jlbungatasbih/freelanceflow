@@ -812,7 +812,9 @@ function startDriveSync(){
     // VEILIGHEIDSNET: weiger lokaal te overschrijven als Drive items mist die lokaal wel
     // bestaan, ook als Drive's timestamp jonger is. Dit voorkomt verlies van vandaag's werk
     // door een ouder Drive-snapshot dat ten onrechte als 'nieuwer' wordt aangeleverd.
-    if(remoteTs>localTs&&diff.totalMissing>=3&&localHasContent){
+    // localTs===0 betekent: nooit echte data opgeslagen (bijv. nieuw apparaat met demo-data)
+    // → conflict-check overslaan zodat Drive-data gewoon geladen wordt
+    if(remoteTs>localTs&&diff.totalMissing>=3&&localHasContent&&localTs>0){
       _sync.conflict={remote,diff,remoteTs,localTs};
       const lbl=`⚠ Drive mist ${diff.missingTodos.length} todos, ${diff.missingTasks.length} taken — klik`;
       setSyncStatus('conflict',lbl);
