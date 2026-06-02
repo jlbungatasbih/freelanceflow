@@ -1156,7 +1156,10 @@ function ensureInternProject(){
   if(!S.data.expenseChecks)S.data.expenseChecks={};
   if(!S.data.weekIntentions)S.data.weekIntentions={};
   ensureDutchHolidays();
-  saveData(S.data);
+  // Sla alleen op als we echte data hebben (niet demo/import zonder timestamp).
+  // Zo wordt demo-data bij startup niet gestempeld met _lastModified,
+  // waardoor Drive-sync altijd kan winnen bij de volgende sync.
+  if(S.data._lastModified) saveData(S.data);
 }
 // Voeg Nederlandse vrije dagen toe voor huidig jaar + 1 jaar vooruit + vorig jaar
 function ensureDutchHolidays(){
@@ -3302,195 +3305,50 @@ function renderKosten(){
 // ═══════════════════════════════════════════════
 //  BRAIN DUMP
 // ═══════════════════════════════════════════════
-const BD={filter:'alle',search:'',plaudOpen:false};
-
-function bdAutocat(text){
-  const t=text.toLowerCase();
-  if(/\b(doen|maken|sturen|bellen|regelen|uitzoeken|plannen|boeken|schrijven|afmaken|opvolgen|checken|bestellen|invullen|aanvragen|contact|afspraak|reminder)\b/.test(t))return'taak';
-  if(/\b(idee|concept|misschien|wat als|zou kunnen|overweeg|optie|nieuw|experiment|bedenk)\b/.test(t))return'idee';
-  if(/\b(thuis|familie|persoonlijk|sport|vakantie|gezond|relatie|privé|kind|partner)\b/.test(t))return'persoonlijk';
-  return'overig';
-}
-
-function bdNow(){
-  return new Date().toLocaleDateString('nl-NL',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
-}
-
-function addBrainDumpItem(text,cat){
-  if(!text.trim())return;
-  setData(d=>({...d,braindump:[...(d.braindump||[]),{id:Date.now().toString()+Math.random().toString(36).slice(2),text:text.trim(),cat:cat||bdAutocat(text),date:bdNow()}]}));
-}
-
 function renderBrainDump(){
   const el=document.getElementById('screen-braindump');
   if(!el)return;
-  const allDumps=(getData().braindump||[]).slice().reverse();
+  const dumps=(S.data.braindump||[]).slice().reverse();
   const cats={idee:'💡',taak:'✅',persoonlijk:'🏠',overig:'📌'};
-  const catColors={
-    idee:'#ecfeff|#0891b2|#a5f3fc',
-    taak:'#f0fdf4|#16a34a|#bbf7d0',
-    persoonlijk:'#fef9c3|#ca8a04|#fde68a',
-    overig:'#f8fafc|#64748b|#e2e8f0'
-  };
-  const filterCats=['alle','idee','taak','persoonlijk','overig'];
-  const filterLabels={alle:'Alle',idee:'💡 Idee',taak:'✅ Taak',persoonlijk:'🏠 Persoonlijk',overig:'📌 Overig'};
-
-  // Filter + search
-  let dumps=allDumps;
-  if(BD.filter!=='alle')dumps=dumps.filter(d=>d.cat===BD.filter);
-  if(BD.search.trim())dumps=dumps.filter(d=>d.text.toLowerCase().includes(BD.search.trim().toLowerCase()));
-
-  const counts={alle:allDumps.length};
-  filterCats.slice(1).forEach(c=>{counts[c]=allDumps.filter(d=>d.cat===c).length});
-
+  const catColors={idee:'#ecfeff|#0891b2|#a5f3fc',taak:'#f0fdf4|#16a34a|#bbf7d0',persoonlijk:'#fef9c3|#ca8a04|#fde68a',overig:'#f8fafc|#64748b|#e2e8f0'};
   el.innerHTML=`
     <div style="max-width:720px;margin:0 auto">
-      <div class="screen-hdr">
-        <div><h1>🧠 Brain Dump</h1><p>Gedachten, ideeën en losse notities — gevoerd door Plaud of Claude</p></div>
-        <span style="font-size:11px;color:#94a3b8;background:#f8fafc;border:1px solid #e2e8f0;padding:3px 9px;border-radius:8px">${allDumps.length} item${allDumps.length!==1?'s':''}</span>
-      </div>
-
-      <!-- Snel toevoegen -->
-      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px;margin-bottom:12px">
-        <textarea id="bd-input" placeholder="Dump hier snel een gedachte, taak of idee…" style="width:100%;border:1px solid #e2e8f0;border-radius:9px;padding:10px 12px;font-family:inherit;font-size:13px;color:#0f172a;resize:none;height:68px;outline:none;background:#f8fafc;transition:.15s" onfocus="this.style.borderColor='#0891b2';this.style.background='#fff'" onblur="this.style.borderColor='#e2e8f0';this.style.background='#f8fafc'"></textarea>
+      <div class="screen-hdr"><div><h1>🧠 Brain Dump</h1><p>Gedachten, ideeën en losse notities</p></div></div>
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px;margin-bottom:20px">
+        <textarea id="bd-input" placeholder="Dump hier je gedachte..." style="width:100%;border:1px solid #e2e8f0;border-radius:9px;padding:10px 12px;font-family:inherit;font-size:13px;color:#0f172a;resize:none;height:72px;outline:none;background:#f8fafc"></textarea>
         <div style="display:flex;align-items:center;gap:8px;margin-top:9px;flex-wrap:wrap">
           <select id="bd-cat" style="padding:6px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:12px;font-family:inherit;color:#475569;background:#fff;outline:none">
-            <option value="auto">🤖 Auto-categorie</option>
             <option value="idee">💡 Idee</option>
             <option value="taak">✅ Taak</option>
             <option value="persoonlijk">🏠 Persoonlijk</option>
             <option value="overig">📌 Overig</option>
           </select>
-          <button id="bd-save" style="padding:6px 16px;background:#0891b2;color:#fff;border-radius:8px;font-size:12px;font-weight:700;border:none;cursor:pointer;transition:.15s">Opslaan</button>
-          <span style="flex:1"></span>
-          <span style="font-size:11px;color:#94a3b8">⌨️ Ctrl+Enter om op te slaan</span>
+          <button id="bd-save" style="padding:6px 16px;background:#0891b2;color:#fff;border-radius:8px;font-size:12px;font-weight:700;border:none;cursor:pointer">Opslaan</button>
         </div>
       </div>
-
-      <!-- Plaud / bulk import -->
-      <div style="background:${BD.plaudOpen?'#f8fafc':'#fff'};border:1px solid ${BD.plaudOpen?'#a5f3fc':'#e2e8f0'};border-radius:14px;padding:14px;margin-bottom:16px;transition:.2s">
-        <div id="bd-plaud-toggle" style="display:flex;align-items:center;gap:9px;cursor:pointer">
-          <span style="font-size:17px">🎙️</span>
-          <div style="flex:1">
-            <div style="font-size:12.5px;font-weight:700;color:${BD.plaudOpen?'#0891b2':'#334155'}">Plaud-transcript verwerken</div>
-            <div style="font-size:11px;color:#94a3b8">Plak een Plaud AI-transcript — Claude pakt er automatisch to-do's en ideeën uit</div>
-          </div>
-          <span style="font-size:13px;color:#94a3b8">${BD.plaudOpen?'▾':'▸'}</span>
-        </div>
-        ${BD.plaudOpen?`
-        <div style="margin-top:12px">
-          <textarea id="bd-plaud-text" placeholder="Plak hier je Plaud transcript of ruwe notities (één item per regel, of vrije tekst)…" style="width:100%;min-height:110px;border:1px solid #e2e8f0;border-radius:9px;padding:10px 12px;font-family:inherit;font-size:12.5px;color:#0f172a;resize:vertical;outline:none;background:#fff" onfocus="this.style.borderColor='#0891b2'" onblur="this.style.borderColor='#e2e8f0'"></textarea>
-          <div style="display:flex;gap:7px;margin-top:8px;flex-wrap:wrap;align-items:center">
-            <button id="bd-plaud-import" style="padding:7px 16px;background:#0891b2;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">🤖 Verwerk & importeer</button>
-            <button id="bd-plaud-cancel" style="padding:7px 12px;background:#fff;color:#64748b;border:1px solid #e2e8f0;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer">Annuleren</button>
-            <span style="font-size:11px;color:#94a3b8;margin-left:4px">Elke regel wordt een apart item met automatische categorie</span>
-          </div>
-          <div id="bd-plaud-preview" style="margin-top:10px"></div>
-        </div>`:''}
-      </div>
-
-      <!-- Filter tabs + zoekbalk -->
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-        <div style="display:flex;gap:4px;background:#f1f5f9;padding:3px;border-radius:10px;border:1px solid #e2e8f0">
-          ${filterCats.map(c=>`<button data-bd-filter="${c}" style="padding:5px 10px;border-radius:7px;font-size:11.5px;font-weight:${BD.filter===c?700:500};color:${BD.filter===c?'#0891b2':'#64748b'};background:${BD.filter===c?'#fff':'transparent'};border:none;cursor:pointer;box-shadow:${BD.filter===c?'0 1px 3px rgba(15,23,42,.08)':'none'};white-space:nowrap;transition:.15s">${filterLabels[c]}${counts[c]>0?` <span style="font-size:10px;color:${BD.filter===c?'#22d3ee':'#94a3b8'}">${counts[c]}</span>`:''}</button>`).join('')}
-        </div>
-        <input id="bd-search" type="search" value="${BD.search}" placeholder="Zoeken…" style="flex:1;min-width:140px;padding:6px 11px;border:1px solid #e2e8f0;border-radius:9px;font-size:12.5px;font-family:inherit;color:#0f172a;outline:none;background:#fff" />
-      </div>
-
-      <!-- Items lijst -->
-      ${dumps.length===0?`
-        <div style="text-align:center;padding:52px 24px;color:#94a3b8">
-          <div style="font-size:40px;margin-bottom:12px;opacity:.5">🧠</div>
-          <div style="font-size:14px;font-weight:600;color:#64748b;margin-bottom:6px">${allDumps.length===0?'Nog niets gedumpt':'Geen resultaten'}</div>
-          <div style="font-size:12.5px;line-height:1.6;max-width:340px;margin:0 auto">
-            ${allDumps.length===0
-              ?'Gebruik de Plaud NotePin om je gedachten op te nemen, plak het transcript hierboven, en Claude sorteert alles automatisch in categorieën.'
-              :'Pas je zoekterm of filter aan om items te zien.'}
-          </div>
-          ${allDumps.length===0?`<button id="bd-empty-plaud" style="margin-top:16px;padding:8px 18px;background:#ecfeff;color:#0891b2;border:1px solid #a5f3fc;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer">🎙️ Open Plaud import</button>`:''}
-        </div>`
-      :`<div id="bd-list">
-        ${dumps.map(d=>{
-          const [bg,col,border]=(catColors[d.cat]||catColors.overig).split('|');
-          const isTaak=d.cat==='taak';
-          return `<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px 14px;margin-bottom:7px;display:flex;gap:11px;align-items:flex-start;transition:.15s" onmouseenter="this.style.borderColor='#cbd5e1'" onmouseleave="this.style.borderColor='#e2e8f0'">
-            <span style="background:${bg};color:${col};border:1px solid ${border};border-radius:8px;padding:2px 8px;font-size:10px;font-weight:700;white-space:nowrap;margin-top:2px;flex-shrink:0">${cats[d.cat]||'📌'} ${d.cat}</span>
-            <span style="flex:1;font-size:13px;color:#0f172a;line-height:1.55;word-break:break-word">${d.text}</span>
-            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0">
-              <span style="font-size:10px;color:#cbd5e1;white-space:nowrap">${d.date||''}</span>
-              <div style="display:flex;gap:4px;align-items:center">
-                ${isTaak?`<button data-bd-totodo="${d.id}" title="Zet om naar to-do" style="font-size:10px;padding:2px 7px;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:6px;cursor:pointer;font-weight:600;white-space:nowrap">→ to-do</button>`:''}
-                <button data-bd-del="${d.id}" style="color:#e2e8f0;font-size:15px;padding:0 3px;background:none;border:none;cursor:pointer;line-height:1;transition:.15s" onmouseenter="this.style.color='#ef4444'" onmouseleave="this.style.color='#e2e8f0'" title="Verwijderen">×</button>
-              </div>
-            </div>
-          </div>`;
-        }).join('')}
-      </div>`}
+      ${dumps.length===0?`<div style="text-align:center;padding:40px;color:#94a3b8;font-size:13px">Nog geen dumps — gebruik de Plaud NotePin en vraag Claude om te verwerken.</div>`:''}
+      ${dumps.map(d=>{
+        const [bg,col,border]=(catColors[d.cat]||catColors.overig).split('|');
+        return `<div style="background:#fff;border:1px solid #e2e8f0;border-radius:11px;padding:12px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start">
+          <span style="background:${bg};color:${col};border:1px solid ${border};border-radius:8px;padding:2px 8px;font-size:10px;font-weight:700;white-space:nowrap;margin-top:2px">${cats[d.cat]||'📌'} ${d.cat}</span>
+          <span style="flex:1;font-size:13px;color:#0f172a;line-height:1.5">${d.text}</span>
+          <span style="font-size:10px;color:#cbd5e1;white-space:nowrap;margin-top:3px">${d.date||''}</span>
+          <button data-bd-del="${d.id}" style="color:#cbd5e1;font-size:14px;padding:0 4px;background:none;border:none;cursor:pointer;line-height:1" title="Verwijderen">×</button>
+        </div>`;
+      }).join('')}
     </div>`;
-
-  // Events: snel opslaan
-  const inp=el.querySelector('#bd-input');
-  inp?.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();el.querySelector('#bd-save')?.click()}});
   el.querySelector('#bd-save')?.addEventListener('click',()=>{
-    const txt=inp?.value.trim();
+    const txt=el.querySelector('#bd-input').value.trim();
     if(!txt)return;
-    const catVal=el.querySelector('#bd-cat').value;
-    const cat=catVal==='auto'?bdAutocat(txt):catVal;
-    addBrainDumpItem(txt,cat);
-    // Don't re-render — setData triggers render via setData's own mechanism
+    const cat=el.querySelector('#bd-cat').value;
+    const now=new Date();
+    const date=now.toLocaleDateString('nl-NL',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+    setData(d=>({...d,braindump:[...(d.braindump||[]),{id:Date.now().toString(),text:txt,cat,date}]}));
   });
-
-  // Plaud toggle
-  el.querySelector('#bd-plaud-toggle')?.addEventListener('click',()=>{BD.plaudOpen=!BD.plaudOpen;renderBrainDump()});
-  el.querySelector('#bd-plaud-cancel')?.addEventListener('click',()=>{BD.plaudOpen=false;renderBrainDump()});
-  el.querySelector('#bd-empty-plaud')?.addEventListener('click',()=>{BD.plaudOpen=true;renderBrainDump()});
-
-  // Plaud verwerken
-  el.querySelector('#bd-plaud-import')?.addEventListener('click',()=>{
-    const raw=el.querySelector('#bd-plaud-text')?.value||'';
-    const lines=raw.split(/\r?\n/).map(l=>l.replace(/^\s*[-*•·□☐✓✔✗\[\]x□\d]+[.)]?\s*/i,'').trim()).filter(l=>l.length>2);
-    if(!lines.length){alert('Geen tekst gevonden om te verwerken.');return}
-    const preview=el.querySelector('#bd-plaud-preview');
-    if(preview){
-      preview.innerHTML=`<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:9px;padding:10px 12px;font-size:11.5px;color:#15803d">
-        ✅ <strong>${lines.length} item${lines.length!==1?'s':''} gevonden</strong> — worden toegevoegd met auto-categorie:<br><br>
-        ${lines.slice(0,6).map(l=>{const c=bdAutocat(l);const cats2={idee:'💡',taak:'✅',persoonlijk:'🏠',overig:'📌'};return`<div style="display:flex;gap:6px;margin-top:4px"><span style="font-size:10px;opacity:.8">${cats2[c]} ${c}</span><span>${l.length>80?l.slice(0,80)+'…':l}</span></div>`}).join('')}
-        ${lines.length>6?`<div style="opacity:.6;margin-top:4px">…en ${lines.length-6} meer</div>`:''}
-      </div>
-      <button id="bd-plaud-confirm" style="margin-top:8px;padding:7px 16px;background:#16a34a;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">✅ Bevestig import (${lines.length} items)</button>`;
-      preview.querySelector('#bd-plaud-confirm')?.addEventListener('click',()=>{
-        lines.forEach((l,i)=>setTimeout(()=>addBrainDumpItem(l,bdAutocat(l)),i*10));
-        BD.plaudOpen=false;
-        setTimeout(()=>renderBrainDump(),lines.length*10+50);
-      });
-    }
-  });
-
-  // Filter tabs
-  el.querySelectorAll('[data-bd-filter]').forEach(btn=>{
-    btn.addEventListener('click',()=>{BD.filter=btn.dataset.bdFilter;BD.search='';renderBrainDump()});
-  });
-
-  // Zoekbalk
-  el.querySelector('#bd-search')?.addEventListener('input',e=>{BD.search=e.target.value;renderBrainDump()});
-
-  // Verwijderen
   el.querySelectorAll('[data-bd-del]').forEach(btn=>{
     btn.addEventListener('click',()=>{
       const id=btn.dataset.bdDel;
       setData(d=>({...d,braindump:(d.braindump||[]).filter(x=>x.id!==id)}));
-    });
-  });
-
-  // Taak → to-do
-  el.querySelectorAll('[data-bd-totodo]').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      const id=btn.dataset.bdTotodo;
-      const item=(getData().braindump||[]).find(x=>x.id===id);
-      if(!item)return;
-      addTodo(item.text);
-      setData(d=>({...d,braindump:(d.braindump||[]).filter(x=>x.id!==id)}));
-      setState({screen:'todo'});
     });
   });
 }
@@ -3849,7 +3707,10 @@ document.getElementById('hours-range').addEventListener('input',e=>document.getE
 document.getElementById('btn-save-hours').addEventListener('click',()=>{const h=parseInt(document.getElementById('hours-range').value);setData(d=>({...d,settings:{...d.settings,hoursPerWeek:h}}))});
 document.getElementById('btn-open-file').addEventListener('click',openFileForSync);
 document.getElementById('btn-export').addEventListener('click',()=>{const b=new Blob([JSON.stringify(S.data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='freelanceflow-backup.json';a.click()});
-document.getElementById('btn-import').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(d.clients){S.data=d;S.data.tasks=S.data.tasks.map(migrateTask);ensureInternProject();render()}else alert('Ongeldig bestand')}catch{alert('Fout bij importeren')}};r.readAsText(f)});
+document.getElementById('btn-import').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(d.clients){S.data=d;S.data.tasks=S.data.tasks.map(migrateTask);// Wis _lastModified zodat Drive bij volgende sync altijd wint over deze backup.
+// Dit voorkomt dat een oude backup de Drive-data overschrijft.
+delete S.data._lastModified;ensureInternProject();render();// Sync meteen met Drive zodat de actuele Drive-data de backup overschrijft.
+if(GAS_URL&&localStorage.getItem('ff_auth')==='1')startDriveSync();}else alert('Ongeldig bestand')}catch{alert('Fout bij importeren')}};r.readAsText(f)});
 document.getElementById('btn-lock-week').addEventListener('click',()=>{
   const{viewW,viewY}=S;
   const locked=(S.data.lockedWeeks||[]);
