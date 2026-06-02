@@ -839,10 +839,9 @@ function startDriveSync(){
     S.data=remote;
     S.data.tasks=S.data.tasks.map(migrateTask);
     ensureInternProject();
-    const wasAuth=localStorage.getItem('ff_auth');
-    localStorage.removeItem('ff_auth');
+    // Persist naar localStorage zodat volgende refresh niet opnieuw demo-data laadt
+    try{localStorage.setItem(KEY,JSON.stringify(S.data))}catch{}
     render();
-    if(wasAuth)localStorage.setItem('ff_auth',wasAuth);
     _sync.lastOk=Date.now();setSyncStatus('ok');
   }).catch(()=>{setSyncStatus('err','⚠ Drive niet bereikbaar — klik')});
   if(driveInterval)clearInterval(driveInterval);
