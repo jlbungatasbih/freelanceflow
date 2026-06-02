@@ -624,6 +624,8 @@ body.privacy-on #btn-privacy{background:#1e293b;color:#fff;border-color:#0f172a}
     <div id="screen-analyse" class="screen"></div>
     <!-- TO-DO -->
     <div id="screen-todo" class="screen"></div>
+    <!-- BRAIN DUMP -->
+    <div id="screen-braindump" class="screen"></div>
     <!-- KOSTEN -->
     <div id="screen-kosten" class="screen"></div>
     <!-- SETTINGS -->
@@ -2007,7 +2009,7 @@ function renderSidebar(){
   const max=data.settings.hoursPerWeek||40;
   const pct=Math.round(h/max*100);
   const over=data.projects.filter(p=>overInfo(p,data.tasks).isOver).length;
-  const navItems=[{id:'week',icon:'📅',label:'Week View'},{id:'todo',icon:'✅',label:'To-do'},{id:'clients',icon:'👥',label:'Klanten'},{id:'projects',icon:'📁',label:'Projecten'},{id:'analyse',icon:'📊',label:'Analyse'},{id:'kosten',icon:'💸',label:'Kosten'},{id:'settings',icon:'⚙️',label:'Instellingen'}];
+  const navItems=[{id:'week',icon:'📅',label:'Week View'},{id:'todo',icon:'✅',label:'To-do'},{id:'braindump',icon:'🧠',label:'Brain Dump'},{id:'clients',icon:'👥',label:'Klanten'},{id:'projects',icon:'📁',label:'Projecten'},{id:'analyse',icon:'📊',label:'Analyse'},{id:'kosten',icon:'💸',label:'Kosten'},{id:'settings',icon:'⚙️',label:'Instellingen'}];
   const pc=pct>100?'#ef4444':pct>85?'#f59e0b':'#0891b2';
   const timerRunning=!!S.timerTaskId;
   const timerTask=timerRunning?S.data.tasks.find(t=>t.id===S.timerTaskId):null;
@@ -3264,16 +3266,68 @@ function renderKosten(){
 }
 
 // ═══════════════════════════════════════════════
+//  BRAIN DUMP
+// ═══════════════════════════════════════════════
+function renderBrainDump(){
+  const el=document.getElementById('screen-braindump');
+  if(!el)return;
+  const dumps=(getData().braindump||[]).slice().reverse();
+  const cats={idee:'💡',taak:'✅',persoonlijk:'🏠',overig:'📌'};
+  const catColors={idee:'#ecfeff|#0891b2|#a5f3fc',taak:'#f0fdf4|#16a34a|#bbf7d0',persoonlijk:'#fef9c3|#ca8a04|#fde68a',overig:'#f8fafc|#64748b|#e2e8f0'};
+  el.innerHTML=`
+    <div style="max-width:720px;margin:0 auto">
+      <div class="screen-hdr"><div><h1>🧠 Brain Dump</h1><p>Gedachten, ideeën en losse notities</p></div></div>
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px;margin-bottom:20px">
+        <textarea id="bd-input" placeholder="Dump hier je gedachte..." style="width:100%;border:1px solid #e2e8f0;border-radius:9px;padding:10px 12px;font-family:inherit;font-size:13px;color:#0f172a;resize:none;height:72px;outline:none;background:#f8fafc"></textarea>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:9px;flex-wrap:wrap">
+          <select id="bd-cat" style="padding:6px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:12px;font-family:inherit;color:#475569;background:#fff;outline:none">
+            <option value="idee">💡 Idee</option>
+            <option value="taak">✅ Taak</option>
+            <option value="persoonlijk">🏠 Persoonlijk</option>
+            <option value="overig">📌 Overig</option>
+          </select>
+          <button id="bd-save" style="padding:6px 16px;background:#0891b2;color:#fff;border-radius:8px;font-size:12px;font-weight:700;border:none;cursor:pointer">Opslaan</button>
+        </div>
+      </div>
+      ${dumps.length===0?`<div style="text-align:center;padding:40px;color:#94a3b8;font-size:13px">Nog geen dumps — gebruik de Plaud NotePin en vraag Claude om te verwerken.</div>`:''}
+      ${dumps.map(d=>{
+        const [bg,col,border]=(catColors[d.cat]||catColors.overig).split('|');
+        return `<div style="background:#fff;border:1px solid #e2e8f0;border-radius:11px;padding:12px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start">
+          <span style="background:${bg};color:${col};border:1px solid ${border};border-radius:8px;padding:2px 8px;font-size:10px;font-weight:700;white-space:nowrap;margin-top:2px">${cats[d.cat]||'📌'} ${d.cat}</span>
+          <span style="flex:1;font-size:13px;color:#0f172a;line-height:1.5">${d.text}</span>
+          <span style="font-size:10px;color:#cbd5e1;white-space:nowrap;margin-top:3px">${d.date||''}</span>
+          <button data-bd-del="${d.id}" style="color:#cbd5e1;font-size:14px;padding:0 4px;background:none;border:none;cursor:pointer;line-height:1" title="Verwijderen">×</button>
+        </div>`;
+      }).join('')}
+    </div>`;
+  el.querySelector('#bd-save')?.addEventListener('click',()=>{
+    const txt=el.querySelector('#bd-input').value.trim();
+    if(!txt)return;
+    const cat=el.querySelector('#bd-cat').value;
+    const now=new Date();
+    const date=now.toLocaleDateString('nl-NL',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+    setData(d=>({...d,braindump:[...(d.braindump||[]),{id:Date.now().toString(),text:txt,cat,date}]}));
+  });
+  el.querySelectorAll('[data-bd-del]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const id=btn.dataset.bdDel;
+      setData(d=>({...d,braindump:(d.braindump||[]).filter(x=>x.id!==id)}));
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════
 //  MAIN RENDER
 // ═══════════════════════════════════════════════
 function render(){
   renderSidebar();
-  ['week','todo','clients','projects','analyse','kosten','settings'].forEach(s=>{
+  ['week','todo','braindump','clients','projects','analyse','kosten','settings'].forEach(s=>{
     const el=document.getElementById(`screen-${s}`);
     if(el)el.classList.toggle('active',S.screen===s);
   });
   if(S.screen==='week')renderWeek();
   if(S.screen==='todo')renderTodo();
+  if(S.screen==='braindump')renderBrainDump();
   if(S.screen==='clients')renderClients();
   if(S.screen==='projects')renderProjects();
   if(S.screen==='analyse')renderAnalyse();
