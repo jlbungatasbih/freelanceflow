@@ -695,8 +695,28 @@ async function tryLogin(){
   const hash=await sha256(pw);
   if(hash===PASSWORD_HASH){
     localStorage.setItem('ff_auth','1');
+    const errEl=document.getElementById('login-err');
+    errEl.style.color='#0891b2';
+    errEl.textContent='⟳ Data ophalen van Drive…';
+    // Laad Drive-data synchroon vóórdat de app opent
+    let remote=null;
+    try{remote=await loadFromDrive()}catch{}
+    if(remote){
+      S.data=remote;
+      S.data.tasks=(S.data.tasks||[]).map(migrateTask);
+      ensureInternProject();
+      try{localStorage.setItem(KEY,JSON.stringify(S.data))}catch{}
+      _sync.lastOk=Date.now();
+    }else{
+      // Drive niet bereikbaar — open toch de app maar toon waarschuwing
+      errEl.textContent='⚠ Drive niet bereikbaar — app opent met lokale data';
+      await new Promise(r=>setTimeout(r,1500));
+    }
+    errEl.style.color='';
+    errEl.textContent='';
     document.getElementById('login-screen').style.display='none';
     document.getElementById('app').style.display='flex';
+    render();
     startDriveSync();
   }else{
     document.getElementById('login-err').textContent='Verkeerd wachtwoord — probeer opnieuw';
