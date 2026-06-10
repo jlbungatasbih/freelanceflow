@@ -137,7 +137,7 @@ input,select,textarea{font-family:inherit}
 .week-header{padding:11px 16px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:wrap}
 .week-nav-btn{width:28px;height:28px;border-radius:7px;background:#f8fafc;border:1px solid #e2e8f0;font-size:15px;display:flex;align-items:center;justify-content:center;color:#334155;transition:.15s}
 .week-nav-btn:hover{background:#e2e8f0}
-.week-label{font-size:13px;font-weight:700;color:#0f172a;padding:0 6px;white-space:nowrap}
+.week-label{font-size:13px;font-weight:700;color:#0f172a;padding:0 6px;white-space:nowrap;display:inline-block;min-width:150px;text-align:center}
 .cur-week-btn{padding:3px 9px;background:#ecfeff;border:1px solid #a5f3fc;color:#0891b2;border-radius:7px;font-size:11px;font-weight:600}
 .tab-over-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#ef4444;margin-left:5px;vertical-align:middle;box-shadow:0 0 0 2px #fff;animation:pulseDot 1.6s ease-in-out infinite}
 @keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.55;transform:scale(1.25)}}
@@ -536,6 +536,78 @@ select.cs-enhanced{position:absolute!important;left:-9999px;opacity:0;pointer-ev
 body.privacy-on .eur-val{filter:blur(6px);user-select:none}
 body.privacy-on #btn-privacy{background:#1e293b;color:#fff;border-color:#0f172a}
 #btn-privacy{transition:.15s}
+
+/* ── Factuurstatus chip (projecten) ── */
+.invoice-chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;border:1px solid;cursor:pointer;transition:.15s;margin-top:7px;width:100%;justify-content:center}
+.invoice-chip:hover{filter:brightness(.97)}
+.invoice-chip.st-open{color:#64748b;background:#f1f5f9;border-color:#e2e8f0}
+.invoice-chip.st-invoiced{color:#0891b2;background:#ecfeff;border-color:#a5f3fc}
+.invoice-chip.st-paid{color:#16a34a;background:#f0fdf4;border-color:#bbf7d0}
+
+/* ── Cashflow-overzicht (analyse) ── */
+.an-cashflow{background:#fff;border:1px solid #e2e8f0;border-radius:13px;padding:15px 16px;margin-bottom:16px}
+.an-cashflow-hdr{font-size:13px;font-weight:700;color:#0f172a;margin-bottom:3px;display:flex;align-items:center;gap:7px}
+.an-cashflow-sub{font-size:11.5px;color:#94a3b8;margin-bottom:12px}
+.acf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.acf-card{border:1px solid;border-radius:11px;padding:11px 12px}
+.acf-card .acf-v{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums}
+.acf-card .acf-l{font-size:11px;font-weight:600;margin-top:2px}
+.acf-card.open{background:#f8fafc;border-color:#e2e8f0}
+.acf-card.open .acf-v{color:#64748b}.acf-card.open .acf-l{color:#94a3b8}
+.acf-card.invoiced{background:linear-gradient(135deg,#ecfeff,#e0f2fe);border-color:#a5f3fc}
+.acf-card.invoiced .acf-v{color:#0891b2}.acf-card.invoiced .acf-l{color:#0e7490}
+.acf-card.paid{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#bbf7d0}
+.acf-card.paid .acf-v{color:#16a34a}.acf-card.paid .acf-l{color:#15803d}
+.acf-bar{display:flex;height:8px;border-radius:5px;overflow:hidden;margin-top:11px;background:#f1f5f9}
+.acf-bar i{display:block;height:100%}
+.acf-note{font-size:11px;color:#94a3b8;margin-top:9px}
+.acf-rows{margin-top:13px;border-top:1px solid #f1f5f9;padding-top:11px;display:flex;flex-direction:column;gap:7px}
+.acf-row{display:flex;align-items:center;gap:9px}
+.acf-row-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.acf-row-name{flex:1;min-width:0;font-size:12.5px;font-weight:600;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;flex-direction:column}
+.acf-row-cli{font-size:10.5px;font-weight:400;color:#94a3b8}
+.acf-row-rev{font-size:12.5px;font-weight:700;color:#334155;font-variant-numeric:tabular-nums;white-space:nowrap}
+.acf-row .invoice-chip{width:auto;margin-top:0;flex-shrink:0;min-width:128px}
+
+/* ── To-do: klant-chip, filter & zoeken ── */
+.todo-client-chip{font-size:9.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:#7c3aed;background:#f3e8ff;border:1px solid #ddd6fe;padding:2px 7px;border-radius:9px;cursor:pointer;flex-shrink:0;display:inline-flex;align-items:center;gap:3px}
+.todo-client-chip.empty{color:#cbd5e1;background:#fff;border-color:#e2e8f0;text-transform:none;letter-spacing:0;font-weight:600}
+.todo-client-chip:hover{filter:brightness(.97)}
+.todo-toolbar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.todo-search{flex:1;min-width:150px;display:flex;align-items:center;gap:6px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:7px 11px}
+.todo-search input{flex:1;border:none;background:transparent;outline:none;font-size:13px;color:#0f172a;font-family:inherit}
+.todo-search .ts-clear{cursor:pointer;color:#94a3b8;font-size:14px;line-height:1}
+.todo-search .ts-clear:hover{color:#ef4444}
+.todo-clientfilter{min-width:130px}
+.todo-search-result-date{font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:#7c3aed;background:#f3e8ff;border:1px solid #ddd6fe;padding:2px 7px;border-radius:9px;margin-left:8px}
+
+/* ── Hamburger (mobiel) ── */
+#nav-toggle{display:none;position:fixed;top:12px;left:12px;z-index:1200;width:42px;height:42px;border-radius:11px;background:#0891b2;color:#fff;border:none;font-size:19px;box-shadow:0 4px 14px rgba(8,145,178,.35);cursor:pointer;align-items:center;justify-content:center}
+#nav-overlay{display:none;position:fixed;inset:0;z-index:1090;background:rgba(15,23,42,.45);backdrop-filter:blur(2px)}
+
+@media(max-width:820px){
+  #nav-toggle{display:flex}
+  #sidebar{position:fixed;top:0;left:0;z-index:1100;transform:translateX(-100%);transition:transform .25s ease;box-shadow:0 0 40px rgba(0,0,0,.12)}
+  #app.nav-open #sidebar{transform:translateX(0)}
+  #app.nav-open #nav-overlay{display:block}
+  .screen{padding:16px 14px;padding-top:62px}
+  .week-header{padding-top:14px;padding-left:62px}
+  .week-body{flex-direction:column;overflow-y:auto}
+  .cal-wrap{min-height:62vh;overflow:visible}
+  .week-panel{width:100%;min-width:0;height:auto;border-left:none;border-top:1px solid #e2e8f0}
+  .week-panel .panel-scroll{overflow:visible}
+  .cards-grid{grid-template-columns:1fr}
+  .an-stats-grid{grid-template-columns:repeat(2,1fr)!important}
+  .acf-grid{grid-template-columns:1fr}
+  .modal{max-width:100%}
+  .todo-wrap{max-width:100%}
+  .screen-hdr h1{font-size:17px}
+}
+@media(max-width:480px){
+  .an-stats-grid{grid-template-columns:1fr!important}
+  .week-header{gap:6px}
+  .todo-toolbar{flex-direction:column;align-items:stretch}
+}
 </style>
 </head>
 <body>
@@ -552,6 +624,8 @@ body.privacy-on #btn-privacy{background:#1e293b;color:#fff;border-color:#0f172a}
   </div>
 </div>
 <div id="app">
+  <button id="nav-toggle" title="Menu" aria-label="Menu">☰</button>
+  <div id="nav-overlay"></div>
   <aside id="sidebar">
     <div class="sidebar-logo">
       <div class="logo-icon">F</div>
@@ -1952,6 +2026,27 @@ function renderClients(){
 // ═══════════════════════════════════════════════
 //  RENDER PROJECTS
 // ═══════════════════════════════════════════════
+// ── Factuurstatus per project per maand ──
+// Opslag: proj.invoiceStatus = { "YYYY-MM": "invoiced" | "paid" }. Afwezig = "open".
+const INVOICE_META={
+  open:{label:'Nog te factureren',chip:'○ Te factureren',cls:'st-open'},
+  invoiced:{label:'Gefactureerd',chip:'📤 Gefactureerd',cls:'st-invoiced'},
+  paid:{label:'Betaald',chip:'✓ Betaald',cls:'st-paid'},
+};
+function invMonthKey(m,y){return `${y}-${String(m+1).padStart(2,'0')}`}
+function getInvoiceStatus(proj,m,y){return (proj.invoiceStatus||{})[invMonthKey(m,y)]||'open'}
+function cycleInvoiceStatus(projId,m,y){
+  const order={open:'invoiced',invoiced:'paid',paid:'open'};
+  const mk=invMonthKey(m,y);
+  setData(d=>({...d,projects:d.projects.map(p=>{
+    if(p.id!==projId)return p;
+    const cur=(p.invoiceStatus||{})[mk]||'open';
+    const next=order[cur];
+    const inv={...(p.invoiceStatus||{})};
+    if(next==='open')delete inv[mk];else inv[mk]=next;
+    return{...p,invoiceStatus:inv};
+  })}));
+}
 function renderProjects(){
   const{data}=S;
   // Month navigator
@@ -2226,6 +2321,42 @@ function renderAnalyse(){
       </div>
     </div>`;
 
+  // 💶 Cashflow-overzicht — splitst de maandomzet op naar factuurstatus per project.
+  {
+    let cfOpen=0,cfInvoiced=0,cfPaid=0;
+    projStats.forEach(x=>{
+      const st=getInvoiceStatus(x.proj,analyseMonth,analyseYear);
+      if(st==='paid')cfPaid+=x.monthRev;
+      else if(st==='invoiced')cfInvoiced+=x.monthRev;
+      else cfOpen+=x.monthRev;
+    });
+    const cfTot=cfOpen+cfInvoiced+cfPaid;
+    const pcc=v=>cfTot>0?(v/cfTot*100):0;
+    // Projectregels met klikbare factuurstatus (gesorteerd op omzet)
+    const cfRows=projStats.slice().sort((a,b)=>b.monthRev-a.monthRev).map(x=>{
+      const st=getInvoiceStatus(x.proj,analyseMonth,analyseYear);
+      const meta=INVOICE_META[st];
+      return`<div class="acf-row">
+        <span class="acf-row-dot" style="background:${x.proj.color}"></span>
+        <span class="acf-row-name">${escapeHtml(x.proj.name)}<span class="acf-row-cli">${escapeHtml(x.cli?.name||'')}</span></span>
+        <span class="acf-row-rev">${eur(Math.round(x.monthRev))}</span>
+        <button class="invoice-chip ${meta.cls}" data-act="cycle-invoice-an" data-id="${x.proj.id}" title="Klik om de factuurstatus te wijzigen">${meta.chip}</button>
+      </div>`;
+    }).join('');
+    h+=`<div class="an-cashflow">
+      <div class="an-cashflow-hdr">💶 Cashflow — ${MONTH_S[analyseMonth]} ${analyseYear}</div>
+      <div class="an-cashflow-sub">Van ${eur(Math.round(cfTot))} omzet: hoeveel is gefactureerd en hoeveel is daadwerkelijk binnen. Klik op de status per project om bij te werken.</div>
+      <div class="acf-grid">
+        <div class="acf-card open"><div class="acf-v">${eur(Math.round(cfOpen))}</div><div class="acf-l">○ Nog te factureren</div></div>
+        <div class="acf-card invoiced"><div class="acf-v">${eur(Math.round(cfInvoiced))}</div><div class="acf-l">📤 Gefactureerd (verwacht)</div></div>
+        <div class="acf-card paid"><div class="acf-v">${eur(Math.round(cfPaid))}</div><div class="acf-l">✓ Ontvangen</div></div>
+      </div>
+      <div class="acf-bar"><i style="width:${pcc(cfPaid)}%;background:#16a34a"></i><i style="width:${pcc(cfInvoiced)}%;background:#0891b2"></i><i style="width:${pcc(cfOpen)}%;background:#cbd5e1"></i></div>
+      ${cfRows?`<div class="acf-rows">${cfRows}</div>`:`<div class="acf-note">Nog geen omzet deze maand om te factureren.</div>`}
+      <div class="acf-note">💡 Omzet wordt geboekt in de maand van uitvoering; deze balk laat zien wat daarvan al onderweg of binnen is.</div>
+    </div>`;
+  }
+
   // 📅 Plan-vooruit nudge — altijd evalueren, ook als deze maand leeg is.
   // Alleen tonen bij huidige of toekomstige maanden (geen gezeur over verleden).
   (() => {
@@ -2446,6 +2577,7 @@ function renderAnalyse(){
   </tr></tbody></table></div>`;
 
   el.innerHTML=h;
+  el.querySelectorAll('[data-act="cycle-invoice-an"]').forEach(b=>b.addEventListener('click',()=>cycleInvoiceStatus(b.dataset.id,analyseMonth,analyseYear)));
   el.querySelector('#an-month')?.addEventListener('change',e=>setState({analyseMonth:parseInt(e.target.value)}));
   el.querySelector('#an-year')?.addEventListener('change',e=>setState({analyseYear:parseInt(e.target.value)}));
   el.querySelector('[data-act="goto-next-month"]')?.addEventListener('click',()=>{
@@ -2621,7 +2753,7 @@ function rollOverTodos(){
   }
 }
 // State helpers
-const S_TODO={addOpen:false,bulkOpen:false,histOpen:false,viewDate:todayKey()};
+const S_TODO={addOpen:false,bulkOpen:false,histOpen:false,viewDate:todayKey(),clientFilter:'',search:''};
 // Aparte timer-state voor to-do's (los van de project-task timer in S.timerTaskId).
 // Maar één to-do timer tegelijk: starten van een nieuwe stopt de vorige.
 S.todoTimerId=null;S.todoTimerStart=null;S.todoTimerBase=0;S.todoTimerInterval=null;
@@ -2670,6 +2802,7 @@ function addTodo(text,opts={}){
     estimateLocked:!!opts.estimateLocked,
     focus:!!opts.focus,done:false,completedAt:null,
     actualSeconds:0,
+    clientId:opts.clientId||(S_TODO.clientFilter&&S_TODO.clientFilter!=='none'?S_TODO.clientFilter:null),
     scheduledDate:opts.scheduledDate||S_TODO.viewDate||todayKey(),
     createdAt:Date.now(),
   };
@@ -2980,6 +3113,32 @@ function renderWeekIntentions(containerEl,week,year){
   if(addBtn)addBtn.addEventListener('click',()=>addWeekIntention(week,year));
 }
 
+// Klein keuzemenu om een klant aan een to-do te koppelen (geankerd onder de chip)
+function openTodoClientMenu(anchor,todoId){
+  document.querySelectorAll('.todo-cli-menu').forEach(m=>m.remove());
+  const t=(S.data.todos||[]).find(x=>x.id===todoId);if(!t)return;
+  const menu=document.createElement('div');
+  menu.className='todo-cli-menu';
+  menu.style.cssText='position:absolute;z-index:1300;background:#fff;border:1px solid #e2e8f0;border-radius:11px;box-shadow:0 12px 34px rgba(0,0,0,.16);padding:5px;max-height:260px;overflow-y:auto;min-width:170px';
+  const opts=[{id:'',name:'— Geen klant'},...S.data.clients.map(c=>({id:c.id,name:c.name}))];
+  const cur=t.clientId||'';
+  menu.innerHTML=opts.map(o=>`<button data-cid="${o.id}" style="display:block;width:100%;text-align:left;border:none;background:${cur===o.id?'#ecfeff':'transparent'};color:${cur===o.id?'#0891b2':'#334155'};font-weight:${cur===o.id?'700':'500'};font-size:12.5px;padding:7px 10px;border-radius:8px;cursor:pointer">${escapeHtml(o.name)}</button>`).join('');
+  document.body.appendChild(menu);
+  const r=anchor.getBoundingClientRect();
+  let left=r.left+window.scrollX, top=r.bottom+window.scrollY+4;
+  if(left+190>window.innerWidth)left=window.innerWidth-200;
+  menu.style.left=Math.max(8,left)+'px';
+  menu.style.top=top+'px';
+  menu.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('mouseenter',()=>{if((t.clientId||'')!==b.dataset.cid)b.style.background='#f8fafc'});
+    b.addEventListener('mouseleave',()=>{if((t.clientId||'')!==b.dataset.cid)b.style.background='transparent'});
+    b.addEventListener('click',e=>{e.stopPropagation();updateTodo(todoId,{clientId:b.dataset.cid||null});menu.remove()});
+  });
+  setTimeout(()=>{
+    const handler=ev=>{if(!menu.contains(ev.target)){menu.remove();document.removeEventListener('click',handler)}};
+    document.addEventListener('click',handler);
+  },0);
+}
 function renderTodo(){
   rollOverTodos();
   const el=document.getElementById('screen-todo');
@@ -2991,7 +3150,13 @@ function renderTodo(){
   const isFuture=viewDate>today;
   // Filter op scheduledDate; oude todos zonder scheduledDate vallen op vandaag
   const allTodos=(S.data.todos||[]).slice();
-  const todos=allTodos.filter(t=>(t.scheduledDate||today)===viewDate);
+  const cf=S_TODO.clientFilter||'';
+  const matchClient=t=>!cf?true:(cf==='none'?!t.clientId:t.clientId===cf);
+  const searchQ=(S_TODO.search||'').trim().toLowerCase();
+  const searchMode=searchQ.length>0;
+  const matchSearch=t=>!searchMode||(t.text||'').toLowerCase().includes(searchQ)||(getCli(t.clientId)?.name||'').toLowerCase().includes(searchQ);
+  const searchResults=searchMode?allTodos.filter(t=>matchClient(t)&&matchSearch(t)).sort((a,b)=>((b.scheduledDate||'').localeCompare(a.scheduledDate||''))||(focusScore(b)-focusScore(a))):[];
+  const todos=allTodos.filter(t=>(t.scheduledDate||today)===viewDate&&matchClient(t));
   const open=todos.filter(t=>!t.done);
   const doneToday=todos.filter(t=>t.done);
   const total=open.length+doneToday.length;
@@ -3011,7 +3176,7 @@ function renderTodo(){
   const restList=open.filter(t=>!topIds.has(t.id));
   const totalOpenMin=open.reduce((s,t)=>s+(t.estimateMin||0),0);
 
-  const renderRow=t=>{
+  const renderRow=(t,showDate)=>{
     const running=S.todoTimerId===t.id;
     const elapsed=running?todoTimerElapsed():(t.actualSeconds||0);
     const estMin=t.estimateMin||0;
@@ -3029,11 +3194,15 @@ function renderTodo(){
       actualBadge='';
     }
     const timerBtn=t.done?'':`<button class="todo-timer-btn${running?' running':''}" data-act="timer" title="${running?'Stop timer':'Start timer'}">${running?'⏸':'▶'} <span class="todo-timer-elapsed">${fmtSecs(elapsed)}</span></button>`;
+    const cliName=t.clientId?(getCli(t.clientId)?.name||'?'):'';
+    const clientChip=S.data.clients.length?(cliName?`<span class="todo-client-chip" data-act="set-client" title="Klant — klik om te wijzigen">🏷 ${escapeHtml(cliName)}</span>`:`<span class="todo-client-chip empty" data-act="set-client" title="Koppel een klant">+ klant</span>`):'';
+    const dateTag=showDate?`<span class="todo-search-result-date" title="Geplande dag">${escapeHtml(relativeDayLabel(t.scheduledDate||today))}</span>`:'';
     return`<div class="todo-row${t.focus?' focused':''}${t.done?' done':''}" data-id="${t.id}">
       <div class="todo-check" data-act="toggle"></div>
       <div class="todo-body">
         <input class="todo-text" value="${escapeHtml(t.text)}" data-act="edit-text" />
         <span class="todo-tag-focus${t.focus?'':' inactive'}" data-act="toggle-focus" title="Markeer als focus">focus</span>
+        ${clientChip}${dateTag}
       </div>
       ${actualBadge}
       ${timerBtn}
@@ -3078,6 +3247,12 @@ function renderTodo(){
   const emptyText=isFuture?`Nog geen plannen voor ${dayLabel.toLowerCase()}`:isPast?'Geen taken voor deze dag':'Nog geen taken voor vandaag';
   // Bepaal welke week bij de viewDate hoort (voor weekvoornemens)
   const vdWN=weekNum(parseDayKey(viewDate));
+  // Toolbar: zoeken + filteren op klant
+  const clientFilterOpts=`<option value="">Alle klanten</option><option value="none"${cf==='none'?' selected':''}>Zonder klant</option>`+S.data.clients.map(c=>`<option value="${c.id}"${cf===c.id?' selected':''}>${escapeHtml(c.name)}</option>`).join('');
+  const toolbarHtml=`<div class="todo-toolbar">
+    <div class="todo-search"><span style="color:#94a3b8">🔍</span><input id="todo-search-input" placeholder="Zoek in al je to-do's…" value="${escapeHtml(S_TODO.search||'')}"/>${S_TODO.search?`<span class="ts-clear" data-act="clear-search" title="Wissen">✕</span>`:''}</div>
+    ${S.data.clients.length?`<select class="todo-clientfilter" id="todo-client-filter">${clientFilterOpts}</select>`:''}
+  </div>`;
 
   el.innerHTML=`<div class="todo-wrap">
     <div class="screen-hdr"><div><h1>✅ To-do</h1><p>Top 3 focus eerst · automatische tijdsschatting · per dag gearchiveerd</p></div></div>
@@ -3089,14 +3264,19 @@ function renderTodo(){
       ${!isToday?`<button class="today-pill" data-act="day-today">Vandaag</button>`:''}
       <input type="date" id="todo-date-picker" value="${viewDate}" />
     </div>
-    <div class="todo-prog-text">${doneToday.length} van ${total} ${total===1?'taak':'taken'} ${isPast?'was af':'klaar'}${open.length?` · nog ~${fmtMin(totalOpenMin).replace('~','')} ${isFuture?'gepland':'te gaan'}`:''}</div>
+    ${toolbarHtml}
+    ${searchMode?'':`<div class="todo-prog-text">${doneToday.length} van ${total} ${total===1?'taak':'taken'} ${isPast?'was af':'klaar'}${open.length?` · nog ~${fmtMin(totalOpenMin).replace('~','')} ${isFuture?'gepland':'te gaan'}`:''}</div>
     <div class="todo-prog-bar"><div class="todo-prog-fill" style="width:${donePct}%"></div></div>
-    ${otherDays.length?`<div style="font-size:11px;color:#94a3b8;margin-bottom:14px">Andere dagen met taken: ${otherDays.map(([k,n])=>`<a data-act="day-jump" data-day="${k}" style="color:#0891b2;cursor:pointer;margin-right:8px">${relativeDayLabel(k)} (${n})</a>`).join('')}</div>`:''}
-    ${total===0?`<div class="todo-empty"><div class="ei">📝</div><p>${emptyText}</p><small>Voeg er hieronder een toe, of plak een lijst.</small></div>`:''}
-    ${focusList.length?`<div class="todo-sec-hdr">${focusSecLabel} <span class="sec-count">${focusList.length}</span></div>${focusList.map(renderRow).join('')}`:''}
-    ${restList.length?`<div class="todo-sec-hdr">Overig <span class="sec-count">${restList.length}</span></div>${restList.map(renderRow).join('')}`:''}
-    ${doneToday.length?`<div class="todo-sec-hdr">${doneSecLabel} <span class="sec-count">${doneToday.length}</span></div>${doneToday.map(renderRow).join('')}`:''}
-    ${learnHtml}
+    ${otherDays.length?`<div style="font-size:11px;color:#94a3b8;margin-bottom:14px">Andere dagen met taken: ${otherDays.map(([k,n])=>`<a data-act="day-jump" data-day="${k}" style="color:#0891b2;cursor:pointer;margin-right:8px">${relativeDayLabel(k)} (${n})</a>`).join('')}</div>`:''}`}
+    ${searchMode
+      ?(searchResults.length
+        ?`<div class="todo-sec-hdr">Zoekresultaten <span class="sec-count">${searchResults.length}</span></div>${searchResults.map(t=>renderRow(t,true)).join('')}`
+        :`<div class="todo-empty"><div class="ei">🔍</div><p>Geen taken gevonden voor "${escapeHtml(S_TODO.search)}"</p><small>Probeer een andere zoekterm${cf?' of zet het klantfilter uit':''}.</small></div>`)
+      :`${total===0?`<div class="todo-empty"><div class="ei">📝</div><p>${emptyText}</p><small>Voeg er hieronder een toe, of plak een lijst.</small></div>`:''}
+    ${focusList.length?`<div class="todo-sec-hdr">${focusSecLabel} <span class="sec-count">${focusList.length}</span></div>${focusList.map(t=>renderRow(t)).join('')}`:''}
+    ${restList.length?`<div class="todo-sec-hdr">Overig <span class="sec-count">${restList.length}</span></div>${restList.map(t=>renderRow(t)).join('')}`:''}
+    ${doneToday.length?`<div class="todo-sec-hdr">${doneSecLabel} <span class="sec-count">${doneToday.length}</span></div>${doneToday.map(t=>renderRow(t)).join('')}`:''}`}
+    ${searchMode?'':learnHtml}
     ${S_TODO.addOpen
       ?`<form class="todo-add-form" id="todo-add-form"><input id="todo-add-input" placeholder="Wat moet er gedaan worden?" autofocus /><button type="submit">Voeg toe</button><button type="button" data-act="cancel-add" style="background:#fff;color:#64748b;border:1px solid #e2e8f0">✕</button></form>`
       :`<button class="todo-add-btn" data-act="open-add">+ voeg taak toe</button>`}
@@ -3121,6 +3301,8 @@ function renderTodo(){
   el.querySelectorAll('.todo-row').forEach(row=>{
     const id=row.dataset.id;
     row.querySelector('[data-act="toggle"]').addEventListener('click',()=>toggleTodoDone(id));
+    const cliChip=row.querySelector('[data-act="set-client"]');
+    if(cliChip)cliChip.addEventListener('click',e=>{e.stopPropagation();openTodoClientMenu(cliChip,id)});
     row.querySelector('[data-act="toggle-focus"]').addEventListener('click',()=>{
       const t=(S.data.todos||[]).find(x=>x.id===id);if(t)updateTodo(id,{focus:!t.focus});
     });
@@ -3191,6 +3373,19 @@ const addBtn=el.querySelector('[data-act="open-add"]');
   if(todayBtn)todayBtn.addEventListener('click',()=>{S_TODO.viewDate=todayKey();renderTodo()});
   if(picker)picker.addEventListener('change',e=>{if(e.target.value){S_TODO.viewDate=e.target.value;renderTodo()}});
   el.querySelectorAll('[data-act="day-jump"]').forEach(a=>a.addEventListener('click',()=>{S_TODO.viewDate=a.dataset.day;renderTodo()}));
+  // Zoeken & klantfilter
+  const searchInput=el.querySelector('#todo-search-input');
+  if(searchInput)searchInput.addEventListener('input',e=>{
+    S_TODO.search=e.target.value;
+    renderTodo();
+    const ni=document.querySelector('#todo-search-input');
+    if(ni){ni.focus();const v=ni.value;try{ni.setSelectionRange(v.length,v.length)}catch{}}
+  });
+  const clearBtn=el.querySelector('[data-act="clear-search"]');
+  if(clearBtn)clearBtn.addEventListener('click',()=>{S_TODO.search='';renderTodo()});
+  const cliFilter=el.querySelector('#todo-client-filter');
+  if(cliFilter)cliFilter.addEventListener('change',e=>{S_TODO.clientFilter=e.target.value;renderTodo()});
+  enhanceSelects(el);
 }
 // Klein utility — escape voor user-tekst in HTML attributen
 function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -3854,6 +4049,45 @@ setInterval(()=>{
     nowLine.style.display='none';
   }
 },60000);
+
+// ── Multi-tab synchronisatie ──────────────────────────────────────────────
+// Wanneer een ander tabblad de data wijzigt, vuurt 'storage' alleen in DEZE tab.
+// We laden dan de nieuwste snapshot in, zodat alle tabbladen convergeren en de
+// race condition (willekeurig oude/nieuwe data) verdwijnt.
+let _pendingExternalRender=false;
+window.addEventListener('storage',e=>{
+  if(e.key!==KEY||!e.newValue)return;
+  let incoming;
+  try{incoming=JSON.parse(e.newValue)}catch{return}
+  if(!incoming)return;
+  const curMod=(S.data&&S.data._lastModified)||0;
+  if((incoming._lastModified||0)<=curMod)return; // niet nieuwer → negeren
+  S.data=incoming;
+  const ae=document.activeElement;
+  const editing=ae&&(ae.tagName==='INPUT'||ae.tagName==='TEXTAREA'||ae.isContentEditable);
+  if(editing){
+    // Niet midden in het typen onderbreken — markeer en render zodra focus weg is
+    _pendingExternalRender=true;
+    try{setSyncStatus('ok','bijgewerkt in ander tabblad')}catch{}
+  }else{
+    render();
+  }
+});
+function _flushExternalRender(){if(_pendingExternalRender){_pendingExternalRender=false;render()}}
+window.addEventListener('focus',_flushExternalRender);
+document.addEventListener('focusout',()=>setTimeout(_flushExternalRender,60));
+
+// ── Mobiel: hamburger-menu (off-canvas sidebar) ───────────────────────────
+(function(){
+  const app=document.getElementById('app');
+  const toggle=document.getElementById('nav-toggle');
+  const overlay=document.getElementById('nav-overlay');
+  const closeNav=()=>app&&app.classList.remove('nav-open');
+  if(toggle)toggle.addEventListener('click',()=>app&&app.classList.toggle('nav-open'));
+  if(overlay)overlay.addEventListener('click',closeNav);
+  // Sluit het menu zodra je een navigatie-item kiest
+  document.addEventListener('click',e=>{if(e.target.closest('[data-nav]'))closeNav()});
+})();
 
 // ── Zorg dat data altijd naar Drive gesaved wordt bij refresh/sluiten ──────
 window.addEventListener('beforeunload',()=>{
