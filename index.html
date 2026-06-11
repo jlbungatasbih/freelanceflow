@@ -543,6 +543,10 @@ body.privacy-on #btn-privacy{background:#1e293b;color:#fff;border-color:#0f172a}
 .invoice-chip.st-open{color:#64748b;background:#f1f5f9;border-color:#e2e8f0}
 .invoice-chip.st-invoiced{color:#0891b2;background:#ecfeff;border-color:#a5f3fc}
 .invoice-chip.st-paid{color:#16a34a;background:#f0fdf4;border-color:#bbf7d0}
+.proj-invoice-row{display:flex;gap:6px;margin-top:7px;align-items:stretch}
+.proj-invoice-row .invoice-chip{margin-top:0;flex:1}
+.defer-btn{flex-shrink:0;font-size:11px;font-weight:700;padding:5px 10px;border-radius:8px;border:1px solid #ddd6fe;background:#f3e8ff;color:#7c3aed;cursor:pointer;transition:.15s;white-space:nowrap}
+.defer-btn:hover{background:#ede4ff;border-color:#c4b5fd}
 
 /* ── Cashflow-overzicht (analyse) ── */
 .an-cashflow{background:#fff;border:1px solid #e2e8f0;border-radius:13px;padding:15px 16px;margin-bottom:16px}
@@ -2047,6 +2051,28 @@ function cycleInvoiceStatus(projId,m,y){
     return{...p,invoiceStatus:inv};
   })}));
 }
+// Schuif een nog niet-gefactureerd project door naar de volgende maand:
+// verplaatst de factuurmaand (billingMonth/Year) van de taken van die maand,
+// neemt een eventuele factuurstatus mee, en houdt het project zichtbaar.
+function deferProjectToNextMonth(projId,m,y){
+  const nm=m===11?0:m+1, ny=m===11?y+1:y;
+  setData(d=>{
+    const tasks=d.tasks.map(t=>(t.projectId===projId&&t.billingMonth===m&&t.billingYear===y)?{...t,billingMonth:nm,billingYear:ny}:t);
+    const projects=d.projects.map(p=>{
+      if(p.id!==projId)return p;
+      const inv={...(p.invoiceStatus||{})};
+      const fromK=invMonthKey(m,y), toK=invMonthKey(nm,ny);
+      if(inv[fromK]){inv[toK]=inv[fromK];delete inv[fromK];}
+      const patch={invoiceStatus:inv};
+      // Als het project een einddatum had die nu zou wegvallen: verleng tot de nieuwe maand
+      if(p.endMonth!==undefined&&p.endYear!==undefined&&(ny*12+nm)>(p.endYear*12+p.endMonth)){patch.endMonth=nm;patch.endYear=ny;}
+      return{...p,...patch};
+    });
+    return{...d,tasks,projects};
+  });
+  // Volg het project naar de nieuwe maand zodat je ziet waar het heen ging
+  S.projM=nm;S.projY=ny;renderProjects();
+}
 function renderProjects(){
   const{data}=S;
   // Month navigator
@@ -2084,6 +2110,10 @@ function renderProjects(){
     return;}
   el.innerHTML=internHtml+clientProjs.map(proj=>{
     const cli=getCli(proj.clientId);
+    const invSt=getInvoiceStatus(proj,projM,projY);
+    const invMeta=INVOICE_META[invSt];
+    const monthBillTasks=data.tasks.filter(t=>t.projectId===proj.id&&t.billingMonth===projM&&t.billingYear===projY);
+    const canDefer=!proj.isRetainer&&invSt==='open'&&monthBillTasks.length>0;
     const info=overInfo(proj,data.tasks,projM,projY);
     const capObj=proj.isRetainer?getRetainerCap(proj,projM,projY):null;
     const maxH=proj.isRetainer?(capObj.hours||0):(proj.agreedHours||0);
@@ -2095,8 +2125,10 @@ function renderProjects(){
       :data.tasks.filter(t=>t.projectId===proj.id);
     const retainerSub=proj.isRetainer?`<br><span style="font-size:10.5px;color:${capObj.hasOverride?'#0891b2':'#16a34a'}">${capObj.hours}u/mnd${capObj.hasOverride?' 📅':''} · ${eur(capObj.budget)}/mnd</span>`:'';
     const dateRangeSub=(proj.startMonth!==undefined||proj.endMonth!==undefined)?`<br><span style="font-size:10px;color:#94a3b8">📅 ${proj.startMonth!==undefined?MONTHS[proj.startMonth]+' '+proj.startYear:'...'} → ${proj.endMonth!==undefined?MONTHS[proj.endMonth]+' '+proj.endYear:'doorlopend'}</span>`:'';
-    return`<div class="card"${info.isOver?' style="border-color:#fecaca"':''}><div class="proj-card-hdr"><div class="proj-dot-lg" style="background:${proj.color}"></div><div class="proj-card-title">${proj.name}</div>${proj.isRetainer?`<span class="retainer-tag">🔁 retainer</span>`:''} ${info.isOver?'<span>⚠️</span>':''}</div><div style="font-size:11.5px;color:#64748b;margin-bottom:8px">${cli?.name||'—'}${effRate(proj)>0?` · ${eur(effRate(proj))}/u`:''}${retainerSub}${dateRangeSub}</div><div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${bc}"></div></div><div class="prog-meta"><span>${fmtH(info.total)} / ${fmtH(maxH)} ${proj.isRetainer?MONTH_NL[projM]:'gepland'}</span>${info.isOver?`<span style="color:#ef4444;font-weight:700">+${fmtH(info.over)} over</span>`:`<span>${fmtH(Math.max(0,maxH-info.total))} vrij</span>`}</div>${tasks.length?`<div class="task-list-card">${tasks.slice(0,4).map(t=>`<div class="task-item-card"><span class="ti-name">${t.name}</span><span class="ti-hrs">${t.hours||0}u${t.timerSeconds>0?` <span style="font-size:9.5px;color:#0891b2">(${fmtSecs(t.timerSeconds)} getrackt)</span>`:''}</span><button class="btn-icon" data-act="edit-task" data-id="${t.id}">✎</button><button class="btn-icon" data-act="del-task" data-id="${t.id}" style="font-size:11px">✕</button></div>`).join('')}${tasks.length>4?`<div style="padding:4px 9px;font-size:10.5px;color:#94a3b8">+${tasks.length-4} meer</div>`:''}</div>`:''}<button class="add-task-btn-card" data-act="add-task" data-proj="${proj.id}"><span style="font-size:13px">+</span> Taak toevoegen</button><div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap">${proj.isRetainer?`<button class="btn btn-secondary btn-sm" data-act="override-month" data-id="${proj.id}" style="color:#0891b2;border-color:#a5f3fc">📅 Maand aanpassen${Object.keys(proj.monthlyOverrides||{}).length>0?` <span style="background:#0891b2;color:#fff;border-radius:9px;padding:0 5px;font-size:9px">${Object.keys(proj.monthlyOverrides||{}).length}</span>`:''}</button>`:''}<button class="btn btn-secondary btn-sm" data-act="edit-proj" data-id="${proj.id}">✎ Bewerken</button><button class="btn btn-danger btn-sm" data-act="del-proj" data-id="${proj.id}">✕</button></div></div>`;
+    return`<div class="card"${info.isOver?' style="border-color:#fecaca"':''}><div class="proj-card-hdr"><div class="proj-dot-lg" style="background:${proj.color}"></div><div class="proj-card-title">${proj.name}</div>${proj.isRetainer?`<span class="retainer-tag">🔁 retainer</span>`:''} ${info.isOver?'<span>⚠️</span>':''}</div><div style="font-size:11.5px;color:#64748b;margin-bottom:8px">${cli?.name||'—'}${effRate(proj)>0?` · ${eur(effRate(proj))}/u`:''}${retainerSub}${dateRangeSub}</div><div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${bc}"></div></div><div class="prog-meta"><span>${fmtH(info.total)} / ${fmtH(maxH)} ${proj.isRetainer?MONTH_NL[projM]:'gepland'}</span>${info.isOver?`<span style="color:#ef4444;font-weight:700">+${fmtH(info.over)} over</span>`:`<span>${fmtH(Math.max(0,maxH-info.total))} vrij</span>`}</div><div class="proj-invoice-row"><button class="invoice-chip ${invMeta.cls}" data-act="cycle-invoice" data-id="${proj.id}" title="Factuurstatus voor ${MONTH_NL[projM]} ${projY} — klik om te wijzigen">${invMeta.chip}</button>${canDefer?`<button class="defer-btn" data-act="defer-month" data-id="${proj.id}" title="Nog niet gefactureerd? Verplaats de omzet van dit project naar ${MONTH_NL[(projM+1)%12]}">→ ${MONTH_NL[(projM+1)%12].slice(0,3)}</button>`:''}</div>${tasks.length?`<div class="task-list-card">${tasks.slice(0,4).map(t=>`<div class="task-item-card"><span class="ti-name">${t.name}</span><span class="ti-hrs">${t.hours||0}u${t.timerSeconds>0?` <span style="font-size:9.5px;color:#0891b2">(${fmtSecs(t.timerSeconds)} getrackt)</span>`:''}</span><button class="btn-icon" data-act="edit-task" data-id="${t.id}">✎</button><button class="btn-icon" data-act="del-task" data-id="${t.id}" style="font-size:11px">✕</button></div>`).join('')}${tasks.length>4?`<div style="padding:4px 9px;font-size:10.5px;color:#94a3b8">+${tasks.length-4} meer</div>`:''}</div>`:''}<button class="add-task-btn-card" data-act="add-task" data-proj="${proj.id}"><span style="font-size:13px">+</span> Taak toevoegen</button><div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap">${proj.isRetainer?`<button class="btn btn-secondary btn-sm" data-act="override-month" data-id="${proj.id}" style="color:#0891b2;border-color:#a5f3fc">📅 Maand aanpassen${Object.keys(proj.monthlyOverrides||{}).length>0?` <span style="background:#0891b2;color:#fff;border-radius:9px;padding:0 5px;font-size:9px">${Object.keys(proj.monthlyOverrides||{}).length}</span>`:''}</button>`:''}<button class="btn btn-secondary btn-sm" data-act="edit-proj" data-id="${proj.id}">✎ Bewerken</button><button class="btn btn-danger btn-sm" data-act="del-proj" data-id="${proj.id}">✕</button></div></div>`;
   }).join('');
+  el.querySelectorAll('[data-act="cycle-invoice"]').forEach(b=>b.addEventListener('click',()=>cycleInvoiceStatus(b.dataset.id,projM,projY)));
+  el.querySelectorAll('[data-act="defer-month"]').forEach(b=>b.addEventListener('click',()=>deferProjectToNextMonth(b.dataset.id,projM,projY)));
   el.querySelectorAll('[data-act="override-month"]').forEach(b=>b.addEventListener('click',()=>openRetainerOverrideModal(b.dataset.id)));
   el.querySelectorAll('[data-act="edit-proj"]').forEach(b=>b.addEventListener('click',()=>openProjModal(b.dataset.id)));
   el.querySelectorAll('[data-act="del-proj"]').forEach(b=>b.addEventListener('click',()=>confirmDel('project',()=>setData(d=>({...d,projects:d.projects.filter(p=>p.id!==b.dataset.id),tasks:d.tasks.filter(t=>t.projectId!==b.dataset.id),clients:d.clients.map(c=>({...c,projects:c.projects.filter(pid=>pid!==b.dataset.id)}))})))));
@@ -2332,27 +2364,15 @@ function renderAnalyse(){
     });
     const cfTot=cfOpen+cfInvoiced+cfPaid;
     const pcc=v=>cfTot>0?(v/cfTot*100):0;
-    // Projectregels met klikbare factuurstatus (gesorteerd op omzet)
-    const cfRows=projStats.slice().sort((a,b)=>b.monthRev-a.monthRev).map(x=>{
-      const st=getInvoiceStatus(x.proj,analyseMonth,analyseYear);
-      const meta=INVOICE_META[st];
-      return`<div class="acf-row">
-        <span class="acf-row-dot" style="background:${x.proj.color}"></span>
-        <span class="acf-row-name">${escapeHtml(x.proj.name)}<span class="acf-row-cli">${escapeHtml(x.cli?.name||'')}</span></span>
-        <span class="acf-row-rev">${eur(Math.round(x.monthRev))}</span>
-        <button class="invoice-chip ${meta.cls}" data-act="cycle-invoice-an" data-id="${x.proj.id}" title="Klik om de factuurstatus te wijzigen">${meta.chip}</button>
-      </div>`;
-    }).join('');
     h+=`<div class="an-cashflow">
       <div class="an-cashflow-hdr">💶 Cashflow — ${MONTH_S[analyseMonth]} ${analyseYear}</div>
-      <div class="an-cashflow-sub">Van ${eur(Math.round(cfTot))} omzet: hoeveel is gefactureerd en hoeveel is daadwerkelijk binnen. Klik op de status per project om bij te werken.</div>
+      <div class="an-cashflow-sub">Van ${eur(Math.round(cfTot))} omzet: hoeveel is gefactureerd en hoeveel is daadwerkelijk binnen. Je werkt de status per project bij op het Projecten-scherm.</div>
       <div class="acf-grid">
         <div class="acf-card open"><div class="acf-v">${eur(Math.round(cfOpen))}</div><div class="acf-l">○ Nog te factureren</div></div>
         <div class="acf-card invoiced"><div class="acf-v">${eur(Math.round(cfInvoiced))}</div><div class="acf-l">📤 Gefactureerd (verwacht)</div></div>
         <div class="acf-card paid"><div class="acf-v">${eur(Math.round(cfPaid))}</div><div class="acf-l">✓ Ontvangen</div></div>
       </div>
       <div class="acf-bar"><i style="width:${pcc(cfPaid)}%;background:#16a34a"></i><i style="width:${pcc(cfInvoiced)}%;background:#0891b2"></i><i style="width:${pcc(cfOpen)}%;background:#cbd5e1"></i></div>
-      ${cfRows?`<div class="acf-rows">${cfRows}</div>`:`<div class="acf-note">Nog geen omzet deze maand om te factureren.</div>`}
       <div class="acf-note">💡 Omzet wordt geboekt in de maand van uitvoering; deze balk laat zien wat daarvan al onderweg of binnen is.</div>
     </div>`;
   }
@@ -2577,7 +2597,6 @@ function renderAnalyse(){
   </tr></tbody></table></div>`;
 
   el.innerHTML=h;
-  el.querySelectorAll('[data-act="cycle-invoice-an"]').forEach(b=>b.addEventListener('click',()=>cycleInvoiceStatus(b.dataset.id,analyseMonth,analyseYear)));
   el.querySelector('#an-month')?.addEventListener('change',e=>setState({analyseMonth:parseInt(e.target.value)}));
   el.querySelector('#an-year')?.addEventListener('change',e=>setState({analyseYear:parseInt(e.target.value)}));
   el.querySelector('[data-act="goto-next-month"]')?.addEventListener('click',()=>{
