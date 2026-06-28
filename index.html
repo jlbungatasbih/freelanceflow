@@ -2793,9 +2793,9 @@ function fmtMin(m){
 // Score voor top-3 focus selectie. Hoger = belangrijker.
 function focusScore(t){
   let s=0;
-  if(t.focus)s+=1000; // door gebruiker als focus gemarkeerd: altijd bovenaan
-  // Prioriteit weegt mee: hoog stijgt richting de top-3, laag zakt iets
-  s+=({high:400,medium:150,low:-20}[t.priority]||0);
+  // Prioriteit is de bepalende factor: 'Hoog' komt automatisch bovenaan (top-3 focus),
+  // 'Midden' eronder, 'Laag' zakt. Onder gelijke prio bepalen ouderdom + quick-wins de volgorde.
+  s+=({high:1000,medium:300,low:-200}[t.priority]||0);
   // Ouderdom: hoe langer op de lijst, hoe meer urgentie (anti-uitstel)
   const ageDays=t.createdAt?Math.max(0,(Date.now()-t.createdAt)/86400000):0;
   s+=Math.min(ageDays*15,150);
@@ -3311,8 +3311,7 @@ function renderTodo(){
       <div class="todo-check" data-act="toggle"></div>
       <div class="todo-body">
         <input class="todo-text" value="${escapeHtml(t.text)}" data-act="edit-text" />
-        <span class="todo-prio ${t.priority||'none'}" data-act="toggle-prio" title="Prioriteit — klik om te wisselen (Hoog → Midden → Laag → geen)"></span>
-        <span class="todo-tag-focus${t.focus?'':' inactive'}" data-act="toggle-focus" title="Markeer als focus">focus</span>
+        <span class="todo-prio ${t.priority||'none'}" data-act="toggle-prio" title="Prioriteit — klik om te wisselen (Hoog → Midden → Laag → geen). Hoog komt automatisch bij je top-3 focus."></span>
         ${clientChip}${dateTag}
       </div>
       ${actualBadge}
@@ -3414,9 +3413,6 @@ function renderTodo(){
     row.querySelector('[data-act="toggle"]').addEventListener('click',()=>toggleTodoDone(id));
     const cliChip=row.querySelector('[data-act="set-client"]');
     if(cliChip)cliChip.addEventListener('click',e=>{e.stopPropagation();openTodoClientMenu(cliChip,id)});
-    row.querySelector('[data-act="toggle-focus"]').addEventListener('click',()=>{
-      const t=(S.data.todos||[]).find(x=>x.id===id);if(t)updateTodo(id,{focus:!t.focus});
-    });
     row.querySelector('[data-act="toggle-prio"]').addEventListener('click',e=>{
       e.stopPropagation();
       const t=(S.data.todos||[]).find(x=>x.id===id);if(!t)return;
